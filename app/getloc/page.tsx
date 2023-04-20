@@ -1,21 +1,34 @@
 "use client";
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 
 export default function GetLocPage() {
-    // useState and useEffect are used here because the Geolocation API is client-side, and will break server-side compilation
-    const [pos, setPos] = useState("");
-    useEffect(() => {
-        const successCallback = (position) => {
-            setPos(position.coords.latitude);
-          };
-          
-          const errorCallback = (error) => {
-            setPos(error);
-          };
-        
-          navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-    });
+  const [pos, setPos] = useState<GeolocationPosition>(null);
+  const [zip, setZip] = useState(0);
+  useEffect(() => {
+    // render functions can't be async, so define inside useEffect
+    const fetchData = async (lat: number, long: number) => {
+      const res = await fetch(`/api/zipcode?lat=${lat}&long=${long}`);
+      if (!res.ok) {
+        throw new Error(`Error: ${res.status}`);
+      }
+      const { closestZipCode } = await res.json();
+      setZip(closestZipCode);
+    };
 
-    return <div>Hello {pos}
-    </div>;
+    const successCallback: PositionCallback = (position) => {
+      setPos(position);
+      fetchData(position.coords.latitude, position.coords.longitude);
+    };
+
+    const errorCallback: PositionErrorCallback = (error) => {
+      console.log(error);
+    };
+
+    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+  }, []);
+
+  return <><div>Latitude: {pos?.coords.latitude}</div>
+    <div>Longitude: {pos?.coords.longitude}</div>
+    <div>Zip Code: {zip}</div>
+  </>;
 }
