@@ -3,16 +3,16 @@ import { useState, useEffect } from "react";
 
 export default function GetLocPage() {
   const [pos, setPos] = useState<GeolocationPosition>(null);
-  const [zip, setZip] = useState(0);
+  const [place, setPlace] = useState(null);
   useEffect(() => {
     // render functions can't be async, so define inside useEffect
     const fetchData = async (lat: number, long: number) => {
-      const res = await fetch(`/api/zipcode?lat=${lat}&long=${long}`);
+      const res = await fetch(`/api/location?lat=${lat}&long=${long}`);
       if (!res.ok) {
         throw new Error(`Error: ${res.status}`);
       }
-      const { closestZipCode } = await res.json();
-      setZip(closestZipCode);
+      const place = await res.json();
+      setPlace(place);
     };
 
     const successCallback: PositionCallback = (position) => {
@@ -29,6 +29,8 @@ export default function GetLocPage() {
 
   return <><div>Latitude: {pos?.coords.latitude}</div>
     <div>Longitude: {pos?.coords.longitude}</div>
-    <div>Zip Code: {zip}</div>
+    <div>Zip Code: {place?.zipcode}</div>
+    <div>County Code: {place?.countyfips}</div>
+    <div>State: {place?.state}</div>
   </>;
 }
