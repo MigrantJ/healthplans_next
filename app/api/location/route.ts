@@ -8,14 +8,18 @@ const dataDir = path.join(process.cwd(), "staticdata");
 // todo: make a type for this
 let zipToCountyAndState;
 
-function buildCodes() {
+async function buildCodes() {
   zipToCountyAndState = {};
-  fs.createReadStream(`${dataDir}/location_data.csv`)
-    // skip the header row
-    .pipe(parse({ delimiter: ",", from_line: 2 }))
-    .on("data", function (row) {
-      zipToCountyAndState[row[0]] = [row[1], row[2]];
-    });
+  await new Promise((resolve, reject) => {
+    fs.createReadStream(`${dataDir}/location_data.csv`)
+      // skip the header row
+      .pipe(parse({ delimiter: ",", from_line: 2 }))
+      .on("data", function (row) {
+        zipToCountyAndState[row[0]] = [row[1], row[2]];
+      })
+      .on("error", (err) => reject(err))
+      .on("finish", () => resolve(null));
+  });
 }
 
 export async function GET(req: NextRequest) {
@@ -31,7 +35,7 @@ export async function GET(req: NextRequest) {
   }
 
   if (!zipToCountyAndState) {
-    buildCodes();
+    await buildCodes();
   }
 
   let closestZipCode: string;
