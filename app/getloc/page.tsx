@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import PlanList from "@/components/PlanList";
 
 export default function GetLocPage() {
   const [pos, setPos] = useState<GeolocationPosition>(null);
@@ -99,11 +100,7 @@ export default function GetLocPage() {
           </button>
         </div>
       )}
-      <div>
-        {plans?.map((plan) => (
-          <div>{plan.name}</div>
-        ))}
-      </div>
+      <PlanList plans={plans} />
     </>
   );
 }
