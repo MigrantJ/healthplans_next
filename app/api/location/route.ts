@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
 
   if (!(lat !== null && long !== null) && zipcode === null) {
     return new NextResponse("Missing required parameters", {
-      status: 400
+      status: 400,
     });
   }
 
