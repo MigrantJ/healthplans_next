@@ -6,17 +6,20 @@ import { parse } from "csv-parse";
 
 const dataDir = path.join(process.cwd(), "staticdata");
 // todo: make a type for this
-let zipToCountyAndState = {};
+let zipToCountyAndState;
 
-function buildCodes() {
-  fs.createReadStream(`${dataDir}/location_data.csv`)
-    // skip the header row
-    .pipe(parse({ delimiter: ",", from_line: 2 }))
-    .on("data", function (row) {
-      if (row) {
+async function buildCodes() {
+  zipToCountyAndState = {};
+  await new Promise((resolve, reject) => {
+    fs.createReadStream(`${dataDir}/location_data.csv`)
+      // skip the header row
+      .pipe(parse({ delimiter: ",", from_line: 2 }))
+      .on("data", function (row) {
         zipToCountyAndState[row[0]] = [row[1], row[2]];
-      }
-    });
+      })
+      .on("error", (err) => reject(err))
+      .on("finish", () => resolve(null));
+  });
 }
 
 export async function GET(req: NextRequest) {
@@ -25,19 +28,27 @@ export async function GET(req: NextRequest) {
   const long = searchParams.get("long");
   const zipcode = searchParams.get("zipcode");
 
+  if (!(lat !== null && long !== null) && zipcode === null) {
+    return new NextResponse("Missing required parameters", {
+      status: 400,
+    });
+  }
+
+  if (!zipToCountyAndState) {
+    await buildCodes();
+  }
+
   let closestZipCode: string;
-  if (lat !== null && long !== null) {
+  if (zipcode) {
+    closestZipCode = zipcode;
+  } else {
     const location = {
       latitude: parseFloat(searchParams.get("lat")),
       longitude: parseFloat(searchParams.get("long")),
     };
     closestZipCode = await geo2zip(location);
-  } else if (zipcode !== null) {
-    closestZipCode = zipcode;
-  } else {
-    //todo: better error handling here
-    throw new Error("Required parameters not found");
   }
+
   const [county, state] = zipToCountyAndState[closestZipCode];
   return NextResponse.json({
     zipcode: closestZipCode,
@@ -45,5 +56,3 @@ export async function GET(req: NextRequest) {
     countyfips: county,
   });
 }
-
-buildCodes();

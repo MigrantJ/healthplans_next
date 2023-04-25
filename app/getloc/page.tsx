@@ -1,5 +1,17 @@
 "use client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import PlanList from "@/components/PlanList";
+
+// todo: revisit these option settings
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    },
+  },
+});
 
 export default function GetLocPage() {
   const [pos, setPos] = useState<GeolocationPosition>(null);
@@ -46,39 +58,40 @@ export default function GetLocPage() {
 
   return (
     <>
-      <div>Latitude: {pos?.coords.latitude}</div>
-      <div>Longitude: {pos?.coords.longitude}</div>
-      <div>
-        <form>
-          <label htmlFor="zipcode">
-            Zip Code:
+      <QueryClientProvider client={queryClient}>
+        <div>Latitude: {pos?.coords.latitude}</div>
+        <div>Longitude: {pos?.coords.longitude}</div>
+        <div>
+          <form>
+            <label htmlFor="zipcode">Zip Code:</label>
             <input
               id="zipcode"
               value={zipCode}
               placeholder="Zip Code"
               onChange={(e) => setZipCode(e.target.value)}
             />
-          </label>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              getPlaceByZipCode();
-            }}
-          >
-            Use Zip
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              useGPS();
-            }}
-          >
-            Use GPS
-          </button>
-        </form>
-      </div>
-      <div>County Code: {countyCode}</div>
-      <div>State: {state}</div>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                getPlaceByZipCode();
+              }}
+            >
+              Use Zip
+            </button>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                useGPS();
+              }}
+            >
+              Use GPS
+            </button>
+          </form>
+        </div>
+        <div>County Code: {countyCode}</div>
+        <div>State: {state}</div>
+        <PlanList zipCode={zipCode} state={state} countyCode={countyCode} />
+      </QueryClientProvider>
     </>
   );
 }
