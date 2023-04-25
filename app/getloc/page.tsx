@@ -1,13 +1,23 @@
 "use client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import PlanList from "@/components/PlanList";
+
+// todo: revisit these option settings
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    },
+  },
+});
 
 export default function GetLocPage() {
   const [pos, setPos] = useState<GeolocationPosition>(null);
   const [zipCode, setZipCode] = useState("");
   const [countyCode, setCountyCode] = useState("");
   const [state, setState] = useState("");
-  const [plans, setPlans] = useState([]);
 
   const getPlaceByLatLong = async (lat: number, long: number) => {
     const res = await fetch(`/api/location?lat=${lat}&long=${long}`);
@@ -46,61 +56,42 @@ export default function GetLocPage() {
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
   };
 
-  const getPlans = async () => {
-    const res = await fetch(
-      `/api/plans?zipcode=${zipCode}&state=${state}&countyCode=${countyCode}`
-    );
-    const plans = await res.json();
-    //todo: assert that plans is the correct type or something. you can add types to NextAPIResponse
-    setPlans(plans);
-  };
-
   return (
     <>
-      <div>Latitude: {pos?.coords.latitude}</div>
-      <div>Longitude: {pos?.coords.longitude}</div>
-      <div>
-        <form>
-          <label htmlFor="zipcode">Zip Code:</label>
-          <input
-            id="zipcode"
-            value={zipCode}
-            placeholder="Zip Code"
-            onChange={(e) => setZipCode(e.target.value)}
-          />
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              getPlaceByZipCode();
-            }}
-          >
-            Use Zip
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              useGPS();
-            }}
-          >
-            Use GPS
-          </button>
-        </form>
-      </div>
-      <div>County Code: {countyCode}</div>
-      <div>State: {state}</div>
-      {countyCode && (
+      <QueryClientProvider client={queryClient}>
+        <div>Latitude: {pos?.coords.latitude}</div>
+        <div>Longitude: {pos?.coords.longitude}</div>
         <div>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              getPlans();
-            }}
-          >
-            Get Plans
-          </button>
+          <form>
+            <label htmlFor="zipcode">Zip Code:</label>
+            <input
+              id="zipcode"
+              value={zipCode}
+              placeholder="Zip Code"
+              onChange={(e) => setZipCode(e.target.value)}
+            />
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                getPlaceByZipCode();
+              }}
+            >
+              Use Zip
+            </button>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                useGPS();
+              }}
+            >
+              Use GPS
+            </button>
+          </form>
         </div>
-      )}
-      <PlanList plans={plans} />
+        <div>County Code: {countyCode}</div>
+        <div>State: {state}</div>
+        <PlanList zipCode={zipCode} state={state} countyCode={countyCode} />
+      </QueryClientProvider>
     </>
   );
 }

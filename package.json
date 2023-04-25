@@ -6,6 +6,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.29.5",
     "csv": "^6.2.10",
     "dotenv": "^16.0.3",
     "eslint-config-next": "^13.3.0",
