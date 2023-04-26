@@ -13,6 +13,12 @@ const queryClient = new QueryClient({
   },
 });
 
+interface Place {
+  zipcode: string;
+  countyfips: string;
+  state: string;
+}
+
 export default function GetLocPage() {
   const [pos, setPos] = useState<GeolocationPosition>(null);
   const [zipCode, setZipCode] = useState("");
@@ -24,7 +30,7 @@ export default function GetLocPage() {
     if (!res.ok) {
       throw new Error(`Error: ${res.status}`);
     }
-    const place = await res.json();
+    const place = (await res.json()) as Place;
     setZipCode(place.zipcode);
     setCountyCode(place.countyfips);
     setState(place.state);
@@ -36,16 +42,19 @@ export default function GetLocPage() {
     if (!res.ok) {
       throw new Error(`Error: ${res.status}`);
     }
-    const place = await res.json();
+    const place = (await res.json()) as Place;
     setZipCode(place.zipcode);
     setCountyCode(place.countyfips);
     setState(place.state);
   };
 
-  const useGPS = function () {
+  const getPosByGPS = function () {
     const successCallback: PositionCallback = (position) => {
       setPos(position);
-      getPlaceByLatLong(position.coords.latitude, position.coords.longitude);
+      void getPlaceByLatLong(
+        position.coords.latitude,
+        position.coords.longitude
+      );
     };
 
     const errorCallback: PositionErrorCallback = (error) => {
@@ -73,7 +82,7 @@ export default function GetLocPage() {
             <button
               onClick={(e) => {
                 e.preventDefault();
-                getPlaceByZipCode();
+                void getPlaceByZipCode();
               }}
             >
               Use Zip
@@ -81,7 +90,7 @@ export default function GetLocPage() {
             <button
               onClick={(e) => {
                 e.preventDefault();
-                useGPS();
+                getPosByGPS();
               }}
             >
               Use GPS

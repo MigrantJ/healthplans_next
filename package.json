@@ -3,7 +3,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint \"**/*.{jsx,ts,tsx}\" --quiet --ignore-pattern \"node_modules/\""
   },
   "dependencies": {
     "@tanstack/react-query": "^4.29.5",
@@ -17,10 +17,16 @@
     "typescript": "^5.0.4"
   },
   "devDependencies": {
+    "@testing-library/react": "^13.4.0",
     "@types/node": "18.15.11",
     "@types/react": "18.0.37",
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@typescript-eslint/parser": "^5.40.1",
     "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.5.0",
-    "prettier": "^2.7.1"
+    "eslint-import-resolver-typescript": "^3.5.1",
+    "happy-dom": "^7.6.0",
+    "prettier": "^2.7.1",
+    "vitest": "^0.24.3"
   }
 }

@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { IHealthPlan } from "@/types/HealthPlan";
+
+export interface GetPlansResponse {
+  plans: IHealthPlan[];
+}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -22,6 +27,6 @@ export async function GET(req: NextRequest) {
       headers: { "Content-Type": "application/json" },
     }
   );
-  const resJson = await res.json();
-  return NextResponse.json(resJson.plans);
+  const resJson = (await res.json()) as GetPlansResponse;
+  return NextResponse.json(resJson);
 }
