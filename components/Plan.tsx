@@ -5,5 +5,5 @@ interface IProps {
 }
 
 export default function Plan({ plan }: IProps) {
-  return <div>{plan.name}</div>;
+  return <div data-testid="plan-name-display">{plan.name}</div>;
 }
