@@ -1,23 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
 
 import Plan from "./Plan";
-import getPlans from "@/lib/getPlans";
+import getPlans, { GetPlansResponse } from "@/lib/getPlans";
 
-export default function PlanList({ zipCode, state, countyCode }) {
+interface IProps {
+  zipCode: string;
+  state: string;
+  countyCode: string;
+}
+
+export default function PlanList({ zipCode, state, countyCode }: IProps) {
+  const results = useQuery<GetPlansResponse>(
+    ["location", { zipCode, state, countyCode }],
+    getPlans
+  );
+
   if (!zipCode || !state || !countyCode) {
     return <></>;
   }
 
-  const results = useQuery(["location", zipCode, state, countyCode], getPlans);
   if (results.isLoading) {
     return <>Loading...</>;
   }
 
-  const plans = results.data;
-  debugger;
+  const resultsData = results.data;
   return (
     <>
-      {plans?.map((plan) => (
+      {resultsData.plans.map((plan) => (
         <Plan plan={plan} key={plan.name} />
       ))}
     </>

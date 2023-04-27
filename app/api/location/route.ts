@@ -4,9 +4,13 @@ import fs from "fs";
 import path from "path";
 import { parse } from "csv-parse";
 
+interface ZipToCountyAndState {
+  [k: string]: [string, string];
+}
+
 const dataDir = path.join(process.cwd(), "staticdata");
 // todo: make a type for this
-let zipToCountyAndState;
+let zipToCountyAndState: ZipToCountyAndState;
 
 async function buildCodes() {
   zipToCountyAndState = {};
@@ -14,7 +18,7 @@ async function buildCodes() {
     fs.createReadStream(`${dataDir}/location_data.csv`)
       // skip the header row
       .pipe(parse({ delimiter: ",", from_line: 2 }))
-      .on("data", function (row) {
+      .on("data", function (row: [string, string, string]) {
         zipToCountyAndState[row[0]] = [row[1], row[2]];
       })
       .on("error", (err) => reject(err))
