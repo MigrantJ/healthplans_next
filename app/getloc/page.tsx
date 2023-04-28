@@ -1,17 +1,7 @@
 "use client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import { Button, Input } from "@chakra-ui/react";
 import PlanList from "@/components/PlanList";
-
-// todo: revisit these option settings
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    },
-  },
-});
 
 interface Place {
   zipcode: string;
@@ -67,40 +57,39 @@ export default function GetLocPage() {
 
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <div>Latitude: {pos?.coords.latitude}</div>
-        <div>Longitude: {pos?.coords.longitude}</div>
-        <div>
-          <form>
-            <label htmlFor="zipcode">Zip Code:</label>
-            <input
-              id="zipcode"
-              value={zipCode}
-              placeholder="Zip Code"
-              onChange={(e) => setZipCode(e.target.value)}
-            />
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                void getPlaceByZipCode();
-              }}
-            >
-              Use Zip
-            </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                getPosByGPS();
-              }}
-            >
-              Use GPS
-            </button>
-          </form>
-        </div>
-        <div>County Code: {countyCode}</div>
-        <div>State: {state}</div>
-        <PlanList zipCode={zipCode} state={state} countyCode={countyCode} />
-      </QueryClientProvider>
+      <div>Latitude: {pos?.coords.latitude}</div>
+      <div>Longitude: {pos?.coords.longitude}</div>
+      <div>
+        <form>
+          <label htmlFor="zipcode">Zip Code:</label>
+          <Input
+            id="zipcode"
+            value={zipCode}
+            placeholder="Zip Code"
+            onChange={(e) => setZipCode(e.target.value)}
+          />
+          <Button
+            colorScheme="teal"
+            onClick={(e) => {
+              e.preventDefault();
+              void getPlaceByZipCode();
+            }}
+          >
+            Use Zip
+          </Button>
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              getPosByGPS();
+            }}
+          >
+            Use GPS
+          </Button>
+        </form>
+      </div>
+      <div>County Code: {countyCode}</div>
+      <div>State: {state}</div>
+      <PlanList zipCode={zipCode} state={state} countyCode={countyCode} />
     </>
   );
 }
