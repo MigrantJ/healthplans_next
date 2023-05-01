@@ -9,7 +9,6 @@ interface ZipToCountyAndState {
 }
 
 const dataDir = path.join(process.cwd(), "staticdata");
-// todo: make a type for this
 let zipToCountyAndState: ZipToCountyAndState;
 
 async function buildCodes() {
@@ -30,9 +29,9 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const lat = searchParams.get("lat");
   const long = searchParams.get("long");
-  const zipcode = searchParams.get("zipcode");
+  const zipCode = searchParams.get("zipCode");
 
-  if (!(lat !== null && long !== null) && zipcode === null) {
+  if (!(lat !== null && long !== null) && zipCode === null) {
     return new NextResponse("Missing required parameters", {
       status: 400,
     });
@@ -43,8 +42,8 @@ export async function GET(req: NextRequest) {
   }
 
   let closestZipCode: string;
-  if (zipcode) {
-    closestZipCode = zipcode;
+  if (zipCode) {
+    closestZipCode = zipCode;
   } else {
     const location = {
       latitude: parseFloat(searchParams.get("lat")),
@@ -55,7 +54,7 @@ export async function GET(req: NextRequest) {
 
   const [county, state] = zipToCountyAndState[closestZipCode];
   return NextResponse.json({
-    zipcode: closestZipCode,
+    zipCode: closestZipCode,
     state: state,
     countyfips: county,
   });

@@ -1,5 +1,5 @@
 import { QueryFunction } from "@tanstack/react-query";
-import { IHealthPlan } from "@/types/HealthPlan";
+import IHealthPlan from "@/types/HealthPlan";
 
 export type GetPlansInput = {
   zipCode: string;

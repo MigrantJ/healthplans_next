@@ -2,20 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 
 import Plan from "./Plan";
 import getPlans, { GetPlansResponse } from "@/lib/getPlans";
+import ILocation from "@/types/Location";
 
-interface IProps {
-  zipCode: string;
-  state: string;
-  countyCode: string;
-}
-
-export default function PlanList({ zipCode, state, countyCode }: IProps) {
+export default function PlanList({ zipCode, state, countyfips }: ILocation) {
   const results = useQuery<GetPlansResponse>(
-    ["location", { zipCode, state, countyCode }],
+    ["location", { zipCode, state, countyCode: countyfips }],
     getPlans
   );
 
-  if (!zipCode || !state || !countyCode) {
+  if (!zipCode || !state || !countyfips) {
     return <></>;
   }
 

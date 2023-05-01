@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { IHealthPlan } from "@/types/HealthPlan";
+import IHealthPlan from "@/types/HealthPlan";
 
 export interface GetPlansResponse {
   plans: IHealthPlan[];
