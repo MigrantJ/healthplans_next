@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
-import { Box, Flex, Button, Heading, Input } from "@chakra-ui/react";
+import { Box, Flex, Button, Heading, Input, Text } from "@chakra-ui/react";
 
 import PlanList from "@/components/PlanList";
+import Modal from "@/components/Modal";
 
 interface Place {
   zipcode: string;
@@ -11,9 +12,11 @@ interface Place {
 }
 
 export default function IndexPage() {
-  const [zipCode, setZipCode] = useState("");
-  const [countyCode, setCountyCode] = useState("");
-  const [state, setState] = useState("");
+  const [place, setPlace] = useState<Place>({
+    zipcode: "",
+    countyfips: "",
+    state: "",
+  });
 
   const getPlaceByLatLong = async (lat: number, long: number) => {
     const res = await fetch(`/api/location?lat=${lat}&long=${long}`);
@@ -21,9 +24,7 @@ export default function IndexPage() {
       throw new Error(`Error: ${res.status}`);
     }
     const place = (await res.json()) as Place;
-    setZipCode(place.zipcode);
-    setCountyCode(place.countyfips);
-    setState(place.state);
+    setPlace(place);
   };
 
   const getPosByGPS = function () {
@@ -44,38 +45,54 @@ export default function IndexPage() {
 
   return (
     <Box>
-      <Flex h="100vh" gap={1} paddingTop="5px">
-        <Flex
-          direction="column"
-          bg="blue.500"
-          paddingY="10px"
-          paddingX="5px"
-          w="250px"
-          align="center"
-        >
-          <Heading>Setup</Heading>
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              getPosByGPS();
-            }}
-          >
-            Use GPS
-          </Button>
-          <Input
-            id="zipcode"
-            value={zipCode}
-            placeholder="Zip Code"
-            onChange={(e) => setZipCode(e.target.value)}
-          />
+      <Modal />
+      <Flex h="100vh" direction="column">
+        <Flex bg="orange.500">
+          <Heading>Top Header</Heading>
         </Flex>
-        <Flex direction="column" gap={1} w="100%">
-          <Flex bg="red.500" h="50px">
-            <Heading>Filters</Heading>
+        <Flex h="100vh">
+          <Flex
+            direction="column"
+            bg="blue.500"
+            paddingY="10px"
+            paddingX="5px"
+            w="250px"
+            align="center"
+          >
+            <Heading>Setup</Heading>
+            <Button
+              onClick={(e) => {
+                getPosByGPS();
+              }}
+            >
+              Use GPS
+            </Button>
+            <Input
+              id="zipcode"
+              value={place.zipcode}
+              placeholder="Zip Code"
+              onChange={(e) =>
+                setPlace({
+                  countyfips: place.countyfips,
+                  state: place.state,
+                  zipcode: e.target.value,
+                })
+              }
+            />
+            <Text>collapsible?</Text>
           </Flex>
-          <Flex bg="green.500" h="100%">
-            <Heading>Data Window</Heading>
-            <PlanList zipCode={zipCode} state={state} countyCode={countyCode} />
+          <Flex direction="column" w="100%">
+            <Flex bg="red.500" h="50px">
+              <Heading>Filters</Heading>
+            </Flex>
+            <Flex bg="green.500" h="100%">
+              <Heading>Data Window</Heading>
+              <PlanList
+                zipCode={place.zipcode}
+                state={place.state}
+                countyCode={place.countyfips}
+              />
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
