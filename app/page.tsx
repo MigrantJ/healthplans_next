@@ -4,32 +4,29 @@ import { Box, Flex, Button, Heading, Input, Text } from "@chakra-ui/react";
 
 import PlanList from "@/components/PlanList";
 import Modal from "@/components/Modal";
-
-interface Place {
-  zipcode: string;
-  countyfips: string;
-  state: string;
-}
+import ILocation from "@/types/Location";
 
 export default function IndexPage() {
-  const [place, setPlace] = useState<Place>({
-    zipcode: "",
+  const [location, setLocation] = useState<ILocation>({
+    zipCode: "",
     countyfips: "",
     state: "",
   });
+  const [zipCode, setZipCode] = useState("");
 
-  const getPlaceByLatLong = async (lat: number, long: number) => {
+  const getLocationByLatLong = async (lat: number, long: number) => {
     const res = await fetch(`/api/location?lat=${lat}&long=${long}`);
     if (!res.ok) {
       throw new Error(`Error: ${res.status}`);
     }
-    const place = (await res.json()) as Place;
-    setPlace(place);
+    const location = (await res.json()) as ILocation;
+    setZipCode(location.zipCode);
+    setLocation(location);
   };
 
   const getPosByGPS = function () {
     const successCallback: PositionCallback = (position) => {
-      void getPlaceByLatLong(
+      void getLocationByLatLong(
         position.coords.latitude,
         position.coords.longitude
       );
@@ -43,9 +40,19 @@ export default function IndexPage() {
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
   };
 
+  const getPosByZipCode = async (zipCode: string) => {
+    setZipCode(zipCode);
+    const res = await fetch(`/api/location?zipCode=${zipCode}`);
+    if (!res.ok) {
+      throw new Error(`Error: ${res.status}`);
+    }
+    const location = (await res.json()) as ILocation;
+    setLocation(location);
+  };
+
   return (
     <Box>
-      <Modal />
+      <Modal getPosByGPS={getPosByGPS} getPosByZipCode={getPosByZipCode} />
       <Flex h="100vh" direction="column">
         <Flex bg="orange.500">
           <Heading>Top Header</Heading>
@@ -69,28 +76,29 @@ export default function IndexPage() {
             </Button>
             <Input
               id="zipcode"
-              value={place.zipcode}
+              value={zipCode}
               placeholder="Zip Code"
-              onChange={(e) =>
-                setPlace({
-                  countyfips: place.countyfips,
-                  state: place.state,
-                  zipcode: e.target.value,
-                })
-              }
+              onChange={(e) => setZipCode(e.target.value)}
             />
+            <Button
+              onClick={(e) => {
+                void getPosByZipCode(zipCode);
+              }}
+            >
+              Enter
+            </Button>
             <Text>collapsible?</Text>
           </Flex>
           <Flex direction="column" w="100%">
             <Flex bg="red.500" h="50px">
               <Heading>Filters</Heading>
             </Flex>
-            <Flex bg="green.500" h="100%">
+            <Flex bg="green.500" h="100%" direction="column" gap={1}>
               <Heading>Data Window</Heading>
               <PlanList
-                zipCode={place.zipcode}
-                state={place.state}
-                countyCode={place.countyfips}
+                zipCode={location.zipCode}
+                state={location.state}
+                countyfips={location.countyfips}
               />
             </Flex>
           </Flex>

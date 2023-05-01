@@ -16,47 +16,12 @@ import {
   Box,
 } from "@chakra-ui/react";
 
-interface Place {
-  zipcode: string;
-  countyfips: string;
-  state: string;
-}
-
-export default function PModal() {
+export default function PModal({ getPosByGPS, getPosByZipCode }) {
   const [zipCode, setZipCode] = useState("");
-  const [countyCode, setCountyCode] = useState("");
-  const [state, setState] = useState("");
   useEffect(() => {
     if (!isOpen) onOpen();
   }, []);
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const getPlaceByLatLong = async (lat: number, long: number) => {
-    const res = await fetch(`/api/location?lat=${lat}&long=${long}`);
-    if (!res.ok) {
-      throw new Error(`Error: ${res.status}`);
-    }
-    const place = (await res.json()) as Place;
-    setZipCode(place.zipcode);
-    setCountyCode(place.countyfips);
-    setState(place.state);
-  };
-
-  const getPosByGPS = function () {
-    const successCallback: PositionCallback = (position) => {
-      void getPlaceByLatLong(
-        position.coords.latitude,
-        position.coords.longitude
-      );
-    };
-
-    const errorCallback: PositionErrorCallback = (error) => {
-      // todo: better error handling
-      console.log(error);
-    };
-
-    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-  };
 
   return (
     <>
@@ -82,7 +47,7 @@ export default function PModal() {
               />
               <Button
                 onClick={(e) => {
-                  getPosByGPS();
+                  getPosByZipCode(zipCode);
                   onClose();
                 }}
               >
