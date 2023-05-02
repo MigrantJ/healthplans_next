@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import IHealthPlan from "@/types/HealthPlan";
+import { zip } from "d3";
 
 export interface GetPlansResponse {
   plans: IHealthPlan[];
@@ -10,6 +11,10 @@ export async function GET(req: NextRequest) {
   const zipcode = searchParams.get("zipcode");
   const state = searchParams.get("state");
   const countyCode = searchParams.get("countyCode");
+
+  if (!zipcode || !state || !countyCode) {
+    return new Response(null, { status: 400 });
+  }
 
   const apikey = process.env.HEALTHCARE_API_KEY;
   const res = await fetch(

@@ -25,16 +25,12 @@ export default function PlanGraph({ plans }: IProps) {
         y: graphHeight - yScale(p.deductibles[0].amount),
         height: yScale(p.deductibles[0].amount),
         fill: "red",
-        orig: p.deductibles[0].amount,
-        yScale: yScale(p.deductibles[0].amount),
       },
       {
         x: x + 10,
         y: graphHeight - yScale(p.moops[0].amount),
         height: yScale(p.moops[0].amount),
         fill: "blue",
-        orig: p.moops[0].amount,
-        yScale: yScale(p.moops[0].amount),
       },
     ];
   });

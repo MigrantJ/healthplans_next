@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
-import { Box, Flex, Button, Heading, Input, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Divider } from "@chakra-ui/react";
 
 import Modal from "@/components/Modal";
 import ILocation from "@/types/Location";
 import DataViewer from "@/components/DataViewer";
+import LocationWidget from "@/components/LocationWidget";
 
 export default function IndexPage() {
   const [location, setLocation] = useState<ILocation>({
@@ -54,43 +55,29 @@ export default function IndexPage() {
     <Box>
       <Modal getPosByGPS={getPosByGPS} getPosByZipCode={getPosByZipCode} />
       <Flex h="100vh" direction="column">
-        <Flex bg="orange.500">
-          <Heading>Top Header</Heading>
+        <Flex padding="10px">
+          <Heading size="lg">HealthCare.gov Next</Heading>
         </Flex>
         <Flex h="100vh">
           <Flex
             direction="column"
-            bg="blue.500"
-            paddingY="10px"
-            paddingX="5px"
-            w="250px"
+            paddingY={10}
+            paddingX={5}
+            w={250}
             align="center"
           >
-            <Heading>Setup</Heading>
-            <Button
-              onClick={(e) => {
-                getPosByGPS();
-              }}
-            >
-              Use GPS
-            </Button>
-            <Input
-              id="zipcode"
-              value={zipCode}
-              placeholder="Zip Code"
-              onChange={(e) => setZipCode(e.target.value)}
+            <Heading size="md">Setup</Heading>
+            <Divider />
+            <Heading size="sm">Location</Heading>
+            <LocationWidget
+              zipCode={zipCode}
+              setZipCode={setZipCode}
+              getPosByGPS={getPosByGPS}
+              getPosByZipCode={getPosByZipCode}
             />
-            <Button
-              onClick={(e) => {
-                void getPosByZipCode(zipCode);
-              }}
-            >
-              Enter
-            </Button>
-            <Text>collapsible?</Text>
           </Flex>
           <Flex direction="column" w="100%">
-            <Flex bg="red.500" h="50px">
+            <Flex h="50px">
               <Heading>Filters</Heading>
             </Flex>
             <DataViewer

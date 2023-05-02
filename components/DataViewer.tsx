@@ -7,14 +7,14 @@ import getPlans, { GetPlansResponse } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
 
 export default function DataViewer({ zipCode, state, countyfips }: ILocation) {
+  if (!zipCode || !state || !countyfips) {
+    return <></>;
+  }
+
   const results = useQuery<GetPlansResponse>(
     ["location", { zipCode, state, countyCode: countyfips }],
     getPlans
   );
-
-  if (!zipCode || !state || !countyfips) {
-    return <></>;
-  }
 
   if (results.isLoading) {
     return <>Loading...</>;
@@ -22,7 +22,7 @@ export default function DataViewer({ zipCode, state, countyfips }: ILocation) {
 
   const resultsData = results.data;
   return (
-    <Flex bg="green.500" direction="row" gap={1}>
+    <Flex direction="row" gap={1}>
       <Flex width="400">
         <PlanGraph plans={resultsData.plans} />
       </Flex>
