@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { Box, Flex, Button, Heading, Input, Text } from "@chakra-ui/react";
 
-import PlanList from "@/components/PlanList";
 import Modal from "@/components/Modal";
 import ILocation from "@/types/Location";
+import DataViewer from "@/components/DataViewer";
 
 export default function IndexPage() {
   const [location, setLocation] = useState<ILocation>({
@@ -93,14 +93,11 @@ export default function IndexPage() {
             <Flex bg="red.500" h="50px">
               <Heading>Filters</Heading>
             </Flex>
-            <Flex bg="green.500" h="100%" direction="column" gap={1}>
-              <Heading>Data Window</Heading>
-              <PlanList
-                zipCode={location.zipCode}
-                state={location.state}
-                countyfips={location.countyfips}
-              />
-            </Flex>
+            <DataViewer
+              zipCode={location.zipCode}
+              state={location.state}
+              countyfips={location.countyfips}
+            />
           </Flex>
         </Flex>
       </Flex>
