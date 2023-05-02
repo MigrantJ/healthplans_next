@@ -9,11 +9,12 @@ interface IProps {
 export default function Plan({ plan }: IProps) {
   return (
     <Card>
-      <CardHeader>
-        <Heading>{plan.name}</Heading>
-      </CardHeader>
       <CardBody>
-        <Text data-testid="plan-name-display">{plan.metal_level}</Text>
+        <Text data-testid="plan-name-display" size="sm">
+          {plan.name}
+        </Text>
+        <Text>Deductible: {plan.deductibles[0]?.amount}</Text>
+        <Text>Max Out-Of-Pocket: {plan.moops[0]?.amount}</Text>
       </CardBody>
     </Card>
   );
