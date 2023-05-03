@@ -39,7 +39,7 @@ export default function LocationWidget({
         value={zipCode}
         onChange={(t) => setZipCode(t)}
         onSubmit={(t) => getPosByZipCode(t)}
-        w={90}
+        w={100}
       >
         <Tooltip hasArrow label="Click to Edit" shouldWrapChildren={true}>
           <EditablePreview

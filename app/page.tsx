@@ -4,8 +4,11 @@ import { Box, Flex, Heading, Divider } from "@chakra-ui/react";
 
 import Modal from "@/components/Modal";
 import ILocation from "@/types/Location";
+import IHousehold from "@/types/Household";
 import DataViewer from "@/components/DataViewer";
 import LocationWidget from "@/components/LocationWidget";
+import HouseholdWidget from "@/components/HouseholdWidget";
+import IncomeWidget from "@/components/IncomeWidget";
 
 export default function IndexPage() {
   const [location, setLocation] = useState<ILocation>({
@@ -14,6 +17,11 @@ export default function IndexPage() {
     state: "",
   });
   const [zipCode, setZipCode] = useState("");
+  const [income, setIncome] = useState("");
+  const [household, setHousehold] = useState<IHousehold>({
+    people: [],
+    has_married_couple: false,
+  });
 
   const getLocationByLatLong = async (lat: number, long: number) => {
     const res = await fetch(`/api/location?lat=${lat}&long=${long}`);
@@ -74,6 +82,13 @@ export default function IndexPage() {
               setZipCode={setZipCode}
               getPosByGPS={getPosByGPS}
               getPosByZipCode={getPosByZipCode}
+            />
+            <Divider />
+            <Heading size="sm">Household</Heading>
+            <IncomeWidget income={income} setIncome={setIncome} />
+            <HouseholdWidget
+              household={household}
+              setHousehold={setHousehold}
             />
           </Flex>
           <Flex direction="column" w="100%">
