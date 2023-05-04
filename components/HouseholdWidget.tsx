@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -10,7 +10,6 @@ import {
   Button,
   Input,
   InputGroup,
-  InputLeftAddon,
   FormLabel,
   Text,
   RadioGroup,
@@ -49,25 +48,30 @@ const relationship_options = [
   "Stepdaughter",
   "Ward",
 ];
+const checkbox_options = [
+  "has_mec",
+  "is_parent",
+  "is_pregnant",
+  "uses_tobacco",
+];
 let savePersonFunc: (p: IPerson) => void;
 
-function EditPersonModal({ isOpen, onClose, isSelf, person }) {
-  const [age, setAge] = useState(person?.age || "");
-  const [sex, setSex] = useState(person?.sex || "");
-  const [relationship, setRelationship] = useState(person?.relationship || "");
-  const [options, setOptions] = useState([]);
+function EditPersonModal({ isOpen, onClose, isSelf, person, setPerson }) {
+  const age = person?.age || "";
+  const sex = person?.gender || "";
+  const relationship = person?.relationship || "";
+  const options = checkbox_options.filter((o) => !!person && person[o]);
+
+  const setOptions = (oldOptions) => {
+    let newOptions = {};
+    for (let option of checkbox_options) {
+      newOptions[option] = oldOptions.includes(option);
+    }
+    setPerson({ ...person, ...newOptions });
+  };
 
   const onSave = () => {
-    let newPerson: IPerson = {
-      age: age,
-      gender: sex,
-      has_mec: options.includes("has_mec"),
-      is_parent: options.includes("is_parent"),
-      is_pregnant: options.includes("is_pregnant"),
-      uses_tobacco: options.includes("uses_tobacco"),
-      relationship: isSelf ? "Self" : relationship,
-    };
-    savePersonFunc(newPerson);
+    savePersonFunc(person);
     onClose();
   };
 
@@ -82,11 +86,17 @@ function EditPersonModal({ isOpen, onClose, isSelf, person }) {
         <ModalBody>
           <InputGroup size="sm">
             <FormLabel>Age</FormLabel>
-            <Input value={age} onChange={(e) => setAge(e.target.value)} />
+            <Input
+              value={age}
+              onChange={(e) => setPerson({ ...person, age: e.target.value })}
+            />
           </InputGroup>
           <InputGroup size="sm">
             <FormLabel>Sex</FormLabel>
-            <RadioGroup onChange={setSex} value={sex}>
+            <RadioGroup
+              onChange={(e) => setPerson({ ...person, gender: e })}
+              value={sex}
+            >
               <Radio value="Male">Male</Radio>
               <Radio value="Female">Female</Radio>
             </RadioGroup>
@@ -97,7 +107,9 @@ function EditPersonModal({ isOpen, onClose, isSelf, person }) {
               <Select
                 placeholder="Select option"
                 value={relationship}
-                onChange={(e) => setRelationship(e.target.value)}
+                onChange={(e) =>
+                  setPerson({ ...person, relationship: e.target.value })
+                }
               >
                 {relationship_options.map((r, i) => {
                   return (
@@ -152,6 +164,7 @@ export default function HouseholdWidget({ household, setHousehold }: IProps) {
       setPerson(null);
     }
     savePersonFunc = (p: IPerson) => {
+      p.relationship = p.relationship || "Self";
       if (personIndex >= 0) {
         household.people[personIndex] = p;
       } else {
@@ -159,14 +172,13 @@ export default function HouseholdWidget({ household, setHousehold }: IProps) {
       }
       setHousehold(household);
     };
-
     onOpen();
   };
 
   return (
     <>
       <EditPersonModal
-        {...{ isOpen, onClose, isSelf, person }}
+        {...{ isOpen, onClose, isSelf, person, setPerson }}
       ></EditPersonModal>
       <FormLabel>People</FormLabel>
       {household?.people.map((p, i) => (
