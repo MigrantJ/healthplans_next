@@ -36,8 +36,15 @@ export default function PlanGraph({ plans }: IProps) {
   });
   return (
     <svg width={graphWidth} height={graphHeight}>
-      {bars.map((p) => (
-        <rect x={p.x} y={p.y} width={10} height={p.height} fill={p.fill} />
+      {bars.map((p, i) => (
+        <rect
+          key={i}
+          x={p.x}
+          y={p.y}
+          width={10}
+          height={p.height}
+          fill={p.fill}
+        />
       ))}
     </svg>
   );

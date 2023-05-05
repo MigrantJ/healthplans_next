@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Flex, Spinner } from "@chakra-ui/react";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
 
 import PlanList from "./PlanList";
 import PlanGraph from "./PlanGraph";
@@ -29,12 +29,14 @@ export default function DataViewer({ location, income, household }: IProps) {
   }
 
   const resultsData = results.data;
-  return (
+  return resultsData.plans.length ? (
     <Flex direction="row" gap={1}>
       <Flex width="400">
         <PlanGraph plans={resultsData.plans} />
       </Flex>
       <PlanList plans={resultsData.plans} />
     </Flex>
+  ) : (
+    <Text>Sorry, there are no plans available for your household!</Text>
   );
 }

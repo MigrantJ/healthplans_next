@@ -1,4 +1,5 @@
-import { IPerson } from "@/types/Household";
+import { useState, useEffect } from "react";
+import IHousehold, { IPerson } from "@/types/Household";
 import {
   Modal,
   ModalOverlay,
@@ -24,12 +25,9 @@ import {
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
-  isSelf: boolean;
-  isEdit: boolean;
-  person: IPerson;
-  setPerson: (e: IPerson) => void;
-  saveFunc: (e: IPerson) => void;
-  deleteFunc: () => void;
+  household: IHousehold;
+  setHousehold: (h: IHousehold) => void;
+  personIndex: number;
 }
 
 const relationship_options = [
@@ -59,16 +57,22 @@ const checkbox_options = [
   "uses_tobacco",
 ];
 
+const isSelf = (personIndex: number, people: IPerson[]) => {
+  return personIndex > 0 || (personIndex === -1 && people.length > 0);
+};
+
 export default function EditPersonModal({
   isOpen,
   onClose,
-  isSelf,
-  isEdit,
-  person,
-  setPerson,
-  saveFunc,
-  deleteFunc,
+  household,
+  setHousehold,
+  personIndex,
 }: IProps) {
+  const [person, setPerson] = useState(household.people[personIndex]);
+  useEffect(() => {
+    setPerson(household.people[personIndex]);
+  }, [personIndex]);
+
   const age = person?.age || "";
   const sex = person?.gender || "";
   const relationship = person?.relationship || "";
@@ -82,14 +86,30 @@ export default function EditPersonModal({
     setPerson({ ...person, ...newOptions });
   };
 
-  const onSave = () => {
-    saveFunc(person);
+  const onCancel = () => {
     onClose();
+    setPerson(null);
+  };
+
+  const onSave = () => {
+    person.relationship = person.relationship || "Self";
+    const newPeople = household.people.slice();
+    if (personIndex >= 0) {
+      newPeople[personIndex] = person;
+    } else {
+      newPeople.push(person);
+    }
+    setHousehold({ ...household, people: newPeople });
+    onClose();
+    setPerson(null);
   };
 
   const onDelete = () => {
-    deleteFunc();
+    const newPeople = household.people.slice();
+    newPeople.splice(personIndex, 1);
+    setHousehold({ ...household, people: newPeople });
     onClose();
+    setPerson(null);
   };
 
   return (
@@ -97,7 +117,11 @@ export default function EditPersonModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          {isEdit ? <Text>Edit Person</Text> : <Text>Add Person</Text>}
+          {personIndex > -1 ? (
+            <Text>Edit Person</Text>
+          ) : (
+            <Text>Add Person</Text>
+          )}
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -120,7 +144,7 @@ export default function EditPersonModal({
               <Radio value="Female">Female</Radio>
             </RadioGroup>
           </InputGroup>
-          {!isSelf && (
+          {isSelf(personIndex, household.people) && (
             <InputGroup size="sm">
               <FormLabel>Relationship</FormLabel>
               <Select
@@ -160,13 +184,13 @@ export default function EditPersonModal({
           </CheckboxGroup>
         </ModalBody>
         <ModalFooter>
-          {isEdit && !isSelf && (
+          {personIndex > 0 && (
             <Button colorScheme="red" onClick={onDelete}>
               Delete
             </Button>
           )}
           <Spacer />
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onCancel}>Cancel</Button>
           <Button colorScheme="blue" onClick={onSave}>
             Save
           </Button>

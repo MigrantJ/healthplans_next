@@ -25,10 +25,9 @@ export async function POST(req: NextRequest) {
       headers: { "Content-Type": "application/json" },
     }
   );
+  const resJson = (await res.json()) as GetPlansResponse;
   if (!res.ok) {
-    console.log(await res.json());
     throw new Error(`Error: ${res.status}`);
   }
-  const resJson = (await res.json()) as GetPlansResponse;
   return NextResponse.json(resJson);
 }
