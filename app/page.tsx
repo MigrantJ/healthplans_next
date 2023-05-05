@@ -11,13 +11,9 @@ import HouseholdWidget from "@/components/HouseholdWidget";
 import IncomeWidget from "@/components/IncomeWidget";
 
 export default function IndexPage() {
-  const [location, setLocation] = useState<ILocation>({
-    zipCode: "",
-    countyfips: "",
-    state: "",
-  });
+  const [location, setLocation] = useState<ILocation>();
   const [zipCode, setZipCode] = useState("");
-  const [income, setIncome] = useState("");
+  const [income, setIncome] = useState(0);
   const [household, setHousehold] = useState<IHousehold>({
     people: [],
     has_married_couple: false,
@@ -29,7 +25,7 @@ export default function IndexPage() {
       throw new Error(`Error: ${res.status}`);
     }
     const location = (await res.json()) as ILocation;
-    setZipCode(location.zipCode);
+    setZipCode(location.zipcode);
     setLocation(location);
   };
 
@@ -61,7 +57,7 @@ export default function IndexPage() {
 
   return (
     <Box>
-      <Modal getPosByGPS={getPosByGPS} getPosByZipCode={getPosByZipCode} />
+      <Modal {...{ getPosByGPS, getPosByZipCode }} />
       <Flex h="100vh" direction="column">
         <Flex padding="10px">
           <Heading size="lg">HealthCare.gov Next</Heading>
@@ -78,28 +74,18 @@ export default function IndexPage() {
             <Divider />
             <Heading size="sm">Location</Heading>
             <LocationWidget
-              zipCode={zipCode}
-              setZipCode={setZipCode}
-              getPosByGPS={getPosByGPS}
-              getPosByZipCode={getPosByZipCode}
+              {...{ zipCode, setZipCode, getPosByGPS, getPosByZipCode }}
             />
             <Divider />
             <Heading size="sm">Household</Heading>
-            <IncomeWidget income={income} setIncome={setIncome} />
-            <HouseholdWidget
-              household={household}
-              setHousehold={setHousehold}
-            />
+            <IncomeWidget {...{ income, setIncome }} />
+            <HouseholdWidget {...{ household, setHousehold }} />
           </Flex>
           <Flex direction="column" w="100%">
             <Flex h="50px">
               <Heading>Filters</Heading>
             </Flex>
-            <DataViewer
-              zipCode={location.zipCode}
-              state={location.state}
-              countyfips={location.countyfips}
-            />
+            {location && <DataViewer {...{ location, income, household }} />}
           </Flex>
         </Flex>
       </Flex>

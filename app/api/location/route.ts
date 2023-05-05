@@ -49,12 +49,13 @@ export async function GET(req: NextRequest) {
       latitude: parseFloat(searchParams.get("lat")),
       longitude: parseFloat(searchParams.get("long")),
     };
-    closestZipCode = await geo2zip(location);
+    const zipCodeArray = await geo2zip(location);
+    closestZipCode = zipCodeArray[0];
   }
 
   const [county, state] = zipToCountyAndState[closestZipCode];
   return NextResponse.json({
-    zipCode: closestZipCode,
+    zipcode: closestZipCode,
     state: state,
     countyfips: county,
   });

@@ -13,6 +13,7 @@ export default function Plan({ plan }: IProps) {
         <Text data-testid="plan-name-display" size="sm">
           {plan.name}
         </Text>
+        <Text>Premium: {plan.premium}</Text>
         <Text>Deductible: {plan.deductibles[0]?.amount}</Text>
         <Text>Max Out-Of-Pocket: {plan.moops[0]?.amount}</Text>
       </CardBody>

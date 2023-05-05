@@ -1,5 +1,5 @@
 export default interface ILocation {
-  zipCode: string;
+  zipcode: string;
   countyfips: string;
   state: string;
 }

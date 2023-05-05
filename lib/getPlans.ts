@@ -1,26 +1,19 @@
 import { QueryFunction } from "@tanstack/react-query";
-import IHealthPlan from "@/types/HealthPlan";
-
-export type GetPlansInput = {
-  zipCode: string;
-  state: string;
-  countyCode: string;
-};
-
-export interface GetPlansResponse {
-  plans: IHealthPlan[];
-}
+import GetPlansRequest from "@/types/GetPlansRequest";
+import GetPlansResponse from "@/types/GetPlansResponse";
 
 const getPlans: QueryFunction<
   GetPlansResponse,
-  ["location", GetPlansInput]
+  ["query", GetPlansRequest]
 > = async ({ queryKey }) => {
-  const { zipCode, state, countyCode } = queryKey[1];
-  const res = await fetch(
-    `/api/plans?zipcode=${zipCode}&state=${state}&countyCode=${countyCode}`
-  );
+  const body = queryKey[1];
+  const res = await fetch(`/api/plans`, {
+    method: "post",
+    body: JSON.stringify(body),
+    headers: { "Content-Type": "application/json" },
+  });
   if (!res.ok) {
-    throw new Error(`Get Plans Failed`);
+    throw new Error(`Error: ${res.status}`);
   }
   return res.json();
 };

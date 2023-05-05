@@ -1,23 +1,31 @@
 import { useQuery } from "@tanstack/react-query";
-import { Flex } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 
 import PlanList from "./PlanList";
 import PlanGraph from "./PlanGraph";
-import getPlans, { GetPlansResponse } from "@/lib/getPlans";
+import getPlans from "@/lib/getPlans";
 import ILocation from "@/types/Location";
+import IHousehold from "@/types/Household";
+import GetPlansResponse from "@/types/GetPlansResponse";
 
-export default function DataViewer({ zipCode, state, countyfips }: ILocation) {
-  if (!zipCode || !state || !countyfips) {
-    return <></>;
-  }
+interface IProps {
+  location: ILocation;
+  income: number;
+  household: IHousehold;
+}
 
+export default function DataViewer({ location, income, household }: IProps) {
   const results = useQuery<GetPlansResponse>(
-    ["location", { zipCode, state, countyCode: countyfips }],
+    ["query", { location, income, household }],
     getPlans
   );
 
+  if (!location) {
+    return <></>;
+  }
+
   if (results.isLoading) {
-    return <>Loading...</>;
+    return <Spinner size="xl" />;
   }
 
   const resultsData = results.data;
