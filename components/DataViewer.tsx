@@ -30,8 +30,8 @@ export default function DataViewer({ location, income, household }: IProps) {
 
   const resultsData = results.data;
   return resultsData.plans.length ? (
-    <Flex direction="row" gap={1}>
-      <Flex width="400">
+    <Flex direction="column" gap={1}>
+      <Flex width="800">
         <PlanGraph plans={resultsData.plans} />
       </Flex>
       <PlanList plans={resultsData.plans} />
