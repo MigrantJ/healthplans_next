@@ -1,16 +1,17 @@
 //todo: only import the necessary d3 modules
 import * as d3 from "d3";
-
+//todo: there may be package conflicts with the following:
+import { Axis, Orient } from "d3-axis-for-react";
 import IHealthPlan from "@/types/HealthPlan";
 
 interface IProps {
   plans: IHealthPlan[];
 }
 
-export default function PlanGraph({ plans }: IProps) {
-  const graphWidth = 1200;
-  const graphHeight = 300;
+const graphWidth = 1600;
+const graphHeight = 300;
 
+export default function PlanGraph({ plans }: IProps) {
   const premiumExtent = d3.extent(plans, (p) => p.premium);
   const xScalePremium = d3
     .scaleLinear()
@@ -22,23 +23,23 @@ export default function PlanGraph({ plans }: IProps) {
     .scaleLinear()
     .domain([0, deductibleExtent[1]])
     .range([0, 590]);
-  let y = -20;
-  y = -15;
+  let y: number;
+  y = 0;
   const premiumBars = plans.flatMap((p) => {
-    y += 20;
+    y += 25;
     return [
       {
         x: 400,
         y: y,
         width: xScalePremium(p.premium),
-        height: 10,
+        height: 20,
         fill: "green",
       },
     ];
   });
-  y = -20;
+  y = 0;
   const deductibleBars = plans.flatMap((p) => {
-    y += 20;
+    y += 25;
     return [
       {
         x: 600,
@@ -56,18 +57,18 @@ export default function PlanGraph({ plans }: IProps) {
       },
     ];
   });
-  y = 0;
+  y = 20;
   const planNames = plans.flatMap((p) => {
-    y += 20;
+    y += 25;
     return {
       x: 200,
       y: y - 5,
       text: p.name.length > 30 ? p.name.substring(0, 30) + "..." : p.name,
     };
   });
-  y = 0;
+  y = 20;
   const providers = plans.flatMap((p) => {
-    y += 20;
+    y += 25;
     return {
       x: 0,
       y: y - 5,
@@ -77,16 +78,29 @@ export default function PlanGraph({ plans }: IProps) {
           : p.issuer.name,
     };
   });
+
   return (
     <svg width={graphWidth} height={graphHeight}>
+      <text x={0} y={15} fontWeight="bold">
+        Provider
+      </text>
+      <text x={200} y={15} fontWeight="bold">
+        Plan
+      </text>
+      <text x={400} y={15} fontWeight="bold">
+        Premium
+      </text>
+      <text x={600} y={15} fontWeight="bold">
+        Deductible / Max Out-Of-Pocket
+      </text>
       {providers.map((p, i) => (
-        <text key={i} x={p.x} y={p.y} font-size="12px" font-weight="bold">
+        <text key={i} x={p.x} y={p.y} fontSize="12px" fontWeight="bold">
           {p.text}
         </text>
       ))}
 
       {planNames.map((p, i) => (
-        <text key={i} x={p.x} y={p.y} font-size="12px">
+        <text key={i} x={p.x} y={p.y} fontSize="12px">
           {p.text}
         </text>
       ))}
@@ -112,6 +126,24 @@ export default function PlanGraph({ plans }: IProps) {
           fill={p.fill}
         />
       ))}
+
+      <g transform={`translate(400, 275)`}>
+        <Axis
+          orient={Orient.bottom}
+          scale={xScalePremium}
+          ticks={[4]}
+          tickSizeOuter={0}
+        />
+      </g>
+
+      <g transform={`translate(600, 275)`}>
+        <Axis
+          orient={Orient.bottom}
+          scale={xScaleDeductible}
+          ticks={[7]}
+          tickSizeOuter={0}
+        />
+      </g>
     </svg>
   );
 }
