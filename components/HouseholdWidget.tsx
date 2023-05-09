@@ -39,7 +39,7 @@ export default function HouseholdWidget({ household, setHousehold }: IProps) {
       ))}
       <Button
         onClick={() => {
-          openModal();
+          openModal(-1);
         }}
       >
         {household?.people.length ? (

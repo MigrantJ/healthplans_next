@@ -70,7 +70,7 @@ export default function EditPersonModal({
 }: IProps) {
   const [person, setPerson] = useState(household.people[personIndex]);
   useEffect(() => {
-    setPerson(household.people[personIndex]);
+    setPerson(household.people[personIndex] || null);
   }, [personIndex]);
 
   const age = person?.age || "";
@@ -86,11 +86,6 @@ export default function EditPersonModal({
     setPerson({ ...person, ...newOptions });
   };
 
-  const onCancel = () => {
-    onClose();
-    setPerson(null);
-  };
-
   const onSave = () => {
     person.relationship = person.relationship || "Self";
     const newPeople = household.people.slice();
@@ -101,7 +96,6 @@ export default function EditPersonModal({
     }
     setHousehold({ ...household, people: newPeople });
     onClose();
-    setPerson(null);
   };
 
   const onDelete = () => {
@@ -109,7 +103,6 @@ export default function EditPersonModal({
     newPeople.splice(personIndex, 1);
     setHousehold({ ...household, people: newPeople });
     onClose();
-    setPerson(null);
   };
 
   return (
@@ -190,7 +183,7 @@ export default function EditPersonModal({
             </Button>
           )}
           <Spacer />
-          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={onClose}>Cancel</Button>
           <Button colorScheme="blue" onClick={onSave}>
             Save
           </Button>

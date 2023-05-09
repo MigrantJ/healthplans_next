@@ -1,3 +1,4 @@
+import { Flex } from "@chakra-ui/react";
 //todo: only import the necessary d3 modules
 import * as d3 from "d3";
 //todo: there may be package conflicts with the following:
@@ -8,142 +9,167 @@ interface IProps {
   plans: IHealthPlan[];
 }
 
-const graphWidth = 1600;
-const graphHeight = 300;
+const GRAPH_WIDTH = 1220;
+const GRAPH_HEIGHT = 300;
+const PLAN_NAMES_X = 200;
+const PREMIUM_BARS_X = 400;
+const DEDUCTIBLE_BARS_X = 600;
 
 export default function PlanGraph({ plans }: IProps) {
   const premiumExtent = d3.extent(plans, (p) => p.premium);
   const xScalePremium = d3
     .scaleLinear()
     .domain([0, premiumExtent[1]])
-    .range([0, 190]);
+    .range([0, DEDUCTIBLE_BARS_X - PREMIUM_BARS_X - 20]);
 
   const deductibleExtent = d3.extent(plans, (p) => p.moops[0].amount);
   const xScaleDeductible = d3
     .scaleLinear()
     .domain([0, deductibleExtent[1]])
-    .range([0, 590]);
-  let y: number;
-  y = 0;
-  const premiumBars = plans.flatMap((p) => {
-    y += 25;
-    return [
-      {
-        x: 400,
-        y: y,
-        width: xScalePremium(p.premium),
-        height: 20,
-        fill: "green",
-      },
-    ];
-  });
-  y = 0;
-  const deductibleBars = plans.flatMap((p) => {
-    y += 25;
-    return [
-      {
-        x: 600,
-        y: y,
-        width: xScaleDeductible(p.deductibles[0].amount),
-        height: 10,
-        fill: "cyan",
-      },
-      {
-        x: 600,
-        y: y + 10,
-        width: xScaleDeductible(p.moops[0].amount),
-        height: 10,
-        fill: "blue",
-      },
-    ];
-  });
-  y = 20;
-  const planNames = plans.flatMap((p) => {
-    y += 25;
-    return {
-      x: 200,
-      y: y - 5,
-      text: p.name.length > 30 ? p.name.substring(0, 30) + "..." : p.name,
-    };
-  });
-  y = 20;
-  const providers = plans.flatMap((p) => {
-    y += 25;
-    return {
+    .range([0, GRAPH_WIDTH - DEDUCTIBLE_BARS_X - 30]);
+
+  const providers = [];
+  const planNames = [];
+  const premiumBars = [];
+  const deductibleBars = [];
+
+  let row_y = 0;
+  for (const p of plans) {
+    providers.push({
       x: 0,
-      y: y - 5,
+      y: row_y + 20,
       text:
         p.issuer.name.length > 30
           ? p.issuer.name.substring(0, 30) + "..."
           : p.issuer.name,
-    };
-  });
+    });
+    planNames.push({
+      x: PLAN_NAMES_X,
+      y: row_y + 20,
+      text: p.name.length > 30 ? p.name.substring(0, 30) + "..." : p.name,
+    });
+    premiumBars.push({
+      x: PREMIUM_BARS_X,
+      y: row_y,
+      width: xScalePremium(p.premium),
+      height: 20,
+      fill: "green",
+    });
+    deductibleBars.push({
+      x: DEDUCTIBLE_BARS_X,
+      y: row_y,
+      width: xScaleDeductible(p.deductibles[0].amount),
+      height: 10,
+      fill: "cyan",
+    });
+    deductibleBars.push({
+      x: DEDUCTIBLE_BARS_X,
+      y: row_y + 10,
+      width: xScaleDeductible(p.moops[0].amount),
+      height: 10,
+      fill: "blue",
+    });
+    row_y += 25;
+  }
 
   return (
-    <svg width={graphWidth} height={graphHeight}>
-      <text x={0} y={15} fontWeight="bold">
-        Provider
-      </text>
-      <text x={200} y={15} fontWeight="bold">
-        Plan
-      </text>
-      <text x={400} y={15} fontWeight="bold">
-        Premium
-      </text>
-      <text x={600} y={15} fontWeight="bold">
-        Deductible / Max Out-Of-Pocket
-      </text>
-      {providers.map((p, i) => (
-        <text key={i} x={p.x} y={p.y} fontSize="12px" fontWeight="bold">
-          {p.text}
-        </text>
-      ))}
+    <>
+      <Flex height="20px">
+        <svg width={GRAPH_WIDTH}>
+          <text x={0} y={15} fontWeight="bold">
+            Provider
+          </text>
+          <text x={PLAN_NAMES_X} y={15} fontWeight="bold">
+            Plan
+          </text>
+          <text x={PREMIUM_BARS_X} y={15} fontWeight="bold">
+            Premium
+          </text>
+          <text x={DEDUCTIBLE_BARS_X} y={15} fontWeight="bold">
+            Deductible / Max Out-Of-Pocket
+          </text>
+        </svg>
+      </Flex>
+      <Flex width={GRAPH_WIDTH} height={GRAPH_HEIGHT} overflowY="auto">
+        <svg width={GRAPH_WIDTH} height={row_y}>
+          {providers.map((p, i) => (
+            <text key={i} x={p.x} y={p.y} fontSize="12px" fontWeight="bold">
+              {p.text}
+            </text>
+          ))}
 
-      {planNames.map((p, i) => (
-        <text key={i} x={p.x} y={p.y} fontSize="12px">
-          {p.text}
-        </text>
-      ))}
+          {planNames.map((p, i) => (
+            <text key={i} x={p.x} y={p.y} fontSize="12px">
+              {p.text}
+            </text>
+          ))}
 
-      {premiumBars.map((p, i) => (
-        <rect
-          key={i}
-          x={p.x}
-          y={p.y}
-          width={p.width}
-          height={p.height}
-          fill={p.fill}
-        />
-      ))}
+          {premiumBars.map((p, i) => (
+            <rect
+              key={i}
+              x={p.x}
+              y={p.y}
+              width={p.width}
+              height={p.height}
+              fill={p.fill}
+            />
+          ))}
 
-      {deductibleBars.map((p, i) => (
-        <rect
-          key={i}
-          x={p.x}
-          y={p.y}
-          width={p.width}
-          height={p.height}
-          fill={p.fill}
-        />
-      ))}
-
-      <g transform={`translate(400, 275)`}>
-        <Axis
-          orient={Orient.bottom}
-          scale={xScalePremium}
-          ticks={[4]}
-          tickSizeOuter={0}
-        />
-      </g>
-
-      <g transform={`translate(600, 275)`}>
-        <Axis
-          orient={Orient.bottom}
-          scale={xScaleDeductible}
-          ticks={[7]}
-          tickSizeOuter={0}
-        />
-      </g>
-    </svg>
+          {deductibleBars.map((p, i) => (
+            <rect
+              key={i}
+              x={p.x}
+              y={p.y}
+              width={p.width}
+              height={p.height}
+              fill={p.fill}
+            />
+          ))}
+        </svg>
+      </Flex>
+      <Flex width={GRAPH_WIDTH} height="20px">
+        <svg width={GRAPH_WIDTH}>
+          <g transform={`translate(${PREMIUM_BARS_X}, 0)`}>
+            <Axis
+              orient={Orient.bottom}
+              scale={xScalePremium}
+              tickValues={[
+                0,
+                premiumExtent[1] * 0.33,
+                premiumExtent[1] * 0.66,
+                premiumExtent[1],
+              ]}
+              tickFormat={(d, i) => {
+                return Math.ceil(d / 50) * 50;
+              }}
+              tickSizeOuter={0}
+            />
+          </g>
+          <g transform={`translate(${DEDUCTIBLE_BARS_X}, 0)`}>
+            <Axis
+              orient={Orient.bottom}
+              scale={xScaleDeductible}
+              tickValues={[
+                0,
+                deductibleExtent[1] * 0.1,
+                deductibleExtent[1] * 0.2,
+                deductibleExtent[1] * 0.3,
+                deductibleExtent[1] * 0.4,
+                deductibleExtent[1] * 0.5,
+                deductibleExtent[1] * 0.6,
+                deductibleExtent[1] * 0.7,
+                deductibleExtent[1] * 0.8,
+                deductibleExtent[1] * 0.9,
+                deductibleExtent[1],
+              ]}
+              tickFormat={(d, i) => {
+                return Math.ceil(d / 100) * 100;
+              }}
+              tickSizeOuter={0}
+            />
+          </g>
+        </svg>
+      </Flex>
+    </>
   );
 }

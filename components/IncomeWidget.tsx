@@ -24,6 +24,12 @@ export default function IncomeWidget({ income, setIncome }: IProps) {
     setInnerIncome(income);
   }, [income]);
 
+  const changeInput = (t: string) => {
+    let n = parseFloat(t);
+    if (Number.isNaN(n)) n = 0;
+    setInnerIncome(n);
+  };
+
   return (
     <>
       <FormLabel>Income</FormLabel>
@@ -32,13 +38,12 @@ export default function IncomeWidget({ income, setIncome }: IProps) {
           <Icon as={BsCurrencyDollar} boxSize={5} focusable={true} />
         </Center>
 
-        {/* <InputLeftAddon children="$" /> */}
         <Editable
           placeholder={innerIncome.toString()}
           isPreviewFocusable={true}
           selectAllOnFocus={false}
           value={innerIncome.toString()}
-          onChange={(t) => setInnerIncome(parseFloat(t))}
+          onChange={(t) => changeInput(t)}
           onSubmit={(t) => setIncome(parseFloat(t))}
         >
           <Tooltip hasArrow label="Click to Edit" shouldWrapChildren={true}>
