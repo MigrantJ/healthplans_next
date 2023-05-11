@@ -3,14 +3,14 @@ import { Button, FormLabel, Text } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 
 import EditPersonModal from "@/components/EditPersonModal";
-import IHousehold, { IPerson } from "@/types/Household";
+import IPerson from "@/types/Person";
 
 interface IProps {
-  household: IHousehold;
-  setHousehold: (h: IHousehold) => void;
+  people: IPerson[];
+  setPeople: (h: IPerson[]) => void;
 }
 
-export default function HouseholdWidget({ household, setHousehold }: IProps) {
+export default function HouseholdWidget({ people, setPeople }: IProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [personIndex, setPersonIndex] = useState(-1);
 
@@ -25,13 +25,13 @@ export default function HouseholdWidget({ household, setHousehold }: IProps) {
         {...{
           isOpen,
           onClose,
-          household,
-          setHousehold,
+          people,
+          setPeople,
           personIndex,
         }}
       ></EditPersonModal>
       <FormLabel>People</FormLabel>
-      {household?.people.map((p, i) => (
+      {people.map((p, i) => (
         <Button key={i} onClick={(_) => openModal(i)}>
           {p.relationship} - {p.age}
           {p.gender[0]}
@@ -42,7 +42,7 @@ export default function HouseholdWidget({ household, setHousehold }: IProps) {
           openModal(-1);
         }}
       >
-        {household?.people.length ? (
+        {people.length ? (
           <Text>+ Add Person</Text>
         ) : (
           <Text>+ Add Yourself</Text>

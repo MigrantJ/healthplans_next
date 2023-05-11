@@ -1,6 +1,14 @@
+import ILocation from "./Location";
 import IHealthPlan from "./HealthPlan";
+import IPerson from "./Person";
 
-export default interface GetPlansResponse {
+export interface Request {
+  location: ILocation;
+  income: number;
+  people: IPerson[];
+}
+
+export interface SuccessResponse {
   plans: IHealthPlan[];
   total: number;
   rate_area: {

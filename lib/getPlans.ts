@@ -1,10 +1,9 @@
 import { QueryFunction } from "@tanstack/react-query";
-import GetPlansRequest from "@/types/GetPlansRequest";
-import GetPlansResponse from "@/types/GetPlansResponse";
+import * as GetPlans from "@/types/GetPlans";
 
 const getPlans: QueryFunction<
-  GetPlansResponse,
-  ["query", GetPlansRequest]
+  GetPlans.SuccessResponse,
+  ["query", GetPlans.Request]
 > = async ({ queryKey }) => {
   const body = queryKey[1];
   const res = await fetch(`/api/plans`, {

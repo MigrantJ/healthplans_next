@@ -4,6 +4,8 @@ import fs from "fs";
 import path from "path";
 import { parse } from "csv-parse";
 
+import * as GetLocation from "@/types/GetLocation";
+
 interface ZipToCountyAndState {
   [k: string]: [string, string];
 }
@@ -25,38 +27,34 @@ async function buildCodes() {
   });
 }
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const lat = searchParams.get("lat");
-  const long = searchParams.get("long");
-  const zipCode = searchParams.get("zipCode");
-
-  if (!(lat !== null && long !== null) && zipCode === null) {
-    return new NextResponse("Missing required parameters", {
-      status: 400,
-    });
-  }
+export async function POST(req: NextRequest) {
+  const reqBody = (await req.json()) as GetLocation.Request;
 
   if (!zipToCountyAndState) {
     await buildCodes();
   }
 
   let closestZipCode: string;
-  if (zipCode) {
-    closestZipCode = zipCode;
-  } else {
+  if ("zipcode" in reqBody) {
+    closestZipCode = reqBody.zipcode;
+  } else if ("lat" in reqBody && "long" in reqBody) {
     const location = {
-      latitude: parseFloat(searchParams.get("lat")),
-      longitude: parseFloat(searchParams.get("long")),
+      latitude: reqBody.lat,
+      longitude: reqBody.long,
     };
     const zipCodeArray = await geo2zip(location);
     closestZipCode = zipCodeArray[0];
+  } else {
+    return new NextResponse("Missing required parameters", {
+      status: 400,
+    });
   }
 
   const [county, state] = zipToCountyAndState[closestZipCode];
-  return NextResponse.json({
+  const resBody: GetLocation.SuccessResponse = {
     zipcode: closestZipCode,
     state: state,
     countyfips: county,
-  });
+  };
+  return NextResponse.json(resBody);
 }

@@ -5,18 +5,18 @@ import PlanList from "./PlanList";
 import PlanGraph from "./PlanGraph";
 import getPlans from "@/lib/getPlans";
 import ILocation from "@/types/Location";
-import IHousehold from "@/types/Household";
-import GetPlansResponse from "@/types/GetPlansResponse";
+import IPerson from "@/types/Person";
+import * as GetPlans from "@/types/GetPlans";
 
 interface IProps {
   location: ILocation;
   income: number;
-  household: IHousehold;
+  people: IPerson[];
 }
 
-export default function DataViewer({ location, income, household }: IProps) {
-  const results = useQuery<GetPlansResponse, Error>({
-    queryKey: ["query", { location, income, household }],
+export default function DataViewer({ location, income, people }: IProps) {
+  const results = useQuery<GetPlans.SuccessResponse, Error>({
+    queryKey: ["query", { location, income, people }],
     queryFn: getPlans,
     enabled: !!location,
   });
@@ -25,6 +25,7 @@ export default function DataViewer({ location, income, household }: IProps) {
     return <Spinner size="xl" />;
   }
 
+  // todo: improve error handling
   if (results.isError) {
     return <Text>{results.error.message}</Text>;
   }
@@ -33,7 +34,7 @@ export default function DataViewer({ location, income, household }: IProps) {
   return resultsData.plans.length ? (
     <Flex direction="column" gap={1}>
       <PlanGraph plans={resultsData.plans} />
-      {!(income && household.people.length) && (
+      {!(income && people.length) && (
         <Text fontWeight="bold">
           Warning: premiums and deductibles may not be accurate until you've
           entered your income and household info

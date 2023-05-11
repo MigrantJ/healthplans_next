@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import GetPlansRequest from "@/types/GetPlansRequest";
-import GetPlansResponse from "@/types/GetPlansResponse";
+import * as GetPlans from "@/types/GetPlans";
+import * as MarketplaceSearch from "@/types/MarketplaceSearch";
 
 const API_KEY = process.env.HEALTHCARE_API_KEY;
 
@@ -32,9 +32,8 @@ class Requester {
 }
 
 export async function POST(req: NextRequest) {
-  const apikey = process.env.HEALTHCARE_API_KEY;
-  const reqBody = (await req.json()) as GetPlansRequest;
-  let body: any = {
+  const reqBody = (await req.json()) as GetPlans.Request;
+  let body: MarketplaceSearch.Request = {
     place: {
       zipcode: reqBody.location.zipcode,
       state: reqBody.location.state,
@@ -44,13 +43,13 @@ export async function POST(req: NextRequest) {
   };
   const household = {};
   if (reqBody.income) household["income"] = reqBody.income;
-  if (reqBody.household) household["people"] = reqBody.household.people;
+  if (reqBody.people) household["people"] = reqBody.people;
   body["household"] = household;
   const res = await Requester.make_request(body);
   if (!res.ok) {
     throw new Error(`Error: ${res.status}`);
   }
-  let resJson = (await res.json()) as GetPlansResponse;
+  let resJson = (await res.json()) as MarketplaceSearch.SuccessResponse;
   let { plans, total } = resJson;
 
   // create an array of JSON request bodies, each of which is for a page of 10 results
@@ -62,7 +61,8 @@ export async function POST(req: NextRequest) {
   const tasks = pageReqBodies.map(Requester.make_request);
   const results = await Promise.all(tasks);
   for (let result of results) {
-    const pageResJson = (await result.json()) as GetPlansResponse;
+    const pageResJson =
+      (await result.json()) as MarketplaceSearch.SuccessResponse;
     plans = plans.concat(pageResJson.plans);
   }
   resJson.plans = plans;

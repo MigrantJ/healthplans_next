@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import IHousehold, { IPerson } from "@/types/Household";
+import IPerson, { Relationship, relationshipOptions } from "@/types/Person";
 import {
   Modal,
   ModalOverlay,
@@ -25,31 +25,11 @@ import {
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
-  household: IHousehold;
-  setHousehold: (h: IHousehold) => void;
+  people: IPerson[];
+  setPeople: (h: IPerson[]) => void;
   personIndex: number;
 }
 
-const relationship_options = [
-  "Brother",
-  "Sister",
-  "Child",
-  "Collateral Dependent",
-  "Ex-Spouse",
-  "Foster Child",
-  "Grandson",
-  "Granddaughter",
-  "Life Partner",
-  "Nephew",
-  "Niece",
-  "Other Relationship",
-  "Other Relative",
-  "Sponsored Dependent",
-  "Spouse",
-  "Stepson",
-  "Stepdaughter",
-  "Ward",
-];
 const checkbox_options = [
   "has_mec",
   "is_parent",
@@ -64,13 +44,13 @@ const isSelf = (personIndex: number, people: IPerson[]) => {
 export default function EditPersonModal({
   isOpen,
   onClose,
-  household,
-  setHousehold,
+  people,
+  setPeople,
   personIndex,
 }: IProps) {
-  const [person, setPerson] = useState(household.people[personIndex]);
+  const [person, setPerson] = useState(people[personIndex]);
   useEffect(() => {
-    setPerson(household.people[personIndex] || null);
+    setPerson(people[personIndex] || null);
   }, [personIndex]);
 
   const age = person?.age || "";
@@ -88,20 +68,20 @@ export default function EditPersonModal({
 
   const onSave = () => {
     person.relationship = person.relationship || "Self";
-    const newPeople = household.people.slice();
+    const newPeople = people.slice();
     if (personIndex >= 0) {
       newPeople[personIndex] = person;
     } else {
       newPeople.push(person);
     }
-    setHousehold({ ...household, people: newPeople });
+    setPeople(newPeople);
     onClose();
   };
 
   const onDelete = () => {
-    const newPeople = household.people.slice();
+    const newPeople = people.slice();
     newPeople.splice(personIndex, 1);
-    setHousehold({ ...household, people: newPeople });
+    setPeople(newPeople);
     onClose();
   };
 
@@ -130,24 +110,31 @@ export default function EditPersonModal({
           <InputGroup size="sm">
             <FormLabel>Sex</FormLabel>
             <RadioGroup
-              onChange={(e) => setPerson({ ...person, gender: e })}
+              onChange={(e) =>
+                setPerson({ ...person, gender: e as "Male" | "Female" })
+              }
               value={sex}
             >
               <Radio value="Male">Male</Radio>
               <Radio value="Female">Female</Radio>
             </RadioGroup>
           </InputGroup>
-          {isSelf(personIndex, household.people) && (
+          {isSelf(personIndex, people) && (
             <InputGroup size="sm">
               <FormLabel>Relationship</FormLabel>
               <Select
                 placeholder="Select option"
                 value={relationship}
                 onChange={(e) =>
-                  setPerson({ ...person, relationship: e.target.value })
+                  setPerson({
+                    ...person,
+                    relationship: e.target.value as Relationship,
+                  })
                 }
               >
-                {relationship_options.map((r, i) => {
+                {relationshipOptions.map((r: Relationship, i) => {
+                  // we don't want Self appearing in the dropdown, it will be the assumed default
+                  if (r === "Self") return;
                   return (
                     <option key={i} value={r}>
                       {r}
