@@ -8,14 +8,11 @@ export interface Request {
   people: IPerson[];
 }
 
-export interface SuccessResponse {
+export interface Response {
+  alt_data?: AltData;
   plans: IHealthPlan[];
   total: number;
-  rate_area: {
-    state: string;
-    area: number;
-  };
-  ranges: {
+  ranges?: {
     premiums: {
       min: number;
       max: number;
@@ -25,7 +22,7 @@ export interface SuccessResponse {
       max: number;
     };
   };
-  facet_groups: FacetGroup[];
+  facet_groups?: FacetGroup[];
 }
 
 interface FacetGroup {
@@ -37,4 +34,17 @@ interface Facet {
   value: string;
   count: number;
   standardized_plans?: number;
+}
+
+type AltData = AltDataNone | AltDataInvalidState;
+
+interface AltDataNone {
+  type: "None";
+}
+
+interface AltDataInvalidState {
+  type: "InvalidState";
+  state: string;
+  exchange_name: string;
+  exchange_url: string;
 }

@@ -46,9 +46,13 @@ export default function IndexPage() {
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
   };
 
-  const getPosByZipCode = async (zipCode: string) => {
+  const getPosByZipCode = async (zipcode: string) => {
     setZipCode(zipCode);
-    const res = await fetch(`/api/location?zipCode=${zipCode}`);
+    const res = await fetch(`/api/location`, {
+      method: "post",
+      body: JSON.stringify({ zipcode }),
+      headers: { "Content-Type": "application/json" },
+    });
     if (!res.ok) {
       throw new Error(`Error: ${res.status}`);
     }

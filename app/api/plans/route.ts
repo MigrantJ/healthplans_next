@@ -4,6 +4,33 @@ import * as MarketplaceSearch from "@/types/MarketplaceSearch";
 
 const API_KEY = process.env.HEALTHCARE_API_KEY;
 
+const INVALID_STATES = {
+  CA: ["Covered California", "https://www.coveredca.com/"],
+  CO: ["Connect for Health Colorado", "https://connectforhealthco.com/"],
+  CT: ["Access Health CT", "https://www.accesshealthct.com/"],
+  DC: ["DC Health Link", "https://dchealthlink.com/"],
+  ID: ["Your Health Idaho", "https://www.yourhealthidaho.org/"],
+  KY: ["Kynect", "https://kynect.ky.gov/s/?language=en_US"],
+  ME: ["CoverME", "https://www.coverme.gov/"],
+  MD: [
+    "Maryland Health Connection",
+    "https://www.marylandhealthconnection.gov/",
+  ],
+  MA: ["Massachusetts Health Connector", "https://www.mahix.org/individual/"],
+  MN: ["MNsure", "https://www.mnsure.org/"],
+  NV: ["Nevada Health Link", "https://www.nevadahealthlink.com/"],
+  NJ: ["Get Covered NJ", "https://www.nj.gov/getcoverednj/"],
+  NM: ["bewellnm", "https://www.bewellnm.com/"],
+  NY: ["New York State of Health", "https://nystateofhealth.ny.gov/"],
+  PA: ["Pennie", "https://pennie.com/"],
+  RI: ["HealthSource RI", "https://healthsourceri.com/"],
+  VT: [
+    "Vermont Health Connect",
+    "https://portal.healthconnect.vermont.gov/VTHBELand/welcome.action",
+  ],
+  WA: ["Washington Healthplanfinder", "https://maint.wahealthplanfinder.org/"],
+};
+
 class Requester {
   private static readonly RATE_LIMIT_PER_SECOND = 200;
   private static readonly RATE_LIMIT_PER_MINUTE = 1000;
@@ -34,11 +61,7 @@ class Requester {
 export async function POST(req: NextRequest) {
   const reqBody = (await req.json()) as GetPlans.Request;
   let body: MarketplaceSearch.Request = {
-    place: {
-      zipcode: reqBody.location.zipcode,
-      state: reqBody.location.state,
-      countyfips: reqBody.location.countyfips,
-    },
+    place: reqBody.location,
     market: "Individual",
   };
   const household = {};
@@ -47,6 +70,21 @@ export async function POST(req: NextRequest) {
   body["household"] = household;
   const res = await Requester.make_request(body);
   if (!res.ok) {
+    let resJson = (await res.json()) as MarketplaceSearch.ErrorResponse;
+    if (resJson.code === "1003") {
+      // this user's state runs their own exchange
+      const state = reqBody.location.state;
+      const [exchange_name, exchange_url] = INVALID_STATES[state];
+      const invalidStateBody: GetPlans.Response = {
+        plans: [],
+        total: 0,
+        alt_data: {
+          type: "InvalidState",
+          ...{ state, exchange_name, exchange_url },
+        },
+      };
+      return NextResponse.json(invalidStateBody);
+    }
     throw new Error(`Error: ${res.status}`);
   }
   let resJson = (await res.json()) as MarketplaceSearch.SuccessResponse;

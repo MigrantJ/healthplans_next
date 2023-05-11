@@ -3,6 +3,7 @@ import { Flex, Spinner, Text } from "@chakra-ui/react";
 
 import PlanList from "./PlanList";
 import PlanGraph from "./PlanGraph";
+import InvalidStateMessage from "./InvalidStateMessage";
 import getPlans from "@/lib/getPlans";
 import ILocation from "@/types/Location";
 import IPerson from "@/types/Person";
@@ -15,7 +16,7 @@ interface IProps {
 }
 
 export default function DataViewer({ location, income, people }: IProps) {
-  const results = useQuery<GetPlans.SuccessResponse, Error>({
+  const results = useQuery<GetPlans.Response, Error>({
     queryKey: ["query", { location, income, people }],
     queryFn: getPlans,
     enabled: !!location,
@@ -31,18 +32,20 @@ export default function DataViewer({ location, income, people }: IProps) {
   }
 
   const resultsData = results.data;
-  return resultsData.plans.length ? (
-    <Flex direction="column" gap={1}>
-      <PlanGraph plans={resultsData.plans} />
-      {!(income && people.length) && (
-        <Text fontWeight="bold">
-          Warning: premiums and deductibles may not be accurate until you've
-          entered your income and household info
-        </Text>
-      )}
-      <PlanList plans={resultsData.plans} />
-    </Flex>
-  ) : (
-    <Text>Sorry, there are no plans available for your household!</Text>
-  );
+  if (resultsData.plans.length) {
+    return (
+      <Flex direction="column" gap={1}>
+        <PlanGraph plans={resultsData.plans} />
+        {!(income && people.length) && (
+          <Text fontWeight="bold">
+            Warning: premiums and deductibles may not be accurate until you've
+            entered your income and household info
+          </Text>
+        )}
+        <PlanList plans={resultsData.plans} />
+      </Flex>
+    );
+  } else if (resultsData.alt_data?.type === "InvalidState") {
+    return <InvalidStateMessage {...resultsData.alt_data} />;
+  }
 }

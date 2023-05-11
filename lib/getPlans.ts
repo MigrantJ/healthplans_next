@@ -2,7 +2,7 @@ import { QueryFunction } from "@tanstack/react-query";
 import * as GetPlans from "@/types/GetPlans";
 
 const getPlans: QueryFunction<
-  GetPlans.SuccessResponse,
+  GetPlans.Response,
   ["query", GetPlans.Request]
 > = async ({ queryKey }) => {
   const body = queryKey[1];
