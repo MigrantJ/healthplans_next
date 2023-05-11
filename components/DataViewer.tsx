@@ -15,23 +15,30 @@ interface IProps {
 }
 
 export default function DataViewer({ location, income, household }: IProps) {
-  const results = useQuery<GetPlansResponse>(
-    ["query", { location, income, household }],
-    getPlans
-  );
-
-  if (!location) {
-    return <></>;
-  }
+  const results = useQuery<GetPlansResponse, Error>({
+    queryKey: ["query", { location, income, household }],
+    queryFn: getPlans,
+    enabled: !!location,
+  });
 
   if (results.isLoading) {
     return <Spinner size="xl" />;
+  }
+
+  if (results.isError) {
+    return <Text>{results.error.message}</Text>;
   }
 
   const resultsData = results.data;
   return resultsData.plans.length ? (
     <Flex direction="column" gap={1}>
       <PlanGraph plans={resultsData.plans} />
+      {!(income && household.people.length) && (
+        <Text fontWeight="bold">
+          Warning: premiums and deductibles may not be accurate until you've
+          entered your income and household info
+        </Text>
+      )}
       <PlanList plans={resultsData.plans} />
     </Flex>
   ) : (
