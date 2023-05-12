@@ -4,7 +4,7 @@ import * as MarketplaceSearch from "@/types/MarketplaceSearch";
 
 const API_KEY = process.env.HEALTHCARE_API_KEY;
 
-const INVALID_STATES = {
+const INVALID_STATES: {[key: string]: [string, string]} = {
   CA: ["Covered California", "https://www.coveredca.com/"],
   CO: ["Connect for Health Colorado", "https://connectforhealthco.com/"],
   CT: ["Access Health CT", "https://www.accesshealthct.com/"],
@@ -38,7 +38,7 @@ class Requester {
   private static remainingPerSecond = Requester.RATE_LIMIT_PER_SECOND;
   private static remainingPerMinute = Requester.RATE_LIMIT_PER_MINUTE;
 
-  static async make_request(body) {
+  static make_request = async (body) => {
     const res = await fetch(
       `https://marketplace.api.healthcare.gov/api/v1/plans/search?apikey=${API_KEY}`,
       {
@@ -60,7 +60,7 @@ class Requester {
 
 export async function POST(req: NextRequest) {
   const reqBody = (await req.json()) as GetPlans.Request;
-  let body: MarketplaceSearch.Request = {
+  const body: MarketplaceSearch.Request = {
     place: reqBody.location,
     market: "Individual",
   };
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
   body["household"] = household;
   const res = await Requester.make_request(body);
   if (!res.ok) {
-    let resJson = (await res.json()) as MarketplaceSearch.ErrorResponse;
+    const resJson = (await res.json()) as MarketplaceSearch.ErrorResponse;
     if (resJson.code === "1003") {
       // this user's state runs their own exchange
       const state = reqBody.location.state;
@@ -87,18 +87,18 @@ export async function POST(req: NextRequest) {
     }
     throw new Error(`Error: ${res.status}`);
   }
-  let resJson = (await res.json()) as MarketplaceSearch.SuccessResponse;
-  let { plans, total } = resJson;
+  const resJson = (await res.json()) as MarketplaceSearch.SuccessResponse;
+  let { plans } = resJson;
 
   // create an array of JSON request bodies, each of which is for a page of 10 results
   const pageReqBodies = [];
-  for (let i = 10; i < total; i += 10) {
+  for (let i = 10; i < resJson.total; i += 10) {
     pageReqBodies.push({ ...body, offset: i });
   }
   // gather tasks for fetching those results
   const tasks = pageReqBodies.map(Requester.make_request);
   const results = await Promise.all(tasks);
-  for (let result of results) {
+  for (const result of results) {
     const pageResJson =
       (await result.json()) as MarketplaceSearch.SuccessResponse;
     plans = plans.concat(pageResJson.plans);

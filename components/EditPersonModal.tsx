@@ -58,9 +58,9 @@ export default function EditPersonModal({
   const relationship = person?.relationship || "";
   const options = checkbox_options.filter((o) => !!person && person[o]);
 
-  const setOptions = (oldOptions) => {
-    let newOptions = {};
-    for (let option of checkbox_options) {
+  const setOptions = (oldOptions: string[]) => {
+    const newOptions = {};
+    for (const option of checkbox_options) {
       newOptions[option] = oldOptions.includes(option);
     }
     setPerson({ ...person, ...newOptions });
@@ -148,7 +148,7 @@ export default function EditPersonModal({
           <CheckboxGroup
             defaultValue={[]}
             value={options}
-            onChange={(e) => setOptions(e)}
+            onChange={(e) => setOptions(e as string[])}
           >
             <Stack direction="column">
               <Checkbox value="is_parent">

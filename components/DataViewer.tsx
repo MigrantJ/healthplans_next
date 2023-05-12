@@ -38,7 +38,7 @@ export default function DataViewer({ location, income, people }: IProps) {
         <PlanGraph plans={resultsData.plans} />
         {!(income && people.length) && (
           <Text fontWeight="bold">
-            Warning: premiums and deductibles may not be accurate until you've
+            Warning: premiums and deductibles may not be accurate until you have
             entered your income and household info
           </Text>
         )}

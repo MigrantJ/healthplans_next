@@ -12,12 +12,19 @@ import {
 } from "@chakra-ui/react";
 import { RiMapPinLine } from "react-icons/ri";
 
+interface IProps {
+  zipCode: string;
+  setZipCode: (zipcode: string) => void;
+  getPosByGPS: () => void;
+  getPosByZipCode: (zipcode: string) => Promise<void>;
+}
+
 export default function LocationWidget({
   zipCode,
   setZipCode,
   getPosByGPS,
   getPosByZipCode,
-}) {
+}: IProps) {
   return (
     <Flex>
       <Center>
@@ -38,7 +45,7 @@ export default function LocationWidget({
         selectAllOnFocus={false}
         value={zipCode}
         onChange={(t) => setZipCode(t)}
-        onSubmit={(t) => getPosByZipCode(t)}
+        onSubmit={(t) => void getPosByZipCode(t)}
         w={100}
       >
         <Tooltip hasArrow label="Click to Edit" shouldWrapChildren={true}>

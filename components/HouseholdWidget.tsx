@@ -14,7 +14,7 @@ export default function HouseholdWidget({ people, setPeople }: IProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [personIndex, setPersonIndex] = useState(-1);
 
-  const openModal = (person_index: number = -1) => {
+  const openModal = (person_index = -1) => {
     setPersonIndex(person_index);
     onOpen();
   };

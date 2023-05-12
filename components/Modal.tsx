@@ -12,11 +12,14 @@ import {
   ModalFooter,
   Flex,
   Input,
-  Spacer,
-  Box,
 } from "@chakra-ui/react";
 
-export default function PModal({ getPosByGPS, getPosByZipCode }) {
+interface IProps {
+  getPosByGPS: () => void;
+  getPosByZipCode: (zipcode: string) => Promise<void>;
+}
+
+export default function PModal({ getPosByGPS, getPosByZipCode }: IProps) {
   const [zipCode, setZipCode] = useState("");
   useEffect(() => {
     if (!isOpen) onOpen();
@@ -28,7 +31,7 @@ export default function PModal({ getPosByGPS, getPosByZipCode }) {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Let's Get Started!</ModalHeader>
+          <ModalHeader>Let&apos;s Get Started!</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text>

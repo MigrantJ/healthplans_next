@@ -1,7 +1,6 @@
 import { Flex } from "@chakra-ui/react";
 //todo: only import the necessary d3 modules
 import * as d3 from "d3";
-//todo: there may be package conflicts with the following:
 import { Axis, Orient } from "d3-axis-for-react";
 import IHealthPlan from "@/types/HealthPlan";
 
