@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 
-import PlanList from "./PlanList";
+// import PlanList from "./PlanList";
 import PlanGraph from "./PlanGraph";
 import InvalidStateMessage from "./InvalidStateMessage";
 import getPlans from "@/lib/getPlans";
@@ -42,7 +42,6 @@ export default function DataViewer({ location, income, people }: IProps) {
             entered your income and household info
           </Text>
         )}
-        <PlanList plans={resultsData.plans} />
       </Flex>
     );
   } else if (resultsData.alt_data?.type === "InvalidState") {

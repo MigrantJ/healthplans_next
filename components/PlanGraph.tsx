@@ -8,8 +8,22 @@ interface IProps {
   plans: IHealthPlan[];
 }
 
+interface PlanText {
+  x: number;
+  y: number;
+  text: string;
+}
+
+interface PlanBar {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  fill: string;
+}
+
 const GRAPH_WIDTH = 1220;
-const GRAPH_HEIGHT = 300;
+const GRAPH_HEIGHT = 600;
 const PLAN_NAMES_X = 200;
 const PREMIUM_BARS_X = 400;
 const DEDUCTIBLE_BARS_X = 600;
@@ -27,10 +41,10 @@ export default function PlanGraph({ plans }: IProps) {
     .domain([0, deductibleExtent[1]])
     .range([0, GRAPH_WIDTH - DEDUCTIBLE_BARS_X - 30]);
 
-  const providers = [];
-  const planNames = [];
-  const premiumBars = [];
-  const deductibleBars = [];
+  const providers: PlanText[] = [];
+  const planNames: PlanText[] = [];
+  const premiumBars: PlanBar[] = [];
+  const deductibleBars: PlanBar[] = [];
 
   let row_y = 0;
   for (const p of plans) {

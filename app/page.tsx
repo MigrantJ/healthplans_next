@@ -87,9 +87,6 @@ export default function IndexPage() {
             <PeopleWidget {...{ people, setPeople }} />
           </Flex>
           <Flex direction="column" w="100%">
-            <Flex h="50px">
-              <Heading>Filters</Heading>
-            </Flex>
             {location && <DataViewer {...{ location, income, people }} />}
           </Flex>
         </Flex>

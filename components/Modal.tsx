@@ -50,7 +50,7 @@ export default function PModal({ getPosByGPS, getPosByZipCode }: IProps) {
               />
               <Button
                 onClick={(e) => {
-                  getPosByZipCode(zipCode);
+                  void getPosByZipCode(zipCode);
                   onClose();
                 }}
               >
