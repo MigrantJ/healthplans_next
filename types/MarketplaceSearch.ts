@@ -37,7 +37,7 @@ export interface SuccessResponse {
   facet_groups: FacetGroup[];
 }
 
-interface FacetGroup {
+export interface FacetGroup {
   name: string;
   facets: Facet;
 }

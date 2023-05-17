@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   Flex,
   Center,
@@ -12,19 +13,24 @@ import {
 } from "@chakra-ui/react";
 import { RiMapPinLine } from "react-icons/ri";
 
+import ILocation from "@/types/Location";
+
 interface IProps {
-  zipCode: string;
-  setZipCode: (zipcode: string) => void;
+  location: ILocation;
   getPosByGPS: () => void;
   getPosByZipCode: (zipcode: string) => Promise<void>;
 }
 
 export default function LocationWidget({
-  zipCode,
-  setZipCode,
+  location,
   getPosByGPS,
   getPosByZipCode,
 }: IProps) {
+  const [zipcode, setZipcode] = useState("");
+  useEffect(() => {
+    setZipcode(location?.zipcode || "");
+  }, [location]);
+
   return (
     <Flex>
       <Center>
@@ -40,11 +46,11 @@ export default function LocationWidget({
       </Center>
 
       <Editable
-        placeholder={zipCode || "Zip Code"}
+        placeholder={zipcode || "Zip Code"}
         isPreviewFocusable={true}
         selectAllOnFocus={false}
-        value={zipCode}
-        onChange={(t) => setZipCode(t)}
+        value={zipcode}
+        onChange={(t) => setZipcode(t)}
         onSubmit={(t) => void getPosByZipCode(t)}
         w={100}
       >
@@ -58,7 +64,7 @@ export default function LocationWidget({
             }}
           />
         </Tooltip>
-        <Input as={EditableInput} value={zipCode} />
+        <Input as={EditableInput} value={location?.zipcode} />
       </Editable>
     </Flex>
   );

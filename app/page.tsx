@@ -5,16 +5,18 @@ import { Box, Flex, Heading, Divider } from "@chakra-ui/react";
 import Modal from "@/components/Modal";
 import ILocation from "@/types/Location";
 import IPerson from "@/types/Person";
+import IFilter from "@/types/Filter";
 import DataViewer from "@/components/DataViewer";
 import LocationWidget from "@/components/LocationWidget";
 import PeopleWidget from "@/components/HouseholdWidget";
 import IncomeWidget from "@/components/IncomeWidget";
+import FilterWidget from "@/components/FilterWidget";
 
 export default function IndexPage() {
   const [location, setLocation] = useState<ILocation>();
-  const [zipCode, setZipCode] = useState("");
   const [income, setIncome] = useState(0);
   const [people, setPeople] = useState<IPerson[]>([]);
+  const [filter, setFilter] = useState<IFilter>();
 
   const getLocationByLatLong = async (lat: number, long: number) => {
     const res = await fetch(`/api/location`, {
@@ -26,7 +28,6 @@ export default function IndexPage() {
       throw new Error(`Error: ${res.status}`);
     }
     const location = (await res.json()) as ILocation;
-    setZipCode(location.zipcode);
     setLocation(location);
   };
 
@@ -47,7 +48,6 @@ export default function IndexPage() {
   };
 
   const getPosByZipCode = async (zipcode: string) => {
-    setZipCode(zipCode);
     const res = await fetch(`/api/location`, {
       method: "post",
       body: JSON.stringify({ zipcode }),
@@ -67,24 +67,26 @@ export default function IndexPage() {
         <Flex padding="10px">
           <Heading size="lg">HealthCare.gov Next</Heading>
         </Flex>
-        <Flex h="100vh">
-          <Flex
-            direction="column"
-            paddingY={10}
-            paddingX={5}
-            w={250}
-            align="center"
-          >
+        <Flex>
+          <Flex direction="column" paddingY={10} paddingX={5}>
             <Heading size="md">Setup</Heading>
             <Divider />
             <Heading size="sm">Location</Heading>
-            <LocationWidget
-              {...{ zipCode, setZipCode, getPosByGPS, getPosByZipCode }}
-            />
+            <LocationWidget {...{ location, getPosByGPS, getPosByZipCode }} />
             <Divider />
             <Heading size="sm">Household</Heading>
             <IncomeWidget {...{ income, setIncome }} />
             <PeopleWidget {...{ people, setPeople }} />
+            <Divider />
+            <Heading size="sm">Filters</Heading>
+            <FilterWidget
+              {...{ filter, setFilter }}
+              facetGroups={[]}
+              ranges={{
+                premium: { min: 0, max: 100 },
+                deductible: { min: 0, max: 100 },
+              }}
+            />
           </Flex>
           <Flex direction="column" w="100%">
             {location && <DataViewer {...{ location, income, people }} />}
