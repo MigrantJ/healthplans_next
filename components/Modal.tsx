@@ -13,13 +13,22 @@ import {
   Flex,
   Input,
 } from "@chakra-ui/react";
+import ILocation from "@/types/Location";
 
 interface IProps {
-  getPosByGPS: () => void;
-  getPosByZipCode: (zipcode: string) => Promise<void>;
+  getPosByGPS: (setLocation: (location: ILocation) => void) => void;
+  getPosByZipCode: (
+    zipcode: string,
+    setLocation: (location: ILocation) => void
+  ) => Promise<void>;
+  setLocation: (location: ILocation) => void;
 }
 
-export default function PModal({ getPosByGPS, getPosByZipCode }: IProps) {
+export default function PModal({
+  getPosByGPS,
+  getPosByZipCode,
+  setLocation,
+}: IProps) {
   const [zipCode, setZipCode] = useState("");
   useEffect(() => {
     if (!isOpen) onOpen();
@@ -50,7 +59,7 @@ export default function PModal({ getPosByGPS, getPosByZipCode }: IProps) {
               />
               <Button
                 onClick={(e) => {
-                  void getPosByZipCode(zipCode);
+                  void getPosByZipCode(zipCode, setLocation);
                   onClose();
                 }}
               >
@@ -58,7 +67,7 @@ export default function PModal({ getPosByGPS, getPosByZipCode }: IProps) {
               </Button>
               <Button
                 onClick={(e) => {
-                  getPosByGPS();
+                  getPosByGPS(setLocation);
                   onClose();
                 }}
               >

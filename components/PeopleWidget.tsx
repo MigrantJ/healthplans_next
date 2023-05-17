@@ -10,7 +10,7 @@ interface IProps {
   setPeople: (h: IPerson[]) => void;
 }
 
-export default function HouseholdWidget({ people, setPeople }: IProps) {
+export default function PeopleWidget({ people, setPeople }: IProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [personIndex, setPersonIndex] = useState(-1);
 

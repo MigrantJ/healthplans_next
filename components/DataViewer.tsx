@@ -1,27 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
+import { UseQueryResult } from "@tanstack/react-query";
 
-// import PlanList from "./PlanList";
 import PlanGraph from "./PlanGraph";
 import InvalidStateMessage from "./InvalidStateMessage";
-import getPlans from "@/lib/getPlans";
-import ILocation from "@/types/Location";
 import IPerson from "@/types/Person";
 import * as GetPlans from "@/types/GetPlans";
 
 interface IProps {
-  location: ILocation;
+  results: UseQueryResult<GetPlans.Response, Error>;
   income: number;
   people: IPerson[];
 }
 
-export default function DataViewer({ location, income, people }: IProps) {
-  const results = useQuery<GetPlans.Response, Error>({
-    queryKey: ["query", { location, income, people }],
-    queryFn: getPlans,
-    enabled: !!location,
-  });
-
+export default function DataViewer({ results, income, people }: IProps) {
   if (results.isLoading) {
     return <Spinner size="xl" />;
   }
