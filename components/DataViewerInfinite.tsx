@@ -1,40 +1,47 @@
-import { Flex, Spinner, Text } from "@chakra-ui/react";
+import { Flex, Spinner, Text, Card } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 
-import PlanGraph from "./PlanGraph";
-import InvalidStateMessage from "./InvalidStateMessage";
-import IPerson from "@/types/Person";
 import * as GetPlans from "@/types/GetPlans";
+import IFilter from "@/types/Filter";
 
 interface IProps {
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
-  income: number;
-  people: IPerson[];
+  filter: IFilter;
+  inViewRef: (node?: Element) => void;
 }
 
 export default function DataViewerInfinite({
   results,
-  income,
-  people,
+  filter,
+  inViewRef,
 }: IProps) {
-  // if (results.isLoading) {
-  //   return <Spinner size="xl" />;
-  // }
-
   // todo: improve error handling
   if (results.isError) {
     return <Text>{results.error.message}</Text>;
   }
 
+  if (!results.data) {
+    return <></>;
+  }
+
   return (
     <>
-      {results.isPreviousData && <Spinner size="xl" position={"absolute"} />}
+      {results.isLoading && <Spinner size="xl" position={"absolute"} />}
       <Flex direction="column">
         {results.data?.pages.map((group, i) => {
           return group.plans.map((plan) => {
-            return <Text key={plan.id}>{plan.name}</Text>;
+            return (
+              <Card key={plan.id}>
+                <Text as="b">{plan.issuer.name}</Text>
+                <Text>{plan.name}</Text>
+              </Card>
+            );
           });
         })}
+
+        <Text ref={inViewRef}>
+          {results.hasNextPage ? "LOADING..." : "NO MORE PAGES!"}
+        </Text>
       </Flex>
     </>
   );
