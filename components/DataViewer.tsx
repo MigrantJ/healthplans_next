@@ -25,15 +25,19 @@ export default function DataViewer({ results, income, people }: IProps) {
   const resultsData = results.data;
   if (resultsData.plans.length) {
     return (
-      <Flex direction="column" gap={1}>
-        <PlanGraph plans={resultsData.plans} />
-        {!(income && people.length) && (
-          <Text fontWeight="bold">
-            Warning: premiums and deductibles may not be accurate until you have
-            entered your income and household info
-          </Text>
-        )}
-      </Flex>
+      <>
+        {results.isPreviousData && <Spinner size="xl" position={"absolute"} />}
+
+        <Flex direction="column" gap={1}>
+          <PlanGraph plans={resultsData.plans} />
+          {!(income && people.length) && (
+            <Text fontWeight="bold">
+              Warning: premiums and deductibles may not be accurate until you
+              have entered your income and household info
+            </Text>
+          )}
+        </Flex>
+      </>
     );
   } else if (resultsData.alt_data?.type === "InvalidState") {
     return <InvalidStateMessage {...resultsData.alt_data} />;

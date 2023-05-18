@@ -1,11 +1,13 @@
 import ILocation from "./Location";
 import IHealthPlan from "./HealthPlan";
 import IPerson from "./Person";
+import IFilter from "./Filter";
 
 export interface Request {
   location: ILocation;
   income: number;
   people: IPerson[];
+  filter: IFilter;
 }
 
 export interface Response {

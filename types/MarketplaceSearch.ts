@@ -1,13 +1,14 @@
 import IHealthPlan from "./HealthPlan";
 import ILocation from "./Location";
 import IPerson from "./Person";
+import IFilter from "./Filter";
 
 export interface Request {
   place: ILocation;
   // API also supports "SHOP" and "Any" values
   market: "Individual";
   household?: IHousehold;
-  filter?: object;
+  filter?: IFilter;
   offset?: number;
 }
 
@@ -42,7 +43,7 @@ export interface FacetGroup {
   facets: Facet;
 }
 
-interface Facet {
+export interface Facet {
   value: string;
   count: number;
   standardized_plans?: number;

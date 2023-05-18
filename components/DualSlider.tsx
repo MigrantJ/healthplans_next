@@ -5,6 +5,9 @@ import {
   RangeSliderFilledTrack,
   RangeSliderTrack,
   RangeSliderThumb,
+  Flex,
+  Box,
+  Spacer,
 } from "@chakra-ui/react";
 
 interface IProps {
@@ -40,6 +43,11 @@ export default function DualSlider({
         <RangeSliderThumb index={0} />
         <RangeSliderThumb index={1} />
       </RangeSlider>
+      <Flex>
+        <Box>{range[0]}</Box>
+        <Spacer />
+        <Box>{range[1]}</Box>
+      </Flex>
     </>
   );
 }

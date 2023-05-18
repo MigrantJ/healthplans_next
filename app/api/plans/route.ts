@@ -4,7 +4,7 @@ import * as MarketplaceSearch from "@/types/MarketplaceSearch";
 
 const API_KEY = process.env.HEALTHCARE_API_KEY;
 
-const INVALID_STATES: {[key: string]: [string, string]} = {
+const INVALID_STATES: { [key: string]: [string, string] } = {
   CA: ["Covered California", "https://www.coveredca.com/"],
   CO: ["Connect for Health Colorado", "https://connectforhealthco.com/"],
   CT: ["Access Health CT", "https://www.accesshealthct.com/"],
@@ -55,7 +55,7 @@ class Requester {
     );
 
     return res;
-  }
+  };
 }
 
 export async function POST(req: NextRequest) {
@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
   const body: MarketplaceSearch.Request = {
     place: reqBody.location,
     market: "Individual",
+    filter: reqBody.filter,
   };
   const household = {};
   if (reqBody.income) household["income"] = reqBody.income;

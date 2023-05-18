@@ -20,15 +20,19 @@ export default function MainWindow() {
   const [filter, setFilter] = useState<IFilter>();
 
   const results = useQuery<GetPlans.Response, Error>({
-    queryKey: ["query", { location, income, people }],
+    queryKey: ["query", { location, income, people, filter }],
     queryFn: getPlans,
     enabled: !!location,
+    keepPreviousData: true,
   });
+
+  const facetGroups = results.data?.facet_groups || [];
+  const ranges = results.data?.ranges;
 
   return (
     <>
       <Flex>
-        <Flex direction="column" paddingY={10} paddingX={5}>
+        <Flex direction="column" paddingX={3} minW={300}>
           <Heading size="md">Setup</Heading>
           <Divider />
           <Heading size="sm">Location</Heading>
@@ -38,17 +42,14 @@ export default function MainWindow() {
           <IncomeWidget {...{ income, setIncome }} />
           <PeopleWidget {...{ people, setPeople }} />
           <Divider />
-          <Heading size="sm">Filters</Heading>
-          <FilterWidget
-            {...{ filter, setFilter }}
-            facetGroups={[]}
-            ranges={{
-              premium: { min: 0, max: 100 },
-              deductible: { min: 0, max: 100 },
-            }}
-          />
+          {results.data && (
+            <>
+              <Heading size="sm">Filters</Heading>
+              <FilterWidget {...{ filter, setFilter, facetGroups, ranges }} />
+            </>
+          )}
         </Flex>
-        <Flex direction="column" w="100%">
+        <Flex direction="column">
           <DataViewer {...{ results, income, people }} />
         </Flex>
       </Flex>
