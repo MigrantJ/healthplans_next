@@ -8,6 +8,7 @@ export interface Request {
   income: number;
   people: IPerson[];
   filter: IFilter;
+  pageParam: number;
 }
 
 export interface Response {
@@ -25,6 +26,7 @@ export interface Response {
     };
   };
   facet_groups?: FacetGroup[];
+  nextCursor?: number;
 }
 
 interface FacetGroup {
