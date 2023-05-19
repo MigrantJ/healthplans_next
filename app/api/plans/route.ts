@@ -4,7 +4,7 @@ import * as MarketplaceSearch from "@/types/MarketplaceSearch";
 
 const API_KEY = process.env.HEALTHCARE_API_KEY;
 
-const INVALID_STATES: {[key: string]: [string, string]} = {
+const INVALID_STATES: { [key: string]: [string, string] } = {
   CA: ["Covered California", "https://www.coveredca.com/"],
   CO: ["Connect for Health Colorado", "https://connectforhealthco.com/"],
   CT: ["Access Health CT", "https://www.accesshealthct.com/"],
@@ -55,7 +55,7 @@ class Requester {
     );
 
     return res;
-  }
+  };
 }
 
 export async function POST(req: NextRequest) {
@@ -63,11 +63,13 @@ export async function POST(req: NextRequest) {
   const body: MarketplaceSearch.Request = {
     place: reqBody.location,
     market: "Individual",
+    filter: reqBody.filter,
   };
   const household = {};
   if (reqBody.income) household["income"] = reqBody.income;
   if (reqBody.people) household["people"] = reqBody.people;
   body["household"] = household;
+  if (reqBody.pageParam) body["offset"] = reqBody.pageParam * 10;
   const res = await Requester.make_request(body);
   if (!res.ok) {
     const resJson = (await res.json()) as MarketplaceSearch.ErrorResponse;
@@ -88,21 +90,5 @@ export async function POST(req: NextRequest) {
     throw new Error(`Error: ${res.status}`);
   }
   const resJson = (await res.json()) as MarketplaceSearch.SuccessResponse;
-  let { plans } = resJson;
-
-  // create an array of JSON request bodies, each of which is for a page of 10 results
-  const pageReqBodies = [];
-  for (let i = 10; i < resJson.total; i += 10) {
-    pageReqBodies.push({ ...body, offset: i });
-  }
-  // gather tasks for fetching those results
-  const tasks = pageReqBodies.map(Requester.make_request);
-  const results = await Promise.all(tasks);
-  for (const result of results) {
-    const pageResJson =
-      (await result.json()) as MarketplaceSearch.SuccessResponse;
-    plans = plans.concat(pageResJson.plans);
-  }
-  resJson.plans = plans;
   return NextResponse.json(resJson);
 }

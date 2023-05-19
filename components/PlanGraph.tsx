@@ -22,11 +22,11 @@ interface PlanBar {
   fill: string;
 }
 
-const GRAPH_WIDTH = 1220;
+const GRAPH_WIDTH = 1000;
 const GRAPH_HEIGHT = 600;
-const PLAN_NAMES_X = 200;
-const PREMIUM_BARS_X = 400;
-const DEDUCTIBLE_BARS_X = 600;
+const PLAN_NAMES_X = 150;
+const PREMIUM_BARS_X = 450;
+const DEDUCTIBLE_BARS_X = 650;
 
 export default function PlanGraph({ plans }: IProps) {
   const premiumExtent = d3.extent(plans, (p) => p.premium);
@@ -41,25 +41,25 @@ export default function PlanGraph({ plans }: IProps) {
     .domain([0, deductibleExtent[1]])
     .range([0, GRAPH_WIDTH - DEDUCTIBLE_BARS_X - 30]);
 
-  const providers: PlanText[] = [];
+  const issuers: PlanText[] = [];
   const planNames: PlanText[] = [];
   const premiumBars: PlanBar[] = [];
   const deductibleBars: PlanBar[] = [];
 
   let row_y = 0;
   for (const p of plans) {
-    providers.push({
+    issuers.push({
       x: 0,
       y: row_y + 20,
       text:
-        p.issuer.name.length > 30
-          ? p.issuer.name.substring(0, 30) + "..."
+        p.issuer.name.length > 25
+          ? p.issuer.name.substring(0, 22) + "..."
           : p.issuer.name,
     });
     planNames.push({
       x: PLAN_NAMES_X,
       y: row_y + 20,
-      text: p.name.length > 30 ? p.name.substring(0, 30) + "..." : p.name,
+      text: p.name.length > 55 ? p.name.substring(0, 52) + "..." : p.name,
     });
     premiumBars.push({
       x: PREMIUM_BARS_X,
@@ -90,7 +90,7 @@ export default function PlanGraph({ plans }: IProps) {
       <Flex height="20px">
         <svg width={GRAPH_WIDTH}>
           <text x={0} y={15} fontWeight="bold">
-            Provider
+            Issuer
           </text>
           <text x={PLAN_NAMES_X} y={15} fontWeight="bold">
             Plan
@@ -105,7 +105,7 @@ export default function PlanGraph({ plans }: IProps) {
       </Flex>
       <Flex width={GRAPH_WIDTH} height={GRAPH_HEIGHT} overflowY="auto">
         <svg width={GRAPH_WIDTH} height={row_y}>
-          {providers.map((p, i) => (
+          {issuers.map((p, i) => (
             <text key={i} x={p.x} y={p.y} fontSize="12px" fontWeight="bold">
               {p.text}
             </text>
@@ -164,15 +164,10 @@ export default function PlanGraph({ plans }: IProps) {
               scale={xScaleDeductible}
               tickValues={[
                 0,
-                deductibleExtent[1] * 0.1,
                 deductibleExtent[1] * 0.2,
-                deductibleExtent[1] * 0.3,
                 deductibleExtent[1] * 0.4,
-                deductibleExtent[1] * 0.5,
                 deductibleExtent[1] * 0.6,
-                deductibleExtent[1] * 0.7,
                 deductibleExtent[1] * 0.8,
-                deductibleExtent[1] * 0.9,
                 deductibleExtent[1],
               ]}
               tickFormat={(d, i) => {

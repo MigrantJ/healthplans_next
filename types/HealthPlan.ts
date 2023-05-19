@@ -1,3 +1,5 @@
+import { MetalLevel, PlanType } from "./Filter";
+
 export default interface IHealthPlan {
   id: string;
   name: string;
@@ -6,8 +8,8 @@ export default interface IHealthPlan {
   ehb_premium: number;
   pediatric_ehb_premium: number;
   aptc_eligible_premium: number;
-  metal_level: string;
-  type: string;
+  metal_level: MetalLevel;
+  type: PlanType;
   design_type: string;
   state: string;
   benefits?: Benefit[] | null;

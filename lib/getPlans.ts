@@ -1,11 +1,16 @@
 import { QueryFunction } from "@tanstack/react-query";
 import * as GetPlans from "@/types/GetPlans";
 
-const getPlans: QueryFunction<
+interface IProps {
+  queryKey: ["query", GetPlans.Request];
+  pageParam?: number;
+}
+
+export const getPlans: QueryFunction<
   GetPlans.Response,
   ["query", GetPlans.Request]
-> = async ({ queryKey }) => {
-  const body = queryKey[1];
+> = async ({ queryKey, pageParam = 0 }: IProps) => {
+  const body: GetPlans.Request = { ...queryKey[1], pageParam };
   const res = await fetch(`/api/plans`, {
     method: "post",
     body: JSON.stringify(body),
@@ -14,7 +19,7 @@ const getPlans: QueryFunction<
   if (!res.ok) {
     throw new Error(`Error: ${res.status}`);
   }
-  return res.json();
+  const resJson = (await res.json()) as GetPlans.Response;
+  if (resJson.plans.length === 10) resJson.nextCursor = pageParam + 1;
+  return resJson;
 };
-
-export default getPlans;

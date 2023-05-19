@@ -1,12 +1,9 @@
 import IFilter, {
-  metalLevelOptions,
   MetalLevel,
-  diseaseMgmtProgramsOptions,
   DiseaseMgmtPrograms,
   PlanType,
-  planTypeOptions,
 } from "@/types/Filter";
-import { FacetGroup } from "@/types/MarketplaceSearch";
+import { FacetGroup, Facet } from "@/types/MarketplaceSearch";
 import DualSlider from "./DualSlider";
 import MultiSelect from "./MultiSelect";
 
@@ -15,8 +12,8 @@ interface IProps {
   setFilter: (f: IFilter) => void;
   facetGroups: FacetGroup[];
   ranges: {
-    premium: { min: number; max: number };
-    deductible: { min: number; max: number };
+    premiums: { min: number; max: number };
+    deductibles: { min: number; max: number };
   };
 }
 
@@ -26,7 +23,7 @@ export default function FilterWidget({
   facetGroups,
   ranges,
 }: IProps) {
-  const facetGroupMap =
+  const facetGroupMap: { [k: string]: Facet[] } =
     facetGroups?.reduce((acc, curr) => {
       acc[curr.name] = curr.facets;
       return acc;
@@ -36,24 +33,26 @@ export default function FilterWidget({
     <>
       <DualSlider
         label="Premium"
-        initRange={filter?.premium_range || ranges.premium}
-        rangeExtents={ranges.premium}
+        initRange={filter?.premium_range || ranges.premiums}
+        rangeExtents={ranges.premiums}
         onChangeEnd={([min, max]) =>
           setFilter({ ...filter, premium_range: { min, max } })
         }
       />
       <DualSlider
         label="Deductible"
-        initRange={filter?.deductible_range || ranges.deductible}
-        rangeExtents={ranges.deductible}
+        initRange={filter?.deductible_range || ranges.deductibles}
+        rangeExtents={ranges.deductibles}
         onChangeEnd={([min, max]) =>
           setFilter({ ...filter, deductible_range: { min, max } })
         }
       />
-      {/* spread is used to remove readonly from list */}
       <MultiSelect<PlanType>
         label="Plan Types"
-        options={[...planTypeOptions]}
+        options={facetGroupMap["types"].map((e) => [
+          e.value as PlanType,
+          e.count,
+        ])}
         onChangeEnd={(e) => {
           setFilter({
             ...filter,
@@ -63,7 +62,10 @@ export default function FilterWidget({
       />
       <MultiSelect<MetalLevel>
         label="Metal Levels"
-        options={[...metalLevelOptions]}
+        options={facetGroupMap["metalLevels"].map((e) => [
+          e.value as MetalLevel,
+          e.count,
+        ])}
         onChangeEnd={(e) => {
           setFilter({
             ...filter,
@@ -71,13 +73,27 @@ export default function FilterWidget({
           });
         }}
       />
+
       <MultiSelect<DiseaseMgmtPrograms>
         label="Medical Management Programs"
-        options={[...diseaseMgmtProgramsOptions]}
+        options={facetGroupMap["diseaseMgmtPrograms"].map((e) => [
+          e.value as DiseaseMgmtPrograms,
+          e.count,
+        ])}
         onChangeEnd={(e) => {
           setFilter({
             ...filter,
             disease_mgmt_programs: e,
+          });
+        }}
+      />
+      <MultiSelect<string>
+        label="Insurance Companies"
+        options={facetGroupMap["issuers"].map((e) => [e.value, e.count])}
+        onChangeEnd={(e) => {
+          setFilter({
+            ...filter,
+            issuers: e,
           });
         }}
       />

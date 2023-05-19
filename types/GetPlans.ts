@@ -1,11 +1,14 @@
 import ILocation from "./Location";
 import IHealthPlan from "./HealthPlan";
 import IPerson from "./Person";
+import IFilter from "./Filter";
 
 export interface Request {
   location: ILocation;
   income: number;
   people: IPerson[];
+  filter: IFilter;
+  pageParam: number;
 }
 
 export interface Response {
@@ -23,6 +26,7 @@ export interface Response {
     };
   };
   facet_groups?: FacetGroup[];
+  nextCursor?: number;
 }
 
 interface FacetGroup {

@@ -31,4 +31,4 @@ export const relationshipOptions = [
   "Ward",
 ] as const;
 
-export type Relationship = typeof relationshipOptions[number];
+export type Relationship = (typeof relationshipOptions)[number];
