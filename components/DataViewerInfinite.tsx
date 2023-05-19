@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Flex, Spinner, Text, Card } from "@chakra-ui/react";
+import { Flex, Spinner, Text, Card, SkeletonText } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 
@@ -86,7 +86,7 @@ export default function DataViewerInfinite({ results, filter }: IProps) {
   return (
     <>
       {results.isLoading && <Spinner size="xl" position={"absolute"} />}
-      <Flex direction="column">
+      <Flex direction="column" minW={500}>
         {plans.map((plan) => {
           return (
             <Card key={plan.id} minH={100}>
@@ -98,9 +98,24 @@ export default function DataViewerInfinite({ results, filter }: IProps) {
           );
         })}
 
-        <Text ref={ref} display={isFetching && "none"}>
-          {results.hasNextPage ? "LOADING..." : "NO MORE PAGES!"}
-        </Text>
+        {hasNextPage && (
+          <Flex direction="column">
+            {/* invisible element for tracking when user scrolls to bottom */}
+            <Flex
+              ref={ref}
+              position="absolute"
+              display={isFetching && "none"}
+            />
+            <SkeletonText noOfLines={4} />
+            <SkeletonText noOfLines={4} />
+            <SkeletonText noOfLines={4} />
+            <SkeletonText noOfLines={4} />
+            <SkeletonText noOfLines={4} />
+            <SkeletonText noOfLines={4} />
+            <SkeletonText noOfLines={4} />
+            <SkeletonText noOfLines={4} />
+          </Flex>
+        )}
       </Flex>
     </>
   );

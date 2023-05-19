@@ -4,20 +4,20 @@ import { Select } from "chakra-react-select";
 
 interface IProps<T> {
   label: string;
-  options: T[];
+  options: [T, number][];
   onChangeEnd: (options: T[]) => void;
 }
 
-export default function MultiSelect<T>({
+export default function MultiSelect<T extends string>({
   label,
   options,
   onChangeEnd,
 }: IProps<T>) {
-  const [selected, setSelected] = useState<{ value: T; label: T }[]>([]);
+  const [selected, setSelected] = useState<{ value: T; label: string }[]>([]);
   const optionObjs = options.map((s) => {
     return {
-      value: s,
-      label: s,
+      value: s[0],
+      label: `${s[0]} (${s[1]})`,
     };
   });
   return (
@@ -32,13 +32,8 @@ export default function MultiSelect<T>({
         hideSelectedOptions={false}
         value={selected}
         onChange={(v) => {
+          onChangeEnd(v.map((e) => e.value));
           setSelected([...v]);
-        }}
-        onBlur={() => {
-          onChangeEnd(selected.map((o) => o.value));
-        }}
-        onMenuClose={() => {
-          onChangeEnd(selected.map((o) => o.value));
         }}
       />
     </>

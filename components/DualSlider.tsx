@@ -34,8 +34,10 @@ export default function DualSlider({
         max={rangeExtents.max}
         step={25}
         value={range}
-        onChange={(range) => setRange(range)}
-        onChangeEnd={onChangeEnd}
+        onChange={(range) => {
+          onChangeEnd(range);
+          setRange(range);
+        }}
       >
         <RangeSliderTrack>
           <RangeSliderFilledTrack />

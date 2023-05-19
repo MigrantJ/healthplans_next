@@ -1,10 +1,7 @@
 import IFilter, {
-  metalLevelOptions,
   MetalLevel,
-  diseaseMgmtProgramsOptions,
   DiseaseMgmtPrograms,
   PlanType,
-  planTypeOptions,
 } from "@/types/Filter";
 import { FacetGroup, Facet } from "@/types/MarketplaceSearch";
 import DualSlider from "./DualSlider";
@@ -50,10 +47,12 @@ export default function FilterWidget({
           setFilter({ ...filter, deductible_range: { min, max } })
         }
       />
-      {/* spread is used to remove readonly from list */}
       <MultiSelect<PlanType>
         label="Plan Types"
-        options={[...planTypeOptions]}
+        options={facetGroupMap["types"].map((e) => [
+          e.value as PlanType,
+          e.count,
+        ])}
         onChangeEnd={(e) => {
           setFilter({
             ...filter,
@@ -63,7 +62,10 @@ export default function FilterWidget({
       />
       <MultiSelect<MetalLevel>
         label="Metal Levels"
-        options={[...metalLevelOptions]}
+        options={facetGroupMap["metalLevels"].map((e) => [
+          e.value as MetalLevel,
+          e.count,
+        ])}
         onChangeEnd={(e) => {
           setFilter({
             ...filter,
@@ -71,9 +73,13 @@ export default function FilterWidget({
           });
         }}
       />
+
       <MultiSelect<DiseaseMgmtPrograms>
         label="Medical Management Programs"
-        options={[...diseaseMgmtProgramsOptions]}
+        options={facetGroupMap["diseaseMgmtPrograms"].map((e) => [
+          e.value as DiseaseMgmtPrograms,
+          e.count,
+        ])}
         onChangeEnd={(e) => {
           setFilter({
             ...filter,
@@ -83,7 +89,7 @@ export default function FilterWidget({
       />
       <MultiSelect<string>
         label="Insurance Companies"
-        options={facetGroupMap["issuers"].map((e) => e.value)}
+        options={facetGroupMap["issuers"].map((e) => [e.value, e.count])}
         onChangeEnd={(e) => {
           setFilter({
             ...filter,
