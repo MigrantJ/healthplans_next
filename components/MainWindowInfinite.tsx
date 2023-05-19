@@ -30,14 +30,15 @@ export default function MainWindow() {
     getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
   });
 
-  const { hasNextPage, fetchNextPage } = results;
+  const { data, hasNextPage, fetchNextPage } = results;
 
   useEffect(() => {
     console.log("useEffect");
     if (hasNextPage && inView) {
+      console.log("fetch page");
       void fetchNextPage();
     }
-  }, [hasNextPage, inView, fetchNextPage]);
+  }, [data, inView]);
 
   const facetGroups = results.data?.pages[0].facet_groups || [];
   const ranges = results.data?.pages[0].ranges;
@@ -45,7 +46,7 @@ export default function MainWindow() {
   return (
     <>
       <Flex>
-        <Flex direction="column" paddingX={3} minW={300}>
+        <Flex direction="column" paddingX={3} minW={300} maxW={300}>
           <Heading size="md">Setup</Heading>
           <Divider />
           <Heading size="sm">Location</Heading>
