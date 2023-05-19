@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Divider, Flex, Heading } from "@chakra-ui/react";
+import { Box, Divider, Flex, HStack, Heading } from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
@@ -31,29 +31,25 @@ export default function MainWindow() {
   const ranges = results.data?.pages[0].ranges;
 
   return (
-    <>
-      <Flex>
-        <Flex direction="column" paddingX={3} minW={300} maxW={300}>
-          <Heading size="md">Setup</Heading>
-          <Divider />
-          <Heading size="sm">Location</Heading>
-          <LocationWidget {...{ location, setLocation }} />
-          <Divider />
-          <Heading size="sm">Household</Heading>
-          <IncomeWidget {...{ income, setIncome }} />
-          <PeopleWidget {...{ people, setPeople }} />
-          <Divider />
-          {results.data && (
-            <>
-              <Heading size="sm">Filters</Heading>
-              <FilterWidget {...{ filter, setFilter, facetGroups, ranges }} />
-            </>
-          )}
-        </Flex>
-        <Flex direction="column">
-          <DataViewer {...{ results, filter }} />
-        </Flex>
+    <Flex>
+      <Flex direction="column" paddingX={3} minW={300} maxW={300}>
+        <Heading size="md">Setup</Heading>
+        <Divider />
+        <Heading size="sm">Location</Heading>
+        <LocationWidget {...{ location, setLocation }} />
+        <Divider />
+        <Heading size="sm">Household</Heading>
+        <IncomeWidget {...{ income, setIncome }} />
+        <PeopleWidget {...{ people, setPeople }} />
+        <Divider />
+        {results.data && (
+          <>
+            <Heading size="sm">Filters</Heading>
+            <FilterWidget {...{ filter, setFilter, facetGroups, ranges }} />
+          </>
+        )}
       </Flex>
-    </>
+      <DataViewer {...{ results, filter }} />
+    </Flex>
   );
 }

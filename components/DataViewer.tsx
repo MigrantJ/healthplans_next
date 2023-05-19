@@ -1,11 +1,24 @@
 import { useEffect } from "react";
-import { Flex, Spinner, Text, Card, SkeletonText } from "@chakra-ui/react";
+import {
+  Flex,
+  Text,
+  SkeletonText,
+  TableContainer,
+  Table,
+  TableCaption,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+} from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 
 import * as GetPlans from "@/types/GetPlans";
 import IFilter from "@/types/Filter";
 import IHealthPlan from "@/types/HealthPlan";
+import filterPlans from "@/lib/filterPlans";
 
 interface IProps {
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
@@ -32,91 +45,72 @@ export default function DataViewer({ results, filter }: IProps) {
     return <></>;
   }
 
-  const plans: IHealthPlan[] = results.data.pages.reduce((acc, page) => {
-    acc = acc.concat(
-      page.plans.filter((plan) => {
-        // premium
-        if (
-          filter?.premium_range &&
-          (filter.premium_range.min > plan.premium ||
-            plan.premium > filter.premium_range.max)
-        )
-          return false;
-
-        // deductible
-        if (
-          filter?.deductible_range &&
-          (filter.deductible_range.min > plan.deductibles[0].amount ||
-            plan.deductibles[0].amount > filter.deductible_range.max)
-        )
-          return false;
-
-        // plan types
-        if (filter?.types?.length && !filter.types.includes(plan.type))
-          return false;
-
-        // metal level
-        if (
-          filter?.metal_levels?.length &&
-          !filter.metal_levels.includes(plan.metal_level)
-        )
-          return false;
-
-        // medical management programs
-        if (
-          filter?.disease_mgmt_programs?.length &&
-          !filter.disease_mgmt_programs.every((v) =>
-            plan.disease_mgmt_programs.includes(v)
-          )
-        )
-          return false;
-
-        // issuers
-        if (
-          filter?.issuers?.length &&
-          !filter.issuers.includes(plan.issuer.name)
-        )
-          return false;
-        return true;
-      })
-    );
-    return acc;
-  }, [] as IHealthPlan[]);
+  const filteredPlans: IHealthPlan[] = filterPlans(results.data.pages, filter);
 
   return (
-    <>
-      {results.isLoading && <Spinner size="xl" position={"absolute"} />}
-      <Flex direction="column" minW={500}>
-        {plans.map((plan) => {
-          return (
-            <Card key={plan.id} minH={100}>
-              <Text as="b">{plan.issuer.name}</Text>
-              <Text>{plan.name}</Text>
-              <Text>{plan.premium}</Text>
-              <Text>{plan.deductibles[0].amount}</Text>
-            </Card>
-          );
-        })}
+    <Flex direction="column" margin={"0 auto"}>
+      <TableContainer>
+        <Table variant="striped" colorScheme="gray" size={"sm"}>
+          <TableCaption placement="top">Estimates Only</TableCaption>
+          <Thead>
+            <Tr>
+              <Th minW={300} maxW={500}>
+                <Text>Issuer</Text>
+                <Text>Plan Name</Text>
+              </Th>
+              <Th minW={200} maxW={200}>
+                Premium
+                <svg height={20}>
+                  <rect width={100} height={20} fill="green" />
+                </svg>
+              </Th>
+              <Th minW={350} maxW={350}>
+                Deductible / Max Out-of-Pocket
+              </Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {filteredPlans.map((plan) => {
+              return (
+                <Tr key={plan.id}>
+                  <Td minW={300} maxW={500}>
+                    <Text as="b">{plan.issuer.name}</Text>
+                    <Text overflow={"hidden"} textOverflow={"ellipsis"}>
+                      {plan.name}
+                    </Text>
+                  </Td>
+                  <Td minW={200} maxW={200}>
+                    <svg height={20}>
+                      <rect width={100} height={20} fill="green" />
+                    </svg>
+                  </Td>
+                  <Td minW={350} maxW={350}>
+                    <svg height={20}>
+                      <rect width={100} height={10} fill="cyan" />
+                      <rect y={10} width={100} height={10} fill="blue" />
+                    </svg>
+                  </Td>
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
+      </TableContainer>
 
-        {hasNextPage && (
-          <Flex direction="column">
-            {/* invisible element for tracking when user scrolls to bottom */}
-            <Flex
-              ref={ref}
-              position="absolute"
-              display={isFetching && "none"}
-            />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-          </Flex>
-        )}
-      </Flex>
-    </>
+      {hasNextPage && (
+        <Flex direction="column">
+          {/* invisible element for tracking when user scrolls to bottom */}
+          <Flex ref={ref} position="absolute" display={isFetching && "none"} />
+          <SkeletonText noOfLines={4} />
+          <SkeletonText noOfLines={4} />
+          <SkeletonText noOfLines={4} />
+          <SkeletonText noOfLines={4} />
+          <SkeletonText noOfLines={4} />
+          <SkeletonText noOfLines={4} />
+          <SkeletonText noOfLines={4} />
+          <SkeletonText noOfLines={4} />
+        </Flex>
+      )}
+    </Flex>
   );
 }
