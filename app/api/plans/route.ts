@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
   if (reqBody.income) household["income"] = reqBody.income;
   if (reqBody.people) household["people"] = reqBody.people;
   body["household"] = household;
+  if (reqBody.pageParam) body["offset"] = reqBody.pageParam * 10;
   const res = await Requester.make_request(body);
   if (!res.ok) {
     const resJson = (await res.json()) as MarketplaceSearch.ErrorResponse;
@@ -89,21 +90,5 @@ export async function POST(req: NextRequest) {
     throw new Error(`Error: ${res.status}`);
   }
   const resJson = (await res.json()) as MarketplaceSearch.SuccessResponse;
-  let { plans } = resJson;
-
-  // create an array of JSON request bodies, each of which is for a page of 10 results
-  const pageReqBodies = [];
-  for (let i = 10; i < resJson.total; i += 10) {
-    pageReqBodies.push({ ...body, offset: i });
-  }
-  // gather tasks for fetching those results
-  const tasks = pageReqBodies.map(Requester.make_request);
-  const results = await Promise.all(tasks);
-  for (const result of results) {
-    const pageResJson =
-      (await result.json()) as MarketplaceSearch.SuccessResponse;
-    plans = plans.concat(pageResJson.plans);
-  }
-  resJson.plans = plans;
   return NextResponse.json(resJson);
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Divider, Flex, Heading } from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
@@ -19,20 +19,21 @@ export default function MainWindow() {
   const [people, setPeople] = useState<IPerson[]>([]);
   const [filter, setFilter] = useState<IFilter>();
 
-  const results = useQuery<GetPlans.Response, Error>({
-    queryKey: ["query", { location, income, people, filter }],
+  const results = useInfiniteQuery<GetPlans.Response, Error>({
+    queryKey: ["query", { location, income, people }],
     queryFn: getPlans,
     enabled: !!location,
     keepPreviousData: true,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 
-  const facetGroups = results.data?.facet_groups || [];
-  const ranges = results.data?.ranges;
+  const facetGroups = results.data?.pages[0].facet_groups || [];
+  const ranges = results.data?.pages[0].ranges;
 
   return (
     <>
       <Flex>
-        <Flex direction="column" paddingX={3} minW={300}>
+        <Flex direction="column" paddingX={3} minW={300} maxW={300}>
           <Heading size="md">Setup</Heading>
           <Divider />
           <Heading size="sm">Location</Heading>
@@ -50,7 +51,7 @@ export default function MainWindow() {
           )}
         </Flex>
         <Flex direction="column">
-          <DataViewer {...{ results, income, people }} />
+          <DataViewer {...{ results, filter }} />
         </Flex>
       </Flex>
     </>

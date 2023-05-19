@@ -1,7 +1,7 @@
 "use client";
 import { Box, Flex, Heading } from "@chakra-ui/react";
 
-import MainWindow from "@/components/MainWindowInfinite";
+import MainWindow from "@/components/MainWindow";
 
 export default function IndexPage() {
   return (
