@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Divider, Flex, Heading } from "@chakra-ui/react";
-import { useInView } from "react-intersection-observer";
 
 import { getPlansPage } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
@@ -20,8 +19,6 @@ export default function MainWindow() {
   const [people, setPeople] = useState<IPerson[]>([]);
   const [filter, setFilter] = useState<IFilter>();
 
-  const { ref, inView } = useInView();
-
   const results = useInfiniteQuery<GetPlans.Response, Error>({
     queryKey: ["query", { location, income, people }],
     queryFn: getPlansPage,
@@ -29,16 +26,6 @@ export default function MainWindow() {
     keepPreviousData: true,
     getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
   });
-
-  const { data, hasNextPage, fetchNextPage } = results;
-
-  useEffect(() => {
-    console.log("useEffect");
-    if (hasNextPage && inView) {
-      console.log("fetch page");
-      void fetchNextPage();
-    }
-  }, [data, inView]);
 
   const facetGroups = results.data?.pages[0].facet_groups || [];
   const ranges = results.data?.pages[0].ranges;
@@ -64,7 +51,7 @@ export default function MainWindow() {
           )}
         </Flex>
         <Flex direction="column">
-          <DataViewerInfinite {...{ results, filter }} inViewRef={ref} />
+          <DataViewerInfinite {...{ results, filter }} />
         </Flex>
       </Flex>
     </>

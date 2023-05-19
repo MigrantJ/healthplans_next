@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { Flex, Spinner, Text, Card } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
 
 import * as GetPlans from "@/types/GetPlans";
 import IFilter from "@/types/Filter";
@@ -8,14 +10,19 @@ import IHealthPlan from "@/types/HealthPlan";
 interface IProps {
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
   filter: IFilter;
-  inViewRef: (node?: Element) => void;
 }
 
-export default function DataViewerInfinite({
-  results,
-  filter,
-  inViewRef,
-}: IProps) {
+export default function DataViewerInfinite({ results, filter }: IProps) {
+  const { ref, inView } = useInView();
+
+  const { hasNextPage, fetchNextPage, isFetching } = results;
+
+  useEffect(() => {
+    if (!isFetching && hasNextPage && inView) {
+      void fetchNextPage();
+    }
+  }, [inView]);
+
   // todo: improve error handling
   if (results.isError) {
     return <Text>{results.error.message}</Text>;
@@ -44,6 +51,27 @@ export default function DataViewerInfinite({
         )
           return false;
 
+        // plan types
+        if (filter?.types?.length && !filter.types.includes(plan.type))
+          return false;
+
+        // metal level
+        if (
+          filter?.metal_levels?.length &&
+          !filter.metal_levels.includes(plan.metal_level)
+        )
+          return false;
+
+        // medical management programs
+        if (
+          filter?.disease_mgmt_programs?.length &&
+          !filter.disease_mgmt_programs.every((v) =>
+            plan.disease_mgmt_programs.includes(v)
+          )
+        )
+          return false;
+
+        // issuers
         if (
           filter?.issuers?.length &&
           !filter.issuers.includes(plan.issuer.name)
@@ -64,11 +92,13 @@ export default function DataViewerInfinite({
             <Card key={plan.id} minH={100}>
               <Text as="b">{plan.issuer.name}</Text>
               <Text>{plan.name}</Text>
+              <Text>{plan.premium}</Text>
+              <Text>{plan.deductibles[0].amount}</Text>
             </Card>
           );
         })}
 
-        <Text ref={inViewRef}>
+        <Text ref={ref} display={isFetching && "none"}>
           {results.hasNextPage ? "LOADING..." : "NO MORE PAGES!"}
         </Text>
       </Flex>
