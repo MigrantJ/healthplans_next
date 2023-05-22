@@ -5,11 +5,11 @@ import MainWindow from "@/components/MainWindow";
 
 export default function IndexPage() {
   return (
-    <Flex direction="column">
+    <Box minHeight={"100vh"}>
       <Flex padding="10px">
         <Heading size="lg">HealthCare.gov Next</Heading>
       </Flex>
       <MainWindow />
-    </Flex>
+    </Box>
   );
 }
