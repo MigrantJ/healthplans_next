@@ -1,0 +1,45 @@
+* {
+  /* outline: solid red 1px; */
+  padding: 0;
+  margin:0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+#header {
+  padding: 10px;
+}
+
+#sidebar {
+  padding-inline: 10px;
+  position: sticky;
+  top: 0;
+  max-width: 300px;
+  flex-shrink: 1;
+  align-self: flex-start;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+#planlist {
+  grid-template-columns: minmax(300px, 800px) 150px 250px;
+  margin: 0 auto;
+  flex-shrink: 4;
+  min-height: 100vh;
+  align-content: start;
+}
+
+#planlist > .column-header {
+  padding-inline: 3px;
+  position: sticky;
+  top: 0;
+  background-color: white;
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

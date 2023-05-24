@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Divider, Flex, Heading, Grid } from "@chakra-ui/react";
+import { Divider, Flex, Heading } from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
@@ -31,8 +31,8 @@ export default function MainWindow() {
   const ranges = results.data?.pages[0].ranges;
 
   return (
-    <Grid templateColumns="300px auto">
-      <Flex direction="column" paddingX={3}>
+    <Flex id="mainwindow">
+      <Flex id="sidebar" direction="column">
         <Heading size="md">Setup</Heading>
         <Divider />
         <Heading size="sm">Location</Heading>
@@ -50,6 +50,6 @@ export default function MainWindow() {
         )}
       </Flex>
       <DataViewer {...{ results, filter }} />
-    </Grid>
+    </Flex>
   );
 }

@@ -10,12 +10,12 @@ import {
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import * as d3 from "d3";
-import { Axis, Orient } from "d3-axis-for-react";
 
 import * as GetPlans from "@/types/GetPlans";
 import IFilter from "@/types/Filter";
 import IHealthPlan from "@/types/HealthPlan";
 import filterPlans from "@/lib/filterPlans";
+import PlanlistHeader from "./PlanlistHeader";
 
 interface IProps {
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
@@ -61,15 +61,15 @@ export default function DataViewer({ results, filter }: IProps) {
     .range([0, DEDUCTIBLE_BAR_W]);
 
   const filteredPlans: IHealthPlan[] = filterPlans(results.data.pages, filter);
-  const skeletons = [...Array<null>(5)].map(() => (
+  const skeletons = [...Array<null>(5)].map((_, i) => (
     <>
-      <Box paddingX={`${COL_PADDING}px`} paddingY={2}>
+      <Box key={`skel0_${i}`} paddingX={`${COL_PADDING}px`} paddingY={2}>
         <SkeletonText noOfLines={2} />
       </Box>
-      <Box paddingX={`${COL_PADDING}px`} paddingY={2}>
+      <Box key={`skel1_${i}`} paddingX={`${COL_PADDING}px`} paddingY={2}>
         <Skeleton height={"20px"} />
       </Box>
-      <Box paddingX={`${COL_PADDING}px`} paddingY={2}>
+      <Box key={`skel2_${i}`} paddingX={`${COL_PADDING}px`} paddingY={2}>
         <Skeleton height={"10px"} />
         <Skeleton height={"10px"} />
       </Box>
@@ -77,63 +77,15 @@ export default function DataViewer({ results, filter }: IProps) {
   ));
 
   return (
-    <Grid
-      templateColumns={"auto 150px 250px"}
-      margin={"0 auto"}
-      maxWidth={1000}
-      overflow={"hidden"}
-    >
-      <GridItem colSpan={3} margin={"0 auto"}>
-        Estimates Only
-      </GridItem>
-      <Box paddingX={`${COL_PADDING}px`}>
-        <Text as="b">Issuer</Text>
-        <Text>Plan Name</Text>
-      </Box>
-      <Box paddingX={`${COL_PADDING}px`}>
-        Premium
-        <svg height={20} width={150}>
-          <g transform="translate(2, 0)">
-            <Axis
-              orient={Orient.bottom}
-              scale={xScalePremium}
-              tickValues={[
-                0,
-                premiumExtent[1] * 0.33,
-                premiumExtent[1] * 0.66,
-                premiumExtent[1],
-              ]}
-              tickFormat={(d) => {
-                return Math.ceil(d / 50) * 50;
-              }}
-              tickSizeOuter={0}
-            />
-          </g>
-        </svg>
-      </Box>
-      <Box paddingX={`${COL_PADDING}px`}>
-        Deductible
-        <svg height={20} width={250}>
-          <g transform="translate(2, 0)">
-            <Axis
-              orient={Orient.bottom}
-              scale={xScaleDeductible}
-              tickValues={[
-                0,
-                deductibleExtent[1] * 0.2,
-                deductibleExtent[1] * 0.4,
-                deductibleExtent[1] * 0.6,
-                deductibleExtent[1] * 0.8,
-                deductibleExtent[1],
-              ]}
-              tickFormat={(d) => {
-                return Math.ceil(d / 100) * 100;
-              }}
-              tickSizeOuter={0}
-            />
-          </g>
-        </svg>
-      </Box>
+    <Grid id="planlist">
+      <PlanlistHeader
+        {...{
+          premiumExtent,
+          xScalePremium,
+          deductibleExtent,
+          xScaleDeductible,
+        }}
+      />
       {filteredPlans.map((plan, i) => {
         const bgcolor = i % 2 ? "#E0E0E0" : "#C0C0C0";
         const premiumWidth = xScalePremium(plan.premium);
@@ -148,17 +100,14 @@ export default function DataViewer({ results, filter }: IProps) {
               backgroundColor={bgcolor}
               paddingX={`${COL_PADDING}px`}
             >
-              <Text as="b">{plan.issuer.name}</Text>
-              <Text
-                overflow={"hidden"}
-                textOverflow={"ellipsis"}
-                whiteSpace={"nowrap"}
-              >
-                {plan.name}
+              <Text as="b" className="ellipsis">
+                {plan.issuer.name}
               </Text>
+              <Text className="ellipsis">{plan.name}</Text>
             </Box>
             <Box
               key={`${plan.id}_premium`}
+              minW={0}
               backgroundColor={bgcolor}
               paddingX={`${COL_PADDING}px`}
               paddingY={"10px"}
@@ -185,7 +134,7 @@ export default function DataViewer({ results, filter }: IProps) {
       {hasNextPage && (
         <>
           {/* invisible element for tracking when user scrolls to bottom */}
-          <Box ref={ref} display={isFetching && "none"} />
+          <GridItem ref={ref} display={isFetching && "none"} colSpan={3} />
           {skeletons}
         </>
       )}
