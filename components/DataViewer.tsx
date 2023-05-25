@@ -49,18 +49,24 @@ export default function DataViewer({ results, filter }: IProps) {
   const plans: IHealthPlan[] = results.data.pages.reduce((acc, page) => {
     return acc.concat(page.plans);
   }, [] as IHealthPlan[]);
-  const premiumExtent = d3.extent(plans, (p) => p.premium);
+  const premiumExtent: [number, number] = [
+    results.data.pages[0].ranges.premiums.min,
+    results.data.pages[0].ranges.premiums.max,
+  ];
   const xScalePremium = d3
     .scaleLinear()
     .domain([0, premiumExtent[1]])
     .range([0, PREMIUM_BAR_W]);
-  const deductibleExtent = d3.extent(plans, (p) => p.moops[0].amount);
+  const deductibleExtent: [number, number] = [
+    results.data.pages[0].ranges.deductibles.min,
+    results.data.pages[0].ranges.deductibles.max,
+  ];
   const xScaleDeductible = d3
     .scaleLinear()
     .domain([0, deductibleExtent[1]])
     .range([0, DEDUCTIBLE_BAR_W]);
 
-  const filteredPlans: IHealthPlan[] = filterPlans(results.data.pages, filter);
+  const filteredPlans: IHealthPlan[] = filterPlans(plans, filter);
   const skeletons = [...Array<null>(5)].map((_, i) => (
     <>
       <Box key={`skel0_${i}`} paddingX={`${COL_PADDING}px`} paddingY={2}>
@@ -96,7 +102,7 @@ export default function DataViewer({ results, filter }: IProps) {
             {/* min width is necessary for the ellipsis overflow to work */}
             <Box
               key={`${plan.id}_name`}
-              minW={0}
+              className="plan-name-container"
               backgroundColor={bgcolor}
               paddingX={`${COL_PADDING}px`}
             >
@@ -107,24 +113,35 @@ export default function DataViewer({ results, filter }: IProps) {
             </Box>
             <Box
               key={`${plan.id}_premium`}
+              className="plan-premium-container"
               minW={0}
               backgroundColor={bgcolor}
               paddingX={`${COL_PADDING}px`}
               paddingY={"10px"}
             >
-              <svg height={20} width={premiumWidth}>
-                <rect width={premiumWidth} height={20} fill="green" />
+              <svg height={30} width={premiumWidth}>
+                <rect width={premiumWidth} height={30} fill="green" />
+                <text x={5} y={20} fill="white">
+                  {plan.premium}
+                </text>
               </svg>
             </Box>
             <Box
               key={`${plan.id}_deductible`}
+              className="plan-deductible-container"
               backgroundColor={bgcolor}
               paddingX={`${COL_PADDING}px`}
               paddingY={"10px"}
             >
-              <svg height={20} width={Math.max(deductibleWidth, moopWidth)}>
-                <rect width={deductibleWidth} height={10} fill="cyan" />
-                <rect y={10} width={moopWidth} height={10} fill="blue" />
+              <svg height={30} width={Math.max(deductibleWidth, moopWidth)}>
+                <rect width={deductibleWidth} height={15} fill="cyan" />
+                <text x={5} y={13} fontSize={"16px"}>
+                  {plan.deductibles[0].amount}
+                </text>
+                <rect y={15} width={moopWidth} height={15} fill="teal" />
+                <text x={5} y={27}>
+                  {plan.moops[0].amount}
+                </text>
               </svg>
             </Box>
           </>
