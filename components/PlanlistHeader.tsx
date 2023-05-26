@@ -19,7 +19,6 @@ export default function PlanlistHeader({
       <GridItem colSpan={3} margin={"0 auto"}>
         Estimates Only
       </GridItem>
-      <GridItem colSpan={3}></GridItem>
       <Box className="column-header">
         <Text as="b">Issuer</Text>
         <Text>Plan Name</Text>

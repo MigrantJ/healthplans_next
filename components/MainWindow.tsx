@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Divider, Flex, Heading } from "@chakra-ui/react";
+import { Divider, Flex, Heading, Grid, Button } from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
@@ -18,6 +18,7 @@ export default function MainWindow() {
   const [income, setIncome] = useState(0);
   const [people, setPeople] = useState<IPerson[]>([]);
   const [filter, setFilter] = useState<IFilter>();
+  const [showResults, setShowResults] = useState(false);
 
   const results = useInfiniteQuery<GetPlans.Response, Error>({
     queryKey: ["query", { location, income, people }],
@@ -31,8 +32,8 @@ export default function MainWindow() {
   const ranges = results.data?.pages[0].ranges;
 
   return (
-    <Flex id="mainwindow">
-      <Flex id="sidebar" direction="column">
+    <Grid id="mainwindow">
+      <Flex id="sidebar" direction="column" display={showResults && "none"}>
         <Heading size="md">Setup</Heading>
         <Divider />
         <Heading size="sm">Location</Heading>
@@ -48,8 +49,45 @@ export default function MainWindow() {
             <FilterWidget {...{ filter, setFilter, facetGroups, ranges }} />
           </>
         )}
+        <Flex
+          id="sidebar-resultbutton"
+          style={{
+            bottom: 0,
+            position: "sticky",
+            backgroundColor: "white",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            size={"lg"}
+            onClick={() => {
+              setShowResults(true);
+            }}
+          >
+            See Results
+          </Button>
+        </Flex>
       </Flex>
-      <DataViewer {...{ results, filter }} />
-    </Flex>
+      {showResults && (
+        <Flex
+          style={{
+            top: 0,
+            position: "sticky",
+            backgroundColor: "white",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            size={"lg"}
+            onClick={() => {
+              setShowResults(false);
+            }}
+          >
+            See Filters
+          </Button>
+        </Flex>
+      )}
+      <DataViewer {...{ results, filter, showResults, setShowResults }} />
+    </Grid>
   );
 }

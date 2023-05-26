@@ -6,9 +6,12 @@ import {
   Grid,
   Box,
   GridItem,
+  Flex,
+  Button,
 } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
+import { useMediaQuery } from "react-responsive";
 import * as d3 from "d3";
 
 import * as GetPlans from "@/types/GetPlans";
@@ -20,9 +23,10 @@ import PlanlistHeader from "./PlanlistHeader";
 interface IProps {
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
   filter: IFilter;
+  showResults: boolean;
 }
 
-export default function DataViewer({ results, filter }: IProps) {
+export default function DataViewer({ results, filter, showResults }: IProps) {
   const { ref, inView } = useInView();
 
   const { hasNextPage, fetchNextPage, isFetching } = results;
@@ -32,6 +36,8 @@ export default function DataViewer({ results, filter }: IProps) {
       void fetchNextPage();
     }
   }, [inView, fetchNextPage]);
+
+  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
   // todo: improve error handling
   if (results.isError) {
@@ -83,7 +89,7 @@ export default function DataViewer({ results, filter }: IProps) {
   ));
 
   return (
-    <Grid id="planlist">
+    <Grid id="planlist" display={isMobile && !showResults ? "none" : "grid"}>
       <PlanlistHeader
         {...{
           premiumExtent,

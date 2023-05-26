@@ -12,15 +12,23 @@
   padding: 10px;
 }
 
+#mainwindow {
+  grid-template-columns: 300px auto;
+  /* min-height: 100vh; */
+}
+
 #sidebar {
   padding-inline: 10px;
   position: sticky;
   top: 0;
-  max-width: 300px;
   flex-shrink: 1;
   align-self: flex-start;
   overflow-y: auto;
   max-height: 100vh;
+}
+
+#sidebar-resultbutton {
+  display: none;
 }
 
 #planlist {
@@ -50,8 +58,12 @@
 
 /* Small devices (portrait tablets and large phones, 768px and down) */
 @media only screen and (max-width: 768px) {
-  #sidebar {
-    display: none;
+  #mainwindow {
+    grid-template-columns: auto;
+  }
+
+  #sidebar-resultbutton {
+    display: flex;
   }
 
   #planlist {
@@ -60,6 +72,7 @@
 
   #planlist > .column-header {
     display: none;
+    position: initial;
   }
 
   .plan-name-container {
