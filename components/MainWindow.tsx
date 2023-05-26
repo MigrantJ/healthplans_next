@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Divider, Flex, Heading, Grid, Button } from "@chakra-ui/react";
+import { useMediaQuery } from "react-responsive";
 
 import { getPlans } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
@@ -20,6 +21,8 @@ export default function MainWindow() {
   const [filter, setFilter] = useState<IFilter>();
   const [showResults, setShowResults] = useState(false);
 
+  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+
   const results = useInfiniteQuery<GetPlans.Response, Error>({
     queryKey: ["query", { location, income, people }],
     queryFn: getPlans,
@@ -33,7 +36,23 @@ export default function MainWindow() {
 
   return (
     <Grid id="mainwindow">
-      <Flex id="sidebar" direction="column" display={showResults && "none"}>
+      {isMobile && results.data && (
+        <Flex id="mobile-result-toggle">
+          <Button
+            size={"lg"}
+            onClick={() => {
+              setShowResults(!showResults);
+            }}
+          >
+            {showResults ? "See Filters" : "See Plans"}
+          </Button>
+        </Flex>
+      )}
+      <Flex
+        id="sidebar"
+        direction="column"
+        display={isMobile && showResults ? "none" : "flex"}
+      >
         <Heading size="md">Setup</Heading>
         <Divider />
         <Heading size="sm">Location</Heading>
@@ -49,45 +68,10 @@ export default function MainWindow() {
             <FilterWidget {...{ filter, setFilter, facetGroups, ranges }} />
           </>
         )}
-        <Flex
-          id="sidebar-resultbutton"
-          style={{
-            bottom: 0,
-            position: "sticky",
-            backgroundColor: "white",
-            justifyContent: "center",
-          }}
-        >
-          <Button
-            size={"lg"}
-            onClick={() => {
-              setShowResults(true);
-            }}
-          >
-            See Results
-          </Button>
-        </Flex>
       </Flex>
-      {showResults && (
-        <Flex
-          style={{
-            top: 0,
-            position: "sticky",
-            backgroundColor: "white",
-            justifyContent: "center",
-          }}
-        >
-          <Button
-            size={"lg"}
-            onClick={() => {
-              setShowResults(false);
-            }}
-          >
-            See Filters
-          </Button>
-        </Flex>
-      )}
-      <DataViewer {...{ results, filter, showResults, setShowResults }} />
+      <Grid id="planlist" display={isMobile && !showResults ? "none" : "grid"}>
+        <DataViewer {...{ results, filter }} />
+      </Grid>
     </Grid>
   );
 }

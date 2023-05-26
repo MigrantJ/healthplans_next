@@ -6,12 +6,10 @@ import {
   Grid,
   Box,
   GridItem,
-  Flex,
-  Button,
 } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
-import { useMediaQuery } from "react-responsive";
+
 import * as d3 from "d3";
 
 import * as GetPlans from "@/types/GetPlans";
@@ -23,10 +21,9 @@ import PlanlistHeader from "./PlanlistHeader";
 interface IProps {
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
   filter: IFilter;
-  showResults: boolean;
 }
 
-export default function DataViewer({ results, filter, showResults }: IProps) {
+export default function DataViewer({ results, filter }: IProps) {
   const { ref, inView } = useInView();
 
   const { hasNextPage, fetchNextPage, isFetching } = results;
@@ -36,8 +33,6 @@ export default function DataViewer({ results, filter, showResults }: IProps) {
       void fetchNextPage();
     }
   }, [inView, fetchNextPage]);
-
-  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
   // todo: improve error handling
   if (results.isError) {
@@ -75,7 +70,12 @@ export default function DataViewer({ results, filter, showResults }: IProps) {
   const filteredPlans: IHealthPlan[] = filterPlans(plans, filter);
   const skeletons = [...Array<null>(5)].map((_, i) => (
     <>
-      <Box key={`skel0_${i}`} paddingX={`${COL_PADDING}px`} paddingY={2}>
+      <Box
+        key={`skel0_${i}`}
+        paddingX={`${COL_PADDING}px`}
+        paddingY={2}
+        className="plan-name-container"
+      >
         <SkeletonText noOfLines={2} />
       </Box>
       <Box key={`skel1_${i}`} paddingX={`${COL_PADDING}px`} paddingY={2}>
@@ -89,7 +89,7 @@ export default function DataViewer({ results, filter, showResults }: IProps) {
   ));
 
   return (
-    <Grid id="planlist" display={isMobile && !showResults ? "none" : "grid"}>
+    <>
       <PlanlistHeader
         {...{
           premiumExtent,
@@ -105,7 +105,6 @@ export default function DataViewer({ results, filter, showResults }: IProps) {
         const moopWidth = xScaleDeductible(plan.moops[0].amount);
         return (
           <>
-            {/* min width is necessary for the ellipsis overflow to work */}
             <Box
               key={`${plan.id}_name`}
               className="plan-name-container"
@@ -161,6 +160,6 @@ export default function DataViewer({ results, filter, showResults }: IProps) {
           {skeletons}
         </>
       )}
-    </Grid>
+    </>
   );
 }
