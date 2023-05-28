@@ -24,8 +24,8 @@ export default function PlanlistHeader({
         <Text>Plan Name</Text>
       </Box>
       <Box className="column-header">
-        Premium
-        <svg height={20} width={150}>
+        <Text as="b">Premium</Text>
+        <svg height={20} width={xScalePremium(premiumExtent[1]) + 20}>
           <g transform="translate(2, 18)">
             <Axis
               orient={Orient.top}
@@ -37,7 +37,7 @@ export default function PlanlistHeader({
                 premiumExtent[1],
               ]}
               tickFormat={(d) => {
-                return Math.ceil(d / 50) * 50;
+                return Math.ceil(d / 10) * 10;
               }}
               tickSizeOuter={0}
             />
@@ -45,7 +45,7 @@ export default function PlanlistHeader({
         </svg>
       </Box>
       <Box className="column-header">
-        Deductible
+        <Text as="b">Deductible</Text>
         <svg height={20} width={xScaleDeductible(deductibleExtent[1]) + 20}>
           <g transform="translate(2, 18)">
             <Axis

@@ -69,7 +69,11 @@ export default function MainWindow() {
           </>
         )}
       </Flex>
-      <Grid id="planlist" display={isMobile && !showResults ? "none" : "grid"}>
+      <Grid
+        id="planlist"
+        display={isMobile && !showResults ? "none" : "grid"}
+        onClick={(e) => console.log(e.pageX, e.pageY)}
+      >
         <DataViewer {...{ results, filter }} />
       </Grid>
     </Grid>

@@ -1,12 +1,5 @@
 import { useEffect } from "react";
-import {
-  Text,
-  Skeleton,
-  SkeletonText,
-  Grid,
-  Box,
-  GridItem,
-} from "@chakra-ui/react";
+import { Text, Skeleton, SkeletonText, Box, GridItem } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 
@@ -43,9 +36,8 @@ export default function DataViewer({ results, filter }: IProps) {
     return <></>;
   }
 
-  const COL_PADDING = 3;
-  const PREMIUM_BAR_W = 125;
-  const DEDUCTIBLE_BAR_W = 225;
+  const PREMIUM_BAR_W = 135;
+  const DEDUCTIBLE_BAR_W = 235;
 
   const plans: IHealthPlan[] = results.data.pages.reduce((acc, page) => {
     return acc.concat(page.plans);
@@ -70,20 +62,15 @@ export default function DataViewer({ results, filter }: IProps) {
   const filteredPlans: IHealthPlan[] = filterPlans(plans, filter);
   const skeletons = [...Array<null>(5)].map((_, i) => (
     <>
-      <Box
-        key={`skel0_${i}`}
-        paddingX={`${COL_PADDING}px`}
-        paddingY={2}
-        className="plan-name-container"
-      >
-        <SkeletonText noOfLines={2} />
+      <Box key={`skel0_${i}`} className="plan-name-skel">
+        <SkeletonText noOfLines={2} skeletonHeight={"15px"} />
       </Box>
-      <Box key={`skel1_${i}`} paddingX={`${COL_PADDING}px`} paddingY={2}>
-        <Skeleton height={"20px"} />
+      <Box key={`skel1_${i}`} className="plan-premium-skel">
+        <Skeleton height={"25px"} />
       </Box>
-      <Box key={`skel2_${i}`} paddingX={`${COL_PADDING}px`} paddingY={2}>
-        <Skeleton height={"10px"} />
-        <Skeleton height={"10px"} />
+      <Box key={`skel2_${i}`} className="plan-deductible-skel">
+        <Skeleton height={"12px"} />
+        <Skeleton height={"12px"} />
       </Box>
     </>
   ));
@@ -107,9 +94,8 @@ export default function DataViewer({ results, filter }: IProps) {
           <>
             <Box
               key={`${plan.id}_name`}
-              className="plan-name-container"
+              className="plan-cell plan-name-container"
               backgroundColor={bgcolor}
-              paddingX={`${COL_PADDING}px`}
             >
               <Text as="b" className="ellipsis">
                 {plan.issuer.name}
@@ -118,13 +104,11 @@ export default function DataViewer({ results, filter }: IProps) {
             </Box>
             <Box
               key={`${plan.id}_premium`}
-              className="plan-premium-container"
-              minW={0}
+              className="plan-cell plan-premium-container"
               backgroundColor={bgcolor}
-              paddingX={`${COL_PADDING}px`}
-              paddingY={"10px"}
             >
-              <svg height={30} width={premiumWidth}>
+              <svg height={30} width={premiumWidth} overflow={"visible"}>
+                <rect width={PREMIUM_BAR_W} height={30} fill="darkgreen" />
                 <rect width={premiumWidth} height={30} fill="green" />
                 <text x={5} y={20} fill="white">
                   {plan.premium}
@@ -133,17 +117,26 @@ export default function DataViewer({ results, filter }: IProps) {
             </Box>
             <Box
               key={`${plan.id}_deductible`}
-              className="plan-deductible-container"
+              className="plan-cell plan-deductible-container"
               backgroundColor={bgcolor}
-              paddingX={`${COL_PADDING}px`}
-              paddingY={"10px"}
             >
-              <svg height={30} width={Math.max(deductibleWidth, moopWidth)}>
+              <svg
+                height={30}
+                width={Math.max(deductibleWidth, moopWidth)}
+                overflow={"visible"}
+              >
+                <rect width={DEDUCTIBLE_BAR_W} height={15} fill="darkcyan" />
                 <rect width={deductibleWidth} height={15} fill="cyan" />
                 <text x={5} y={13} fontSize={"16px"}>
                   {plan.deductibles[0].amount}
                 </text>
-                <rect y={15} width={moopWidth} height={15} fill="teal" />
+                <rect
+                  y={15}
+                  width={DEDUCTIBLE_BAR_W}
+                  height={15}
+                  fill="darkcyan"
+                />
+                <rect y={15} width={moopWidth} height={15} fill="cyan" />
                 <text x={5} y={27}>
                   {plan.moops[0].amount}
                 </text>
@@ -156,7 +149,7 @@ export default function DataViewer({ results, filter }: IProps) {
       {hasNextPage && (
         <>
           {/* invisible element for tracking when user scrolls to bottom */}
-          <GridItem ref={ref} display={isFetching && "none"} colSpan={3} />
+          <GridItem ref={ref} id="scroll-ref" display={isFetching && "none"} />
           {skeletons}
         </>
       )}
