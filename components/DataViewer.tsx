@@ -1,11 +1,18 @@
-import { useEffect } from "react";
-import { Flex, Spinner, Text, Card, SkeletonText } from "@chakra-ui/react";
+import React, { useState, useEffect } from "react";
+import { Text, Box, GridItem } from "@chakra-ui/react";
+import { useDisclosure } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
+
+import * as d3 from "d3";
 
 import * as GetPlans from "@/types/GetPlans";
 import IFilter from "@/types/Filter";
 import IHealthPlan from "@/types/HealthPlan";
+import filterPlans from "@/lib/filterPlans";
+import PlanlistHeader from "./PlanlistHeader";
+import PlanSkeleton from "./PlanSkeleton";
+import PlanModal from "./PlanModal";
 
 interface IProps {
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
@@ -13,15 +20,16 @@ interface IProps {
 }
 
 export default function DataViewer({ results, filter }: IProps) {
+  const [modalPlan, setModalPlan] = useState<IHealthPlan>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { ref, inView } = useInView();
-
   const { hasNextPage, fetchNextPage, isFetching } = results;
 
   useEffect(() => {
-    if (!isFetching && hasNextPage && inView) {
+    if (inView) {
       void fetchNextPage();
     }
-  }, [inView]);
+  }, [inView, fetchNextPage]);
 
   // todo: improve error handling
   if (results.isError) {
@@ -32,91 +40,113 @@ export default function DataViewer({ results, filter }: IProps) {
     return <></>;
   }
 
+  const PREMIUM_BAR_W = 135;
+  const DEDUCTIBLE_BAR_W = 235;
+
   const plans: IHealthPlan[] = results.data.pages.reduce((acc, page) => {
-    acc = acc.concat(
-      page.plans.filter((plan) => {
-        // premium
-        if (
-          filter?.premium_range &&
-          (filter.premium_range.min > plan.premium ||
-            plan.premium > filter.premium_range.max)
-        )
-          return false;
-
-        // deductible
-        if (
-          filter?.deductible_range &&
-          (filter.deductible_range.min > plan.deductibles[0].amount ||
-            plan.deductibles[0].amount > filter.deductible_range.max)
-        )
-          return false;
-
-        // plan types
-        if (filter?.types?.length && !filter.types.includes(plan.type))
-          return false;
-
-        // metal level
-        if (
-          filter?.metal_levels?.length &&
-          !filter.metal_levels.includes(plan.metal_level)
-        )
-          return false;
-
-        // medical management programs
-        if (
-          filter?.disease_mgmt_programs?.length &&
-          !filter.disease_mgmt_programs.every((v) =>
-            plan.disease_mgmt_programs.includes(v)
-          )
-        )
-          return false;
-
-        // issuers
-        if (
-          filter?.issuers?.length &&
-          !filter.issuers.includes(plan.issuer.name)
-        )
-          return false;
-        return true;
-      })
-    );
-    return acc;
+    return acc.concat(page.plans);
   }, [] as IHealthPlan[]);
+  const premiumExtent: [number, number] = [
+    results.data.pages[0].ranges.premiums.min,
+    results.data.pages[0].ranges.premiums.max,
+  ];
+  const xScalePremium = d3
+    .scaleLinear()
+    .domain([0, premiumExtent[1]])
+    .range([0, PREMIUM_BAR_W]);
+  const deductibleExtent: [number, number] = [
+    results.data.pages[0].ranges.deductibles.min,
+    results.data.pages[0].ranges.deductibles.max,
+  ];
+  const xScaleDeductible = d3
+    .scaleLinear()
+    .domain([0, deductibleExtent[1]])
+    .range([0, DEDUCTIBLE_BAR_W]);
+
+  const filteredPlans: IHealthPlan[] = filterPlans(plans, filter);
+
+  const openPlanModal = (index: number) => {
+    setModalPlan(filteredPlans[index]);
+    onOpen();
+  };
 
   return (
     <>
-      {results.isLoading && <Spinner size="xl" position={"absolute"} />}
-      <Flex direction="column" minW={500}>
-        {plans.map((plan) => {
-          return (
-            <Card key={plan.id} minH={100}>
-              <Text as="b">{plan.issuer.name}</Text>
-              <Text>{plan.name}</Text>
-              <Text>{plan.premium}</Text>
-              <Text>{plan.deductibles[0].amount}</Text>
-            </Card>
-          );
-        })}
+      <PlanModal {...{ isOpen, onClose, modalPlan }} />
+      <PlanlistHeader
+        {...{
+          premiumExtent,
+          xScalePremium,
+          deductibleExtent,
+          xScaleDeductible,
+        }}
+      />
+      {filteredPlans.map((plan, i) => {
+        const bgcolor = i % 2 ? "#E0E0E0" : "#C0C0C0";
+        const premiumWidth = xScalePremium(plan.premium);
+        const deductibleWidth = xScaleDeductible(plan.deductibles[0].amount);
+        const moopWidth = xScaleDeductible(plan.moops[0].amount);
+        return (
+          <React.Fragment key={plan.id}>
+            <Box
+              className="plan-cell plan-name-container"
+              backgroundColor={bgcolor}
+              onClick={(_) => openPlanModal(i)}
+            >
+              <Text className="ellipsis">{plan.issuer.name}</Text>
+              <Text className="ellipsis bold">{plan.name}</Text>
+            </Box>
+            <Box
+              className="plan-cell plan-premium-container"
+              backgroundColor={bgcolor}
+              onClick={(_) => openPlanModal(i)}
+            >
+              <svg height={30} width={premiumWidth} overflow={"visible"}>
+                <rect width={PREMIUM_BAR_W} height={30} fill="darkgreen" />
+                <rect width={premiumWidth} height={30} fill="green" />
+                <text x={5} y={20} fill="white">
+                  ${plan.premium}
+                </text>
+              </svg>
+            </Box>
+            <Box
+              className="plan-cell plan-deductible-container"
+              backgroundColor={bgcolor}
+              onClick={(_) => openPlanModal(i)}
+            >
+              <svg
+                height={30}
+                width={Math.max(deductibleWidth, moopWidth)}
+                overflow={"visible"}
+              >
+                <rect width={DEDUCTIBLE_BAR_W} height={15} fill="darkcyan" />
+                <rect width={deductibleWidth} height={15} fill="cyan" />
+                <text x={5} y={13} fontSize={"16px"}>
+                  ${plan.deductibles[0].amount}
+                </text>
+                <rect
+                  y={17}
+                  width={DEDUCTIBLE_BAR_W}
+                  height={15}
+                  fill="darkcyan"
+                />
+                <rect y={17} width={moopWidth} height={15} fill="cyan" />
+                <text x={5} y={29}>
+                  ${plan.moops[0].amount}
+                </text>
+              </svg>
+            </Box>
+          </React.Fragment>
+        );
+      })}
 
-        {hasNextPage && (
-          <Flex direction="column">
-            {/* invisible element for tracking when user scrolls to bottom */}
-            <Flex
-              ref={ref}
-              position="absolute"
-              display={isFetching && "none"}
-            />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-            <SkeletonText noOfLines={4} />
-          </Flex>
-        )}
-      </Flex>
+      {hasNextPage && (
+        <>
+          {/* invisible element for tracking when user scrolls to bottom */}
+          <GridItem ref={ref} id="scroll-ref" display={isFetching && "none"} />
+          <PlanSkeleton />
+        </>
+      )}
     </>
   );
 }

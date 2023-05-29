@@ -1,17 +1,27 @@
 "use client";
-import { Box, Flex, Heading } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { Box, Flex, Heading, Spacer, Spinner } from "@chakra-ui/react";
+import { useMediaQuery } from "react-responsive";
+import "../styles/global.css";
 
 import MainWindow from "@/components/MainWindow";
 
 export default function IndexPage() {
+  const [mounted, setMounted] = useState(false);
+  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  // useMediaQuery relies on client-side libraries, so rendering must wait until hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
-    <Box>
-      <Flex h="100vh" direction="column">
-        <Flex padding="10px">
-          <Heading size="lg">HealthCare.gov Next</Heading>
-        </Flex>
-        <MainWindow />
+    <Box id="root">
+      <Flex id="header">
+        <Heading size="lg">HealthCare.gov Next</Heading>
+        <Spacer />
+        <Heading size="md">About</Heading>
       </Flex>
+      {!mounted ? <Spinner /> : <MainWindow {...{ isMobile }} />}
     </Box>
   );
 }
