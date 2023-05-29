@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Text, Box, GridItem } from "@chakra-ui/react";
+import { Text, Box, GridItem, Icon } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
-
 import * as d3 from "d3";
+import { RiBookmarkFill, RiBookmarkLine } from "react-icons/ri";
 
 import * as GetPlans from "@/types/GetPlans";
 import IFilter from "@/types/Filter";
@@ -21,6 +21,10 @@ interface IProps {
 
 export default function DataViewer({ results, filter }: IProps) {
   const [modalPlan, setModalPlan] = useState<IHealthPlan>(null);
+  const [savedPlans, setSavedPlans] = useState<Map<string, IHealthPlan>>(
+    new Map()
+  );
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { ref, inView } = useInView();
   const { hasNextPage, fetchNextPage, isFetching } = results;
@@ -70,6 +74,16 @@ export default function DataViewer({ results, filter }: IProps) {
     onOpen();
   };
 
+  const savePlan = (plan: IHealthPlan) => {
+    const clonedMap = new Map(savedPlans);
+    if (clonedMap.has(plan.id)) {
+      clonedMap.delete(plan.id);
+    } else {
+      clonedMap.set(plan.id, plan);
+    }
+    setSavedPlans(clonedMap);
+  };
+
   return (
     <>
       <PlanModal {...{ isOpen, onClose, modalPlan }} />
@@ -89,6 +103,17 @@ export default function DataViewer({ results, filter }: IProps) {
         return (
           <React.Fragment key={plan.id}>
             <Box
+              className="plan-cell plan-bookmark-container"
+              backgroundColor={bgcolor}
+              onClick={(_) => savePlan(plan)}
+            >
+              <Icon
+                as={savedPlans.has(plan.id) ? RiBookmarkFill : RiBookmarkLine}
+                boxSize={7}
+                marginTop="10px"
+              />
+            </Box>
+            <Box
               className="plan-cell plan-name-container"
               backgroundColor={bgcolor}
               onClick={(_) => openPlanModal(i)}
@@ -101,6 +126,7 @@ export default function DataViewer({ results, filter }: IProps) {
               backgroundColor={bgcolor}
               onClick={(_) => openPlanModal(i)}
             >
+              <Text className="premium-bar-label">Premium</Text>
               <svg height={30} width={premiumWidth} overflow={"visible"}>
                 <rect width={PREMIUM_BAR_W} height={30} fill="darkgreen" />
                 <rect width={premiumWidth} height={30} fill="green" />
@@ -114,6 +140,9 @@ export default function DataViewer({ results, filter }: IProps) {
               backgroundColor={bgcolor}
               onClick={(_) => openPlanModal(i)}
             >
+              <Text className="deductible-bar-label">
+                Deductible / Max Out-Of-Pocket
+              </Text>
               <svg
                 height={30}
                 width={Math.max(deductibleWidth, moopWidth)}
@@ -121,7 +150,7 @@ export default function DataViewer({ results, filter }: IProps) {
               >
                 <rect width={DEDUCTIBLE_BAR_W} height={15} fill="darkcyan" />
                 <rect width={deductibleWidth} height={15} fill="cyan" />
-                <text x={5} y={13} fontSize={"16px"}>
+                <text x={5} y={12}>
                   ${plan.deductibles[0].amount}
                 </text>
                 <rect

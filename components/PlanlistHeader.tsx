@@ -16,9 +16,10 @@ export default function PlanlistHeader({
 }: IProps) {
   return (
     <>
-      <GridItem colSpan={3} margin={"0 auto"}>
+      <GridItem colSpan={4} margin={"0 auto"}>
         Estimates Only
       </GridItem>
+      <Box className="column-header"></Box>
       <Box className="column-header">
         <Text as="b">Issuer</Text>
         <Text>Plan Name</Text>

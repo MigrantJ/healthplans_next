@@ -40,7 +40,7 @@ export default function MainWindow({ isMobile }: IProps) {
       {isMobile && results.data && (
         <Flex id="mobile-result-toggle">
           <Button
-            size={"lg"}
+            size="md"
             onClick={() => {
               setShowResults(!showResults);
             }}

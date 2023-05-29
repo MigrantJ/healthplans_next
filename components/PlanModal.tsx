@@ -10,7 +10,6 @@ import {
   Link,
   Heading,
   Icon,
-  Tooltip,
   Table,
   Thead,
   Th,
