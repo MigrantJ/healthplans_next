@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Divider, Flex, Heading, Grid, Button } from "@chakra-ui/react";
-import { useMediaQuery } from "react-responsive";
 
 import { getPlans } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
@@ -14,14 +13,16 @@ import PeopleWidget from "./PeopleWidget";
 import FilterWidget from "./FilterWidget";
 import DataViewer from "./DataViewer";
 
-export default function MainWindow() {
+interface IProps {
+  isMobile: boolean;
+}
+
+export default function MainWindow({ isMobile }: IProps) {
   const [location, setLocation] = useState<ILocation>();
   const [income, setIncome] = useState(0);
   const [people, setPeople] = useState<IPerson[]>([]);
   const [filter, setFilter] = useState<IFilter>();
-  const [showResults, setShowResults] = useState(false);
-
-  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const [showResults, setShowResults] = useState(!isMobile);
 
   const results = useInfiniteQuery<GetPlans.Response, Error>({
     queryKey: ["query", { location, income, people }],
@@ -69,11 +70,7 @@ export default function MainWindow() {
           </>
         )}
       </Flex>
-      <Grid
-        id="planlist"
-        display={isMobile && !showResults ? "none" : "grid"}
-        onClick={(e) => console.log(e.pageX, e.pageY)}
-      >
+      <Grid id="planlist" display={isMobile && !showResults ? "none" : "grid"}>
         <DataViewer {...{ results, filter }} />
       </Grid>
     </Grid>
