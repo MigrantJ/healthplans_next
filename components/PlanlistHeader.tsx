@@ -16,8 +16,8 @@ export default function PlanlistHeader({
 }: IProps) {
   return (
     <>
-      <GridItem colSpan={4} margin={"0 auto"}>
-        Estimates Only
+      <GridItem id="estimate-notice">
+        <Text>Note: Estimates Only</Text>
       </GridItem>
       <Box className="column-header"></Box>
       <Box className="column-header">

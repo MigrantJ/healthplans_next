@@ -13,6 +13,7 @@ import filterPlans from "@/lib/filterPlans";
 import PlanlistHeader from "./PlanlistHeader";
 import PlanSkeleton from "./PlanSkeleton";
 import PlanModal from "./PlanModal";
+import InvalidStateMessage from "./InvalidStateMessage";
 
 interface IProps {
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
@@ -42,6 +43,17 @@ export default function DataViewer({ results, filter }: IProps) {
 
   if (!results.data) {
     return <></>;
+  }
+
+  const altResponse = results.data.pages[0].alt_data;
+  if (altResponse) {
+    if (altResponse.type === "InvalidState") {
+      return (
+        <Box gridColumn="1 / 5">
+          <InvalidStateMessage {...altResponse} />
+        </Box>
+      );
+    }
   }
 
   const PREMIUM_BAR_W = 135;
@@ -96,15 +108,13 @@ export default function DataViewer({ results, filter }: IProps) {
         }}
       />
       {filteredPlans.map((plan, i) => {
-        const bgcolor = i % 2 ? "#E0E0E0" : "#C0C0C0";
         const premiumWidth = xScalePremium(plan.premium);
         const deductibleWidth = xScaleDeductible(plan.deductibles[0].amount);
         const moopWidth = xScaleDeductible(plan.moops[0].amount);
         return (
-          <React.Fragment key={plan.id}>
+          <Box key={plan.id} className="plan-row">
             <Box
               className="plan-cell plan-bookmark-container"
-              backgroundColor={bgcolor}
               onClick={(_) => savePlan(plan)}
             >
               <Icon
@@ -115,7 +125,6 @@ export default function DataViewer({ results, filter }: IProps) {
             </Box>
             <Box
               className="plan-cell plan-name-container"
-              backgroundColor={bgcolor}
               onClick={(_) => openPlanModal(i)}
             >
               <Text className="ellipsis">{plan.issuer.name}</Text>
@@ -123,7 +132,6 @@ export default function DataViewer({ results, filter }: IProps) {
             </Box>
             <Box
               className="plan-cell plan-premium-container"
-              backgroundColor={bgcolor}
               onClick={(_) => openPlanModal(i)}
             >
               <Text className="premium-bar-label">Premium</Text>
@@ -137,7 +145,6 @@ export default function DataViewer({ results, filter }: IProps) {
             </Box>
             <Box
               className="plan-cell plan-deductible-container"
-              backgroundColor={bgcolor}
               onClick={(_) => openPlanModal(i)}
             >
               <Text className="deductible-bar-label">
@@ -165,7 +172,7 @@ export default function DataViewer({ results, filter }: IProps) {
                 </text>
               </svg>
             </Box>
-          </React.Fragment>
+          </Box>
         );
       })}
 

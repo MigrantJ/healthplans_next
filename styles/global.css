@@ -39,7 +39,8 @@
 }
 
 #estimate-notice {
-  grid-column: 1/4;
+  grid-column: 1/5;
+  margin: 0 auto;
 }
 
 #planlist > .column-header {
@@ -49,9 +50,30 @@
   background-color: white;
 }
 
+.plan-row {
+  display: contents;
+}
+
+.plan-row .plan-cell {
+  background-color: #E0E0E0;
+}
+
+.plan-row:nth-child(even) .plan-cell {
+  background-color: #C0C0C0;
+}
+
+.plan-row:hover .plan-cell {
+  background-color: #DDFFFF;
+}
+
+.plan-row:hover .plan-name-container {
+  text-decoration: underline;
+}
+
 /* min width is necessary for the ellipsis overflow to work */
 .plan-cell {
   min-width: 0;
+  cursor: pointer;
 }
 
 .plan-name-container {
@@ -77,7 +99,7 @@
 }
 
 #scroll-ref {
-  grid-column: 1/4;
+  grid-column: 1/5;
 }
 
 .plan-name-skel {
@@ -100,7 +122,7 @@
   display: none;
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 1060px) {
   #mainwindow {
     grid-template-columns: 1fr;
   }
@@ -165,16 +187,20 @@
     font-size: 12px;
   }
 
+  .plan-bookmark-skel {
+    grid-column: 1/2;
+  }
+
   .plan-name-skel {
-    grid-column: 1/3;
+    grid-column: 2/4;
   }
 
   .plan-premium-skel {
-    grid-column: 1/2;
+    grid-column: 1/3;
   }
   
   .plan-deductible-skel {
-    grid-column: 2/3;
+    grid-column: 3/4;
   }
 
   .premium-bar-label {
@@ -205,23 +231,23 @@
     grid-column: 2/3;
   }
 
-  .plan-premium-skel {
-    grid-column: 1/3;
-  }
-
   .plan-deductible-container {
     grid-column: 1/3;
   }
 
-  .plan-name-skel {
+  .plan-bookmark-skel {
     grid-column: 1/2;
   }
 
+  .plan-name-skel {
+    grid-column: 2/3;
+  }
+
   .plan-premium-skel {
-    grid-column: 1/2;
+    grid-column: 1/3;
   }
   
   .plan-deductible-skel {
-    grid-column: 1/2;
+    grid-column: 1/3;
   }
 }

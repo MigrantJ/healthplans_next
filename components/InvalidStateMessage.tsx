@@ -1,5 +1,5 @@
 import NextLink from "next/link";
-import { Text, Link } from "@chakra-ui/react";
+import { Heading, Text, Link } from "@chakra-ui/react";
 
 interface IProps {
   state: string;
@@ -14,9 +14,11 @@ export default function InvalidStateMessage({
 }: IProps) {
   return (
     <>
+      <Heading>Sorry!</Heading>
       <Text>
-        Your state does not use the federally-run healthcare exchange. To visit
-        your state&apos;s exchange, click the link below:
+        It looks like your state does not use the federally-run healthcare
+        exchange, so we can&apos;t automatically show healthcare plans for you.
+        To visit your state&apos;s exchange, click the link below:
       </Text>
       <Link as={NextLink} href={exchange_url}>
         {exchange_name}

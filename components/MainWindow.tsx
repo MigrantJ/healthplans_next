@@ -63,7 +63,7 @@ export default function MainWindow({ isMobile }: IProps) {
         <IncomeWidget {...{ income, setIncome }} />
         <PeopleWidget {...{ people, setPeople }} />
         <Divider />
-        {results.data && (
+        {facetGroups && ranges && (
           <>
             <Heading size="sm">Filters</Heading>
             <FilterWidget {...{ filter, setFilter, facetGroups, ranges }} />

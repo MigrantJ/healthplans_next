@@ -97,6 +97,20 @@ export default function PlanModal({ isOpen, onClose, modalPlan }: IProps) {
               <Text display="inline-block">Find covered medications</Text>
             </Flex>
           </Link>
+          <Link as={NextLink} href={`https://www.healthcare.gov/`} isExternal>
+            <Flex alignItems="center">
+              <span>
+                <Icon
+                  as={RiExternalLinkLine}
+                  boxSize={7}
+                  display="inline-block"
+                />
+              </span>
+              <Text display="inline-block">
+                To sign up for this plan, go to HealthCare.gov
+              </Text>
+            </Flex>
+          </Link>
         </ModalBody>
         <ModalFooter></ModalFooter>
       </ModalContent>
