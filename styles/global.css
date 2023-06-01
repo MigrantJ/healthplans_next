@@ -76,6 +76,10 @@
   cursor: pointer;
 }
 
+.plan-bookmark-container {
+  padding: 0 10px;
+}
+
 .plan-name-container {
   padding: 0 10px;
 }

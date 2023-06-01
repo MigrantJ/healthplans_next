@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Divider, Flex, Heading, Grid, Button } from "@chakra-ui/react";
+import { Divider, Flex, Spacer, Heading, Grid, Button } from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
@@ -14,15 +14,20 @@ import FilterWidget from "./FilterWidget";
 import DataViewer from "./DataViewer";
 
 interface IProps {
+  hideSidebar: boolean;
   isMobile: boolean;
 }
 
-export default function MainWindow({ isMobile }: IProps) {
+type DisplayMode = "Filters" | "Planlist" | "ComparePlans";
+
+export default function MainWindow({ hideSidebar, isMobile }: IProps) {
   const [location, setLocation] = useState<ILocation>();
   const [income, setIncome] = useState(0);
   const [people, setPeople] = useState<IPerson[]>([]);
   const [filter, setFilter] = useState<IFilter>();
-  const [showResults, setShowResults] = useState(!isMobile);
+  const [displayMode, setDisplayMode] = useState<DisplayMode>(
+    hideSidebar ? "Planlist" : "Filters"
+  );
 
   const results = useInfiniteQuery<GetPlans.Response, Error>({
     queryKey: ["query", { location, income, people }],
@@ -39,20 +44,41 @@ export default function MainWindow({ isMobile }: IProps) {
     <Grid id="mainwindow">
       {isMobile && results.data && (
         <Flex id="mobile-result-toggle">
-          <Button
-            size="md"
-            onClick={() => {
-              setShowResults(!showResults);
-            }}
-          >
-            {showResults ? "See Filters" : "See Plans"}
-          </Button>
+          {displayMode !== "Filters" && (
+            <Button
+              size="md"
+              onClick={() => {
+                displayMode === "Planlist"
+                  ? setDisplayMode("Filters")
+                  : setDisplayMode("Planlist");
+              }}
+            >
+              {displayMode === "Planlist" ? "See Filters" : "See Plans"}
+            </Button>
+          )}
+          <Spacer />
+          {displayMode !== "ComparePlans" && (
+            <Button
+              size="md"
+              onClick={() => {
+                displayMode === "Planlist"
+                  ? setDisplayMode("ComparePlans")
+                  : setDisplayMode("Planlist");
+              }}
+            >
+              {displayMode === "Planlist" ? "Compare Plans" : "See Plans"}
+            </Button>
+          )}
         </Flex>
       )}
       <Flex
         id="sidebar"
         direction="column"
-        display={isMobile && showResults ? "none" : "flex"}
+        display={
+          !hideSidebar || (hideSidebar && displayMode === "Filters")
+            ? "flex"
+            : "none"
+        }
       >
         <Heading size="md">Setup</Heading>
         <Divider />
@@ -70,9 +96,54 @@ export default function MainWindow({ isMobile }: IProps) {
           </>
         )}
       </Flex>
-      <Grid id="planlist" display={isMobile && !showResults ? "none" : "grid"}>
+      <Grid
+        id="planlist"
+        display={
+          !hideSidebar || (hideSidebar && displayMode === "Planlist")
+            ? "grid"
+            : "none"
+        }
+      >
         <DataViewer {...{ results, filter }} />
       </Grid>
+      {!isMobile && (
+        <>
+          {(displayMode === "ComparePlans" ||
+            (hideSidebar && displayMode !== "Filters")) && (
+            <Button
+              size="lg"
+              left="10px"
+              position="fixed"
+              bottom="10px"
+              onClick={() => {
+                displayMode === "Planlist"
+                  ? setDisplayMode("Filters")
+                  : setDisplayMode("Planlist");
+              }}
+            >
+              {displayMode === "Planlist" ? "Show Filters" : "Show Plans"}
+            </Button>
+          )}
+
+          {displayMode !== "ComparePlans" && (
+            <Button
+              size="lg"
+              right="10px"
+              position="fixed"
+              bottom="10px"
+              onClick={() => {
+                hideSidebar && displayMode === "Filters"
+                  ? setDisplayMode("Planlist")
+                  : setDisplayMode("ComparePlans");
+              }}
+            >
+              {hideSidebar && displayMode === "Filters"
+                ? "Show Plans"
+                : "Compare Plans"}
+            </Button>
+          )}
+        </>
+      )}
     </Grid>
   );
 }

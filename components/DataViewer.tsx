@@ -57,7 +57,7 @@ export default function DataViewer({ results, filter }: IProps) {
   }
 
   const PREMIUM_BAR_W = 135;
-  const DEDUCTIBLE_BAR_W = 235;
+  const DEDUCTIBLE_BAR_W = 225;
 
   const plans: IHealthPlan[] = results.data.pages.reduce((acc, page) => {
     return acc.concat(page.plans);
