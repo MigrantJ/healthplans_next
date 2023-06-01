@@ -50,7 +50,8 @@ export default function MainWindow({ hideSidebar, isMobile }: IProps) {
         id="sidebar"
         direction="column"
         display={
-          !hideSidebar || (hideSidebar && displayMode === "Filters")
+          (!hideSidebar && displayMode !== "ComparePlans") ||
+          (hideSidebar && displayMode === "Filters")
             ? "flex"
             : "none"
         }
@@ -71,16 +72,8 @@ export default function MainWindow({ hideSidebar, isMobile }: IProps) {
           </>
         )}
       </Flex>
-      <Grid
-        id="planlist"
-        display={
-          !hideSidebar || (hideSidebar && displayMode === "Planlist")
-            ? "grid"
-            : "none"
-        }
-      >
-        <DataViewer {...{ results, filter }} />
-      </Grid>
+
+      <DataViewer {...{ displayMode, results, filter }} />
 
       {!isMobile && results.data && (
         <ModeSelectorDesktop

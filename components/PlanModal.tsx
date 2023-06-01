@@ -24,6 +24,7 @@ import {
 } from "react-icons/ri";
 
 import IHealthPlan from "@/types/HealthPlan";
+import React from "react";
 
 interface IProps {
   isOpen: boolean;
@@ -69,12 +70,12 @@ export default function PlanModal({ isOpen, onClose, modalPlan }: IProps) {
             </Tr>
           </Table>
           <Heading size="md">Copays / Coinsurance</Heading>
-          {modalPlan.benefits.map((b) => {
+          {modalPlan.benefits.map((b, i) => {
             return (
-              <>
+              <React.Fragment key={i}>
                 <Heading size="sm">{b.name}</Heading>
                 <Text>{b.cost_sharings[0].display_string}</Text>
-              </>
+              </React.Fragment>
             );
           })}
           <Link as={NextLink} href={modalPlan.network_url} isExternal>
