@@ -1,4 +1,5 @@
 "use client";
+import { StrictMode } from "react";
 import { CacheProvider } from "@chakra-ui/next-js";
 import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -15,12 +16,14 @@ const queryClient = new QueryClient({
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <CacheProvider>
-      <ChakraProvider>
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      </ChakraProvider>
-    </CacheProvider>
+    <StrictMode>
+      <CacheProvider>
+        <ChakraProvider>
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
+        </ChakraProvider>
+      </CacheProvider>
+    </StrictMode>
   );
 }
