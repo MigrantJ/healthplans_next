@@ -13,21 +13,17 @@ import IncomeWidget from "./IncomeWidget";
 import PeopleWidget from "./PeopleWidget";
 import FilterWidget from "./FilterWidget";
 import DataViewer from "./DataViewer";
-import { ModeSelectorDesktop, ModeSelectorMobile } from "./ModeSelectorMobile";
 
 interface IProps {
   hideSidebar: boolean;
-  isMobile: boolean;
 }
 
-export default function MainWindow({ hideSidebar, isMobile }: IProps) {
+export default function MainWindow({ hideSidebar }: IProps) {
   const [location, setLocation] = useState<ILocation>();
   const [income, setIncome] = useState(0);
   const [people, setPeople] = useState<IPerson[]>([]);
   const [filter, setFilter] = useState<IFilter>();
-  const [displayMode, setDisplayMode] = useState<DisplayMode>(
-    hideSidebar ? "Planlist" : "Filters"
-  );
+  const [displayMode, setDisplayMode] = useState<DisplayMode>("Planlist");
 
   const results = useInfiniteQuery<GetPlans.Response, Error>({
     queryKey: ["query", { location, income, people }],
@@ -42,10 +38,6 @@ export default function MainWindow({ hideSidebar, isMobile }: IProps) {
 
   return (
     <Grid id="mainwindow">
-      {isMobile && results.data && (
-        <ModeSelectorMobile {...{ displayMode, setDisplayMode }} />
-      )}
-
       <Flex
         id="sidebar"
         direction="column"
@@ -73,13 +65,15 @@ export default function MainWindow({ hideSidebar, isMobile }: IProps) {
         )}
       </Flex>
 
-      <DataViewer {...{ displayMode, results, filter }} />
-
-      {!isMobile && results.data && (
-        <ModeSelectorDesktop
-          {...{ hideSidebar, displayMode, setDisplayMode }}
-        />
-      )}
+      <DataViewer
+        {...{
+          hideSidebar,
+          displayMode,
+          setDisplayMode,
+          results,
+          filter,
+        }}
+      />
     </Grid>
   );
 }

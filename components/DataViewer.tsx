@@ -9,14 +9,23 @@ import InvalidStateMessage from "./InvalidStateMessage";
 import { DisplayMode } from "@/types/DisplayMode";
 import Planlist from "./Planlist";
 import ComparePlans from "./ComparePlans";
+import { ModeSelector } from "./ModeSelector";
 
 interface IProps {
+  hideSidebar: boolean;
   displayMode: DisplayMode;
+  setDisplayMode: (d: DisplayMode) => void;
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
   filter: IFilter;
 }
 
-export default function DataViewer({ displayMode, results, filter }: IProps) {
+export default function DataViewer({
+  hideSidebar,
+  displayMode,
+  setDisplayMode,
+  results,
+  filter,
+}: IProps) {
   const [savedPlans, setSavedPlans] = useState<Map<string, IHealthPlan>>(
     new Map()
   );
@@ -51,6 +60,8 @@ export default function DataViewer({ displayMode, results, filter }: IProps) {
     setSavedPlans(clonedMap);
   };
 
+  const numSavedPlans = savedPlans.size;
+
   return (
     <>
       <Grid
@@ -61,6 +72,12 @@ export default function DataViewer({ displayMode, results, filter }: IProps) {
       </Grid>
       {displayMode === "ComparePlans" && (
         <ComparePlans plans={Array.from(savedPlans.values())} />
+      )}
+
+      {results.data && (
+        <ModeSelector
+          {...{ hideSidebar, displayMode, setDisplayMode, numSavedPlans }}
+        />
       )}
     </>
   );

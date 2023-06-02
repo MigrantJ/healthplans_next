@@ -2,7 +2,7 @@ import { Skeleton, SkeletonText, Box, Icon } from "@chakra-ui/react";
 import React from "react";
 import { RiBookmarkLine } from "react-icons/ri";
 
-export default function DataViewer() {
+export default function PlanSkeleton() {
   const skeletons = [...Array<null>(5)].map((_, i) => (
     <React.Fragment key={i}>
       <Box className="plan-bookmark-skel">
