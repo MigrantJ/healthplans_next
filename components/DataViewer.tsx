@@ -71,7 +71,10 @@ export default function DataViewer({
         <Planlist {...{ results, filter, savePlan, savedPlans }} />
       </Grid>
       {displayMode === "ComparePlans" && (
-        <ComparePlans plans={Array.from(savedPlans.values())} />
+        <ComparePlans
+          plans={Array.from(savedPlans.values())}
+          {...{ savePlan }}
+        />
       )}
 
       {results.data && (

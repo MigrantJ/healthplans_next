@@ -1,21 +1,44 @@
 import React, { useState } from "react";
 import NextLink from "next/link";
-import { Grid, GridItem, Box, Text, Heading, Link } from "@chakra-ui/react";
+import {
+  Grid,
+  GridItem,
+  Box,
+  Text,
+  Heading,
+  Link,
+  Icon,
+  Flex,
+} from "@chakra-ui/react";
 import {
   Provider,
   Carousel,
   LeftButton,
   RightButton,
 } from "chakra-ui-carousel";
+import {
+  RiCloseFill,
+  RiCheckFill,
+  RiFileTextLine,
+  RiListUnordered,
+  RiStethoscopeLine,
+  RiMedicineBottleLine,
+} from "react-icons/ri";
 
 import IHealthPlan from "@/types/HealthPlan";
 
 interface IProps {
   plans: IHealthPlan[];
+  savePlan: (plan: IHealthPlan) => void;
 }
 
-export default function ComparePlans({ plans }: IProps) {
+export default function ComparePlans({ plans, savePlan }: IProps) {
   const [expand, setExpand] = useState(true);
+
+  //todo: revisit this
+  if (!plans.length) {
+    return <Text>No plans to compare!</Text>;
+  }
 
   return (
     <Provider>
@@ -24,7 +47,7 @@ export default function ComparePlans({ plans }: IProps) {
         <Grid
           gridColumn="2/3"
           gridRow="1/2"
-          gridTemplateRows="80px 40px repeat(3, 40px 50px) 40px repeat(3, 40px 50px) 40px repeat(3, 40px 50px)"
+          gridTemplateRows="80px 40px repeat(3, 40px 50px) 40px repeat(3, 40px 50px) 40px repeat(4, 40px 50px) 40px 150px repeat(9, 40px 20px)"
           paddingTop="4px"
           alignItems="center"
         >
@@ -52,8 +75,42 @@ export default function ComparePlans({ plans }: IProps) {
           <GridItem />
 
           <GridItem backgroundColor="lightgray" height="100%">
+            <Heading size="md">Star Ratings</Heading>
+          </GridItem>
+          <Heading size="sm">Overall Rating</Heading>
+          <GridItem />
+          <Heading size="sm">Member Experience</Heading>
+          <GridItem />
+          <Heading size="sm">Medical Care</Heading>
+          <GridItem />
+          <Heading size="sm">Plan Administration</Heading>
+          <GridItem />
+
+          <GridItem backgroundColor="lightgray" height="100%">
             <Heading size="md">Documents</Heading>
           </GridItem>
+          <GridItem />
+
+          <GridItem backgroundColor="lightgray" height="100%">
+            <Heading size="md">Management Programs</Heading>
+          </GridItem>
+          <Heading size="sm">Asthma</Heading>
+          <GridItem />
+          <Heading size="sm">Heart Disease</Heading>
+          <GridItem />
+          <Heading size="sm">Depression</Heading>
+          <GridItem />
+          <Heading size="sm">Diabetes</Heading>
+          <GridItem />
+          <Heading size="sm">High Blood Pressure and High Cholesterol</Heading>
+          <GridItem />
+          <Heading size="sm">Low Back Pain</Heading>
+          <GridItem />
+          <Heading size="sm">Pain Management</Heading>
+          <GridItem />
+          <Heading size="sm">Pregnancy</Heading>
+          <GridItem />
+          <Heading size="sm">Weight Loss Programs</Heading>
           <GridItem />
         </Grid>
         <Box gridColumn="2/3" gridRow="1/2">
@@ -75,6 +132,7 @@ export default function ComparePlans({ plans }: IProps) {
                   >
                     <Box>{plan.issuer.name}</Box>
                     <Box>{plan.name}</Box>
+                    <Icon as={RiCloseFill} onClick={() => savePlan(plan)} />
                   </Grid>
                 );
               })}
@@ -85,11 +143,12 @@ export default function ComparePlans({ plans }: IProps) {
               return (
                 <Grid
                   key={plan.id}
-                  gridTemplateRows="40px repeat(3, 40px 50px) 40px repeat(3, 40px 50px) 40px 100px"
+                  gridTemplateRows="40px repeat(3, 40px 50px) 40px repeat(3, 40px 50px) 40px repeat(4, 40px 50px) 40px 150px repeat(9, 40px 20px)"
                   justifyItems="center"
                   alignItems="center"
                   borderInline="1px solid lightgray"
                   width="100%"
+                  overflowY="hidden"
                 >
                   <GridItem
                     width="100%"
@@ -114,27 +173,125 @@ export default function ComparePlans({ plans }: IProps) {
                   <Text>{plan.metal_level}</Text>
 
                   <GridItem />
+                  <GridItem />
+                  <Text>{plan.quality_rating.global_rating}</Text>
+                  <GridItem />
+                  <Text>{plan.quality_rating.enrollee_experience_rating}</Text>
+                  <GridItem />
+                  <Text>
+                    {plan.quality_rating.clinical_quality_management_rating}
+                  </Text>
+                  <GridItem />
+                  <Text>{plan.quality_rating.plan_efficiency_rating}</Text>
+
+                  <GridItem />
                   <Box>
                     {plan.brochure_url && (
                       <Link as={NextLink} href={plan.brochure_url} isExternal>
-                        <Text>Plan Brochure</Text>
+                        <Flex alignItems="center">
+                          <span>
+                            <Icon as={RiFileTextLine} boxSize={7} />
+                          </span>
+                          <Text display="inline-block">Plan Brochure</Text>
+                        </Flex>
                       </Link>
                     )}
                     {plan.benefits_url && (
                       <Link as={NextLink} href={plan.benefits_url} isExternal>
-                        <Text>Summary of Benefits</Text>
+                        <Flex alignItems="center">
+                          <span>
+                            <Icon as={RiListUnordered} boxSize={7} />
+                          </span>
+                          <Text display="inline-block">
+                            Summary of Benefits
+                          </Text>
+                        </Flex>
                       </Link>
                     )}
                     {plan.network_url && (
                       <Link as={NextLink} href={plan.network_url} isExternal>
-                        <Text>Find In-Network Doctors</Text>
+                        <Flex alignItems="center">
+                          <span>
+                            <Icon as={RiStethoscopeLine} boxSize={7} />
+                          </span>
+                          <Text display="inline-block">
+                            Find In-Network Doctors
+                          </Text>
+                        </Flex>
                       </Link>
                     )}
                     {plan.formulary_url && (
                       <Link as={NextLink} href={plan.formulary_url} isExternal>
-                        <Text>Find Covered Medications</Text>
+                        <Flex alignItems="center">
+                          <span>
+                            <Icon
+                              as={RiMedicineBottleLine}
+                              boxSize={7}
+                              display="inline-block"
+                            />
+                          </span>
+                          <Text display="inline-block">
+                            Find covered medications
+                          </Text>
+                        </Flex>
                       </Link>
                     )}
+                  </Box>
+
+                  <GridItem />
+                  <GridItem />
+                  <Box>
+                    {plan.disease_mgmt_programs.includes("Asthma") && (
+                      <RiCheckFill />
+                    )}
+                  </Box>
+                  <GridItem />
+                  <Box>
+                    {plan.disease_mgmt_programs.includes("Heart Disease") && (
+                      <RiCheckFill />
+                    )}
+                  </Box>
+                  <GridItem />
+                  <Box>
+                    {plan.disease_mgmt_programs.includes("Depression") && (
+                      <RiCheckFill />
+                    )}
+                  </Box>
+                  <GridItem />
+                  <Box>
+                    {plan.disease_mgmt_programs.includes("Diabetes") && (
+                      <RiCheckFill />
+                    )}
+                  </Box>
+                  <GridItem />
+                  <Box>
+                    {plan.disease_mgmt_programs.includes(
+                      "High Blood Pressure and High Cholesterol"
+                    ) && <RiCheckFill />}
+                  </Box>
+                  <GridItem />
+                  <Box>
+                    {plan.disease_mgmt_programs.includes("Low Back Pain") && (
+                      <RiCheckFill />
+                    )}
+                  </Box>
+                  <GridItem />
+                  <Box>
+                    {plan.disease_mgmt_programs.includes("Pain Management") && (
+                      <RiCheckFill />
+                    )}
+                  </Box>
+                  <GridItem />
+                  <Box>
+                    {plan.disease_mgmt_programs.includes("Pregnancy") && (
+                      <RiCheckFill />
+                    )}
+                  </Box>
+                  <GridItem />
+                  <Box>
+                    {plan.disease_mgmt_programs.includes(
+                      "Weight Loss Programs"
+                    ) && <RiCheckFill />}
                   </Box>
                 </Grid>
               );
