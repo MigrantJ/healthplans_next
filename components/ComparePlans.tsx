@@ -23,6 +23,8 @@ import {
   RiListUnordered,
   RiStethoscopeLine,
   RiMedicineBottleLine,
+  RiStarFill,
+  RiStarLine
 } from "react-icons/ri";
 
 import IHealthPlan from "@/types/HealthPlan";
@@ -54,47 +56,35 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
     return <Text>No plans to compare!</Text>;
   }
 
-  let headerTemplate = "80px ";
-  let contentTemplate = "";
-
-  headerTemplate += "40px ";
-  contentTemplate += "40px ";
-
+  let rowTemplate = "40px ";
   if (expands.costs) {
-    headerTemplate += "repeat(3, 40px 50px) ";
-    contentTemplate += "repeat(3, 40px 50px) ";
+    rowTemplate += "repeat(3, 40px 50px) ";
   }
 
-  headerTemplate += "40px ";
-  contentTemplate += "40px ";
-
+  rowTemplate += "40px ";
   if (expands.info) {
-    headerTemplate += "repeat(3, 40px 50px) ";
-    contentTemplate += "repeat(3, 40px 50px) ";
+    rowTemplate += "repeat(3, 40px 50px) ";
   }
 
-  headerTemplate += "40px ";
-  contentTemplate += "40px ";
-
+  rowTemplate += "40px ";
   if (expands.star_ratings) {
-    headerTemplate += "repeat(4, 40px 50px) ";
-    contentTemplate += "repeat(4, 40px 50px) ";
+    rowTemplate += "repeat(4, 40px 50px) ";
   }
 
-  headerTemplate += "40px ";
-  contentTemplate += "40px ";
-
+  rowTemplate += "40px ";
   if (expands.documents) {
-    headerTemplate += "150px ";
-    contentTemplate += "150px ";
+    rowTemplate += "150px ";
   }
 
-  headerTemplate += "40px ";
-  contentTemplate += "40px ";
-
+  rowTemplate += "40px ";
   if (expands.mgmt_programs) {
-    headerTemplate += "repeat(9, 40px 20px)";
-    contentTemplate += "repeat(9, 40px 20px)";
+    rowTemplate += "repeat(9, 40px 20px)";
+  }
+
+  const createStarRating = (rating: number) => {
+    return [...Array<null>(5)].map((_, i) => (
+      i <= rating ? <Icon as={RiStarFill} key={i}/> : <Icon as={RiStarLine} key={i}/>
+    ));
   }
 
   return (
@@ -104,7 +94,7 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
         <Grid
           gridColumn="2/3"
           gridRow="1/2"
-          gridTemplateRows={headerTemplate}
+          gridTemplateRows={"80px " + rowTemplate + " 160px"}
           paddingTop="4px"
           alignItems="center"
         >
@@ -179,6 +169,8 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
             <Heading size="sm">Weight Loss Programs</Heading>
             <GridItem />
           </Box>
+          {/* space at the bottom */}
+          <GridItem />
         </Grid>
         <Box gridColumn="2/3" gridRow="1/2">
           <Box
@@ -206,11 +198,11 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
             </Carousel>
           </Box>
           <Carousel gap={1}>
-            {plans.map((plan, i) => {
+            {plans.map((plan) => {
               return (
                 <Grid
                   key={plan.id}
-                  gridTemplateRows={contentTemplate}
+                  gridTemplateRows={rowTemplate}
                   justifyItems="center"
                   alignItems="center"
                   borderInline="1px solid lightgray"
@@ -261,17 +253,21 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
                   />
                   <Box display={expands.star_ratings ? "contents" : "none"}>
                     <GridItem />
-                    <Text>{plan.quality_rating.global_rating}</Text>
+                    <GridItem>
+                      {createStarRating(plan.quality_rating.global_rating)}
+                    </GridItem>
                     <GridItem />
-                    <Text>
-                      {plan.quality_rating.enrollee_experience_rating}
-                    </Text>
+                    <GridItem>
+                      {createStarRating(plan.quality_rating.enrollee_experience_rating)}
+                    </GridItem>
                     <GridItem />
-                    <Text>
-                      {plan.quality_rating.clinical_quality_management_rating}
-                    </Text>
+                    <GridItem>
+                      {createStarRating(plan.quality_rating.clinical_quality_management_rating)}
+                    </GridItem>
                     <GridItem />
-                    <Text>{plan.quality_rating.plan_efficiency_rating}</Text>
+                    <GridItem>
+                      {createStarRating(plan.quality_rating.plan_efficiency_rating)}
+                      </GridItem>
                   </Box>
 
                   <GridItem
