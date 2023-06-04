@@ -27,17 +27,74 @@ import {
 
 import IHealthPlan from "@/types/HealthPlan";
 
+interface Expands {
+  costs: boolean;
+  info: boolean;
+  star_ratings: boolean;
+  documents: boolean;
+  mgmt_programs: boolean;
+}
+
 interface IProps {
   plans: IHealthPlan[];
   savePlan: (plan: IHealthPlan) => void;
 }
 
 export default function ComparePlans({ plans, savePlan }: IProps) {
-  const [expand, setExpand] = useState(true);
+  const [expands, setExpands] = useState<Expands>({
+    costs: true,
+    info: true,
+    star_ratings: true,
+    documents: true,
+    mgmt_programs: true,
+  });
 
   //todo: revisit this
   if (!plans.length) {
     return <Text>No plans to compare!</Text>;
+  }
+
+  let headerTemplate = "80px ";
+  let contentTemplate = "";
+
+  headerTemplate += "40px ";
+  contentTemplate += "40px ";
+
+  if (expands.costs) {
+    headerTemplate += "repeat(3, 40px 50px) ";
+    contentTemplate += "repeat(3, 40px 50px) ";
+  }
+
+  headerTemplate += "40px ";
+  contentTemplate += "40px ";
+
+  if (expands.info) {
+    headerTemplate += "repeat(3, 40px 50px) ";
+    contentTemplate += "repeat(3, 40px 50px) ";
+  }
+
+  headerTemplate += "40px ";
+  contentTemplate += "40px ";
+
+  if (expands.star_ratings) {
+    headerTemplate += "repeat(4, 40px 50px) ";
+    contentTemplate += "repeat(4, 40px 50px) ";
+  }
+
+  headerTemplate += "40px ";
+  contentTemplate += "40px ";
+
+  if (expands.documents) {
+    headerTemplate += "150px ";
+    contentTemplate += "150px ";
+  }
+
+  headerTemplate += "40px ";
+  contentTemplate += "40px ";
+
+  if (expands.mgmt_programs) {
+    headerTemplate += "repeat(9, 40px 20px)";
+    contentTemplate += "repeat(9, 40px 20px)";
   }
 
   return (
@@ -47,7 +104,7 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
         <Grid
           gridColumn="2/3"
           gridRow="1/2"
-          gridTemplateRows="80px 40px repeat(3, 40px 50px) 40px repeat(3, 40px 50px) 40px repeat(4, 40px 50px) 40px 150px repeat(9, 40px 20px)"
+          gridTemplateRows={headerTemplate}
           paddingTop="4px"
           alignItems="center"
         >
@@ -55,7 +112,7 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
           <GridItem backgroundColor="lightgray" height="100%">
             <Heading size="md">Costs</Heading>
           </GridItem>
-          <Box display={expand ? "contents" : "none"}>
+          <Box display={expands.costs ? "contents" : "none"}>
             <Heading size="sm">Estimated Monthly Premium</Heading>
             <GridItem />
             <Heading size="sm">Deductible</Heading>
@@ -67,51 +124,61 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
           <GridItem backgroundColor="lightgray" height="100%">
             <Heading size="md">Information</Heading>
           </GridItem>
-          <Heading size="sm">Plan ID</Heading>
-          <GridItem />
-          <Heading size="sm">Plan Type</Heading>
-          <GridItem />
-          <Heading size="sm">Metal Level</Heading>
-          <GridItem />
+          <Box display={expands.info ? "contents" : "none"}>
+            <Heading size="sm">Plan ID</Heading>
+            <GridItem />
+            <Heading size="sm">Plan Type</Heading>
+            <GridItem />
+            <Heading size="sm">Metal Level</Heading>
+            <GridItem />
+          </Box>
 
           <GridItem backgroundColor="lightgray" height="100%">
             <Heading size="md">Star Ratings</Heading>
           </GridItem>
-          <Heading size="sm">Overall Rating</Heading>
-          <GridItem />
-          <Heading size="sm">Member Experience</Heading>
-          <GridItem />
-          <Heading size="sm">Medical Care</Heading>
-          <GridItem />
-          <Heading size="sm">Plan Administration</Heading>
-          <GridItem />
+          <Box display={expands.star_ratings ? "contents" : "none"}>
+            <Heading size="sm">Overall Rating</Heading>
+            <GridItem />
+            <Heading size="sm">Member Experience</Heading>
+            <GridItem />
+            <Heading size="sm">Medical Care</Heading>
+            <GridItem />
+            <Heading size="sm">Plan Administration</Heading>
+            <GridItem />
+          </Box>
 
           <GridItem backgroundColor="lightgray" height="100%">
             <Heading size="md">Documents</Heading>
           </GridItem>
-          <GridItem />
+          <Box display={expands.documents ? "contents" : "none"}>
+            <GridItem />
+          </Box>
 
           <GridItem backgroundColor="lightgray" height="100%">
             <Heading size="md">Management Programs</Heading>
           </GridItem>
-          <Heading size="sm">Asthma</Heading>
-          <GridItem />
-          <Heading size="sm">Heart Disease</Heading>
-          <GridItem />
-          <Heading size="sm">Depression</Heading>
-          <GridItem />
-          <Heading size="sm">Diabetes</Heading>
-          <GridItem />
-          <Heading size="sm">High Blood Pressure and High Cholesterol</Heading>
-          <GridItem />
-          <Heading size="sm">Low Back Pain</Heading>
-          <GridItem />
-          <Heading size="sm">Pain Management</Heading>
-          <GridItem />
-          <Heading size="sm">Pregnancy</Heading>
-          <GridItem />
-          <Heading size="sm">Weight Loss Programs</Heading>
-          <GridItem />
+          <Box display={expands.mgmt_programs ? "contents" : "none"}>
+            <Heading size="sm">Asthma</Heading>
+            <GridItem />
+            <Heading size="sm">Heart Disease</Heading>
+            <GridItem />
+            <Heading size="sm">Depression</Heading>
+            <GridItem />
+            <Heading size="sm">Diabetes</Heading>
+            <GridItem />
+            <Heading size="sm">
+              High Blood Pressure and High Cholesterol
+            </Heading>
+            <GridItem />
+            <Heading size="sm">Low Back Pain</Heading>
+            <GridItem />
+            <Heading size="sm">Pain Management</Heading>
+            <GridItem />
+            <Heading size="sm">Pregnancy</Heading>
+            <GridItem />
+            <Heading size="sm">Weight Loss Programs</Heading>
+            <GridItem />
+          </Box>
         </Grid>
         <Box gridColumn="2/3" gridRow="1/2">
           <Box
@@ -143,7 +210,7 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
               return (
                 <Grid
                   key={plan.id}
-                  gridTemplateRows="40px repeat(3, 40px 50px) 40px repeat(3, 40px 50px) 40px repeat(4, 40px 50px) 40px 150px repeat(9, 40px 20px)"
+                  gridTemplateRows={contentTemplate}
                   justifyItems="center"
                   alignItems="center"
                   borderInline="1px solid lightgray"
@@ -153,9 +220,11 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
                   <GridItem
                     width="100%"
                     height="100%"
-                    onClick={() => setExpand(!expand)}
+                    onClick={() =>
+                      setExpands({ ...expands, costs: !expands.costs })
+                    }
                   ></GridItem>
-                  <Box display={expand ? "contents" : "none"}>
+                  <Box display={expands.costs ? "contents" : "none"}>
                     <GridItem />
                     <Text>{plan.premium}</Text>
                     <GridItem />
@@ -164,134 +233,181 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
                     <Text>{plan.moops[0].amount}</Text>
                   </Box>
 
-                  <GridItem />
-                  <GridItem />
-                  <Text>{plan.id}</Text>
-                  <GridItem />
-                  <Text>{plan.type}</Text>
-                  <GridItem />
-                  <Text>{plan.metal_level}</Text>
-
-                  <GridItem />
-                  <GridItem />
-                  <Text>{plan.quality_rating.global_rating}</Text>
-                  <GridItem />
-                  <Text>{plan.quality_rating.enrollee_experience_rating}</Text>
-                  <GridItem />
-                  <Text>
-                    {plan.quality_rating.clinical_quality_management_rating}
-                  </Text>
-                  <GridItem />
-                  <Text>{plan.quality_rating.plan_efficiency_rating}</Text>
-
-                  <GridItem />
-                  <Box>
-                    {plan.brochure_url && (
-                      <Link as={NextLink} href={plan.brochure_url} isExternal>
-                        <Flex alignItems="center">
-                          <span>
-                            <Icon as={RiFileTextLine} boxSize={7} />
-                          </span>
-                          <Text display="inline-block">Plan Brochure</Text>
-                        </Flex>
-                      </Link>
-                    )}
-                    {plan.benefits_url && (
-                      <Link as={NextLink} href={plan.benefits_url} isExternal>
-                        <Flex alignItems="center">
-                          <span>
-                            <Icon as={RiListUnordered} boxSize={7} />
-                          </span>
-                          <Text display="inline-block">
-                            Summary of Benefits
-                          </Text>
-                        </Flex>
-                      </Link>
-                    )}
-                    {plan.network_url && (
-                      <Link as={NextLink} href={plan.network_url} isExternal>
-                        <Flex alignItems="center">
-                          <span>
-                            <Icon as={RiStethoscopeLine} boxSize={7} />
-                          </span>
-                          <Text display="inline-block">
-                            Find In-Network Doctors
-                          </Text>
-                        </Flex>
-                      </Link>
-                    )}
-                    {plan.formulary_url && (
-                      <Link as={NextLink} href={plan.formulary_url} isExternal>
-                        <Flex alignItems="center">
-                          <span>
-                            <Icon
-                              as={RiMedicineBottleLine}
-                              boxSize={7}
-                              display="inline-block"
-                            />
-                          </span>
-                          <Text display="inline-block">
-                            Find covered medications
-                          </Text>
-                        </Flex>
-                      </Link>
-                    )}
+                  <GridItem
+                    width="100%"
+                    height="100%"
+                    onClick={() =>
+                      setExpands({ ...expands, info: !expands.info })
+                    }
+                  />
+                  <Box display={expands.info ? "contents" : "none"}>
+                    <GridItem />
+                    <Text>{plan.id}</Text>
+                    <GridItem />
+                    <Text>{plan.type}</Text>
+                    <GridItem />
+                    <Text>{plan.metal_level}</Text>
                   </Box>
 
-                  <GridItem />
-                  <GridItem />
-                  <Box>
-                    {plan.disease_mgmt_programs.includes("Asthma") && (
-                      <RiCheckFill />
-                    )}
+                  <GridItem
+                    width="100%"
+                    height="100%"
+                    onClick={() =>
+                      setExpands({
+                        ...expands,
+                        star_ratings: !expands.star_ratings,
+                      })
+                    }
+                  />
+                  <Box display={expands.star_ratings ? "contents" : "none"}>
+                    <GridItem />
+                    <Text>{plan.quality_rating.global_rating}</Text>
+                    <GridItem />
+                    <Text>
+                      {plan.quality_rating.enrollee_experience_rating}
+                    </Text>
+                    <GridItem />
+                    <Text>
+                      {plan.quality_rating.clinical_quality_management_rating}
+                    </Text>
+                    <GridItem />
+                    <Text>{plan.quality_rating.plan_efficiency_rating}</Text>
                   </Box>
-                  <GridItem />
-                  <Box>
-                    {plan.disease_mgmt_programs.includes("Heart Disease") && (
-                      <RiCheckFill />
-                    )}
+
+                  <GridItem
+                    width="100%"
+                    height="100%"
+                    onClick={() =>
+                      setExpands({
+                        ...expands,
+                        documents: !expands.documents,
+                      })
+                    }
+                  />
+                  <Box display={expands.documents ? "contents" : "none"}>
+                    <Box>
+                      {plan.brochure_url && (
+                        <Link as={NextLink} href={plan.brochure_url} isExternal>
+                          <Flex alignItems="center">
+                            <span>
+                              <Icon as={RiFileTextLine} boxSize={7} />
+                            </span>
+                            <Text display="inline-block">Plan Brochure</Text>
+                          </Flex>
+                        </Link>
+                      )}
+                      {plan.benefits_url && (
+                        <Link as={NextLink} href={plan.benefits_url} isExternal>
+                          <Flex alignItems="center">
+                            <span>
+                              <Icon as={RiListUnordered} boxSize={7} />
+                            </span>
+                            <Text display="inline-block">
+                              Summary of Benefits
+                            </Text>
+                          </Flex>
+                        </Link>
+                      )}
+                      {plan.network_url && (
+                        <Link as={NextLink} href={plan.network_url} isExternal>
+                          <Flex alignItems="center">
+                            <span>
+                              <Icon as={RiStethoscopeLine} boxSize={7} />
+                            </span>
+                            <Text display="inline-block">
+                              Find In-Network Doctors
+                            </Text>
+                          </Flex>
+                        </Link>
+                      )}
+                      {plan.formulary_url && (
+                        <Link
+                          as={NextLink}
+                          href={plan.formulary_url}
+                          isExternal
+                        >
+                          <Flex alignItems="center">
+                            <span>
+                              <Icon
+                                as={RiMedicineBottleLine}
+                                boxSize={7}
+                                display="inline-block"
+                              />
+                            </span>
+                            <Text display="inline-block">
+                              Find covered medications
+                            </Text>
+                          </Flex>
+                        </Link>
+                      )}
+                    </Box>
                   </Box>
-                  <GridItem />
-                  <Box>
-                    {plan.disease_mgmt_programs.includes("Depression") && (
-                      <RiCheckFill />
-                    )}
-                  </Box>
-                  <GridItem />
-                  <Box>
-                    {plan.disease_mgmt_programs.includes("Diabetes") && (
-                      <RiCheckFill />
-                    )}
-                  </Box>
-                  <GridItem />
-                  <Box>
-                    {plan.disease_mgmt_programs.includes(
-                      "High Blood Pressure and High Cholesterol"
-                    ) && <RiCheckFill />}
-                  </Box>
-                  <GridItem />
-                  <Box>
-                    {plan.disease_mgmt_programs.includes("Low Back Pain") && (
-                      <RiCheckFill />
-                    )}
-                  </Box>
-                  <GridItem />
-                  <Box>
-                    {plan.disease_mgmt_programs.includes("Pain Management") && (
-                      <RiCheckFill />
-                    )}
-                  </Box>
-                  <GridItem />
-                  <Box>
-                    {plan.disease_mgmt_programs.includes("Pregnancy") && (
-                      <RiCheckFill />
-                    )}
-                  </Box>
-                  <GridItem />
-                  <Box>
-                    {plan.disease_mgmt_programs.includes(
-                      "Weight Loss Programs"
-                    ) && <RiCheckFill />}
+
+                  <GridItem
+                    width="100%"
+                    height="100%"
+                    onClick={() =>
+                      setExpands({
+                        ...expands,
+                        mgmt_programs: !expands.mgmt_programs,
+                      })
+                    }
+                  />
+                  <Box display={expands.mgmt_programs ? "contents" : "none"}>
+                    <GridItem />
+                    <Box>
+                      {plan.disease_mgmt_programs.includes("Asthma") && (
+                        <RiCheckFill />
+                      )}
+                    </Box>
+                    <GridItem />
+                    <Box>
+                      {plan.disease_mgmt_programs.includes("Heart Disease") && (
+                        <RiCheckFill />
+                      )}
+                    </Box>
+                    <GridItem />
+                    <Box>
+                      {plan.disease_mgmt_programs.includes("Depression") && (
+                        <RiCheckFill />
+                      )}
+                    </Box>
+                    <GridItem />
+                    <Box>
+                      {plan.disease_mgmt_programs.includes("Diabetes") && (
+                        <RiCheckFill />
+                      )}
+                    </Box>
+                    <GridItem />
+                    <Box>
+                      {plan.disease_mgmt_programs.includes(
+                        "High Blood Pressure and High Cholesterol"
+                      ) && <RiCheckFill />}
+                    </Box>
+                    <GridItem />
+                    <Box>
+                      {plan.disease_mgmt_programs.includes("Low Back Pain") && (
+                        <RiCheckFill />
+                      )}
+                    </Box>
+                    <GridItem />
+                    <Box>
+                      {plan.disease_mgmt_programs.includes(
+                        "Pain Management"
+                      ) && <RiCheckFill />}
+                    </Box>
+                    <GridItem />
+                    <Box>
+                      {plan.disease_mgmt_programs.includes("Pregnancy") && (
+                        <RiCheckFill />
+                      )}
+                    </Box>
+                    <GridItem />
+                    <Box>
+                      {plan.disease_mgmt_programs.includes(
+                        "Weight Loss Programs"
+                      ) && <RiCheckFill />}
+                    </Box>
                   </Box>
                 </Grid>
               );
