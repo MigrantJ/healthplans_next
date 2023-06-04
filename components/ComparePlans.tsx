@@ -1,33 +1,15 @@
 import React, { useState } from "react";
-import NextLink from "next/link";
-import {
-  Grid,
-  GridItem,
-  Box,
-  Text,
-  Heading,
-  Link,
-  Icon,
-  Flex,
-} from "@chakra-ui/react";
+import { Grid, GridItem, Box, Text, Heading, Icon } from "@chakra-ui/react";
 import {
   Provider,
   Carousel,
   LeftButton,
   RightButton,
 } from "chakra-ui-carousel";
-import {
-  RiCloseFill,
-  RiCheckFill,
-  RiFileTextLine,
-  RiListUnordered,
-  RiStethoscopeLine,
-  RiMedicineBottleLine,
-  RiStarFill,
-  RiStarLine
-} from "react-icons/ri";
+import { RiCloseFill } from "react-icons/ri";
 
 import IHealthPlan from "@/types/HealthPlan";
+import ComparePlanDetails from "./compare_plans/ComparePlanDetails";
 
 interface Expands {
   costs: boolean;
@@ -50,6 +32,8 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
     documents: true,
     mgmt_programs: true,
   });
+
+  const multiplePlans = plans.length > 1;
 
   //todo: revisit this
   if (!plans.length) {
@@ -81,20 +65,36 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
     rowTemplate += "repeat(9, 40px 20px)";
   }
 
-  const createStarRating = (rating: number) => {
-    return [...Array<null>(5)].map((_, i) => (
-      i <= rating ? <Icon as={RiStarFill} key={i}/> : <Icon as={RiStarLine} key={i}/>
-    ));
-  }
+  const planNameHeaders = (plans: IHealthPlan[]) => {
+    return plans.map((plan) => {
+      return (
+        <Grid
+          key={plan.id}
+          justifyItems="center"
+          alignItems="center"
+          width="100%"
+        >
+          <Box>{plan.issuer.name}</Box>
+          <Box>{plan.name}</Box>
+          {multiplePlans && (
+            <Icon as={RiCloseFill} onClick={() => savePlan(plan)} />
+          )}
+        </Grid>
+      );
+    });
+  };
 
   return (
     <Provider>
       <Grid id="compareplans-root">
-        <LeftButton position="fixed" left={0} top="50%" width="50px" />
+        {multiplePlans && (
+          <LeftButton position="fixed" left={0} top="50%" width="50px" />
+        )}
+
         <Grid
           gridColumn="2/3"
           gridRow="1/2"
-          gridTemplateRows={"80px " + rowTemplate + " 160px"}
+          gridTemplateRows={"80px " + rowTemplate + " 50px"}
           paddingTop="4px"
           alignItems="center"
         >
@@ -180,238 +180,31 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
             backgroundColor="white"
             zIndex={1}
           >
-            <Carousel gap={1}>
-              {plans.map((plan, i) => {
-                return (
-                  <Grid
-                    key={plan.id}
-                    justifyItems="center"
-                    alignItems="center"
-                    width="100%"
-                  >
-                    <Box>{plan.issuer.name}</Box>
-                    <Box>{plan.name}</Box>
-                    <Icon as={RiCloseFill} onClick={() => savePlan(plan)} />
-                  </Grid>
-                );
-              })}
-            </Carousel>
+            {multiplePlans ? (
+              <Carousel gap={1}>{planNameHeaders(plans)}</Carousel>
+            ) : (
+              planNameHeaders(plans)
+            )}
           </Box>
-          <Carousel gap={1}>
-            {plans.map((plan) => {
-              return (
-                <Grid
-                  key={plan.id}
-                  gridTemplateRows={rowTemplate}
-                  justifyItems="center"
-                  alignItems="center"
-                  borderInline="1px solid lightgray"
-                  width="100%"
-                  overflowY="hidden"
-                >
-                  <GridItem
-                    width="100%"
-                    height="100%"
-                    onClick={() =>
-                      setExpands({ ...expands, costs: !expands.costs })
-                    }
-                  ></GridItem>
-                  <Box display={expands.costs ? "contents" : "none"}>
-                    <GridItem />
-                    <Text>{plan.premium}</Text>
-                    <GridItem />
-                    <Text>{plan.deductibles[0].amount}</Text>
-                    <GridItem />
-                    <Text>{plan.moops[0].amount}</Text>
-                  </Box>
-
-                  <GridItem
-                    width="100%"
-                    height="100%"
-                    onClick={() =>
-                      setExpands({ ...expands, info: !expands.info })
-                    }
-                  />
-                  <Box display={expands.info ? "contents" : "none"}>
-                    <GridItem />
-                    <Text>{plan.id}</Text>
-                    <GridItem />
-                    <Text>{plan.type}</Text>
-                    <GridItem />
-                    <Text>{plan.metal_level}</Text>
-                  </Box>
-
-                  <GridItem
-                    width="100%"
-                    height="100%"
-                    onClick={() =>
-                      setExpands({
-                        ...expands,
-                        star_ratings: !expands.star_ratings,
-                      })
-                    }
-                  />
-                  <Box display={expands.star_ratings ? "contents" : "none"}>
-                    <GridItem />
-                    <GridItem>
-                      {createStarRating(plan.quality_rating.global_rating)}
-                    </GridItem>
-                    <GridItem />
-                    <GridItem>
-                      {createStarRating(plan.quality_rating.enrollee_experience_rating)}
-                    </GridItem>
-                    <GridItem />
-                    <GridItem>
-                      {createStarRating(plan.quality_rating.clinical_quality_management_rating)}
-                    </GridItem>
-                    <GridItem />
-                    <GridItem>
-                      {createStarRating(plan.quality_rating.plan_efficiency_rating)}
-                      </GridItem>
-                  </Box>
-
-                  <GridItem
-                    width="100%"
-                    height="100%"
-                    onClick={() =>
-                      setExpands({
-                        ...expands,
-                        documents: !expands.documents,
-                      })
-                    }
-                  />
-                  <Box display={expands.documents ? "contents" : "none"}>
-                    <Box>
-                      {plan.brochure_url && (
-                        <Link as={NextLink} href={plan.brochure_url} isExternal>
-                          <Flex alignItems="center">
-                            <span>
-                              <Icon as={RiFileTextLine} boxSize={7} />
-                            </span>
-                            <Text display="inline-block">Plan Brochure</Text>
-                          </Flex>
-                        </Link>
-                      )}
-                      {plan.benefits_url && (
-                        <Link as={NextLink} href={plan.benefits_url} isExternal>
-                          <Flex alignItems="center">
-                            <span>
-                              <Icon as={RiListUnordered} boxSize={7} />
-                            </span>
-                            <Text display="inline-block">
-                              Summary of Benefits
-                            </Text>
-                          </Flex>
-                        </Link>
-                      )}
-                      {plan.network_url && (
-                        <Link as={NextLink} href={plan.network_url} isExternal>
-                          <Flex alignItems="center">
-                            <span>
-                              <Icon as={RiStethoscopeLine} boxSize={7} />
-                            </span>
-                            <Text display="inline-block">
-                              Find In-Network Doctors
-                            </Text>
-                          </Flex>
-                        </Link>
-                      )}
-                      {plan.formulary_url && (
-                        <Link
-                          as={NextLink}
-                          href={plan.formulary_url}
-                          isExternal
-                        >
-                          <Flex alignItems="center">
-                            <span>
-                              <Icon
-                                as={RiMedicineBottleLine}
-                                boxSize={7}
-                                display="inline-block"
-                              />
-                            </span>
-                            <Text display="inline-block">
-                              Find covered medications
-                            </Text>
-                          </Flex>
-                        </Link>
-                      )}
-                    </Box>
-                  </Box>
-
-                  <GridItem
-                    width="100%"
-                    height="100%"
-                    onClick={() =>
-                      setExpands({
-                        ...expands,
-                        mgmt_programs: !expands.mgmt_programs,
-                      })
-                    }
-                  />
-                  <Box display={expands.mgmt_programs ? "contents" : "none"}>
-                    <GridItem />
-                    <Box>
-                      {plan.disease_mgmt_programs.includes("Asthma") && (
-                        <RiCheckFill />
-                      )}
-                    </Box>
-                    <GridItem />
-                    <Box>
-                      {plan.disease_mgmt_programs.includes("Heart Disease") && (
-                        <RiCheckFill />
-                      )}
-                    </Box>
-                    <GridItem />
-                    <Box>
-                      {plan.disease_mgmt_programs.includes("Depression") && (
-                        <RiCheckFill />
-                      )}
-                    </Box>
-                    <GridItem />
-                    <Box>
-                      {plan.disease_mgmt_programs.includes("Diabetes") && (
-                        <RiCheckFill />
-                      )}
-                    </Box>
-                    <GridItem />
-                    <Box>
-                      {plan.disease_mgmt_programs.includes(
-                        "High Blood Pressure and High Cholesterol"
-                      ) && <RiCheckFill />}
-                    </Box>
-                    <GridItem />
-                    <Box>
-                      {plan.disease_mgmt_programs.includes("Low Back Pain") && (
-                        <RiCheckFill />
-                      )}
-                    </Box>
-                    <GridItem />
-                    <Box>
-                      {plan.disease_mgmt_programs.includes(
-                        "Pain Management"
-                      ) && <RiCheckFill />}
-                    </Box>
-                    <GridItem />
-                    <Box>
-                      {plan.disease_mgmt_programs.includes("Pregnancy") && (
-                        <RiCheckFill />
-                      )}
-                    </Box>
-                    <GridItem />
-                    <Box>
-                      {plan.disease_mgmt_programs.includes(
-                        "Weight Loss Programs"
-                      ) && <RiCheckFill />}
-                    </Box>
-                  </Box>
-                </Grid>
-              );
-            })}
-          </Carousel>
+          {multiplePlans ? (
+            <Carousel gap={1}>
+              {plans.map((plan, i) => (
+                <ComparePlanDetails
+                  key={i}
+                  {...{ plan, rowTemplate, expands, setExpands }}
+                />
+              ))}
+            </Carousel>
+          ) : (
+            <ComparePlanDetails
+              plan={plans[0]}
+              {...{ rowTemplate, expands, setExpands }}
+            />
+          )}
         </Box>
-
-        <RightButton position="fixed" right={0} top="50%" width="50px" />
+        {multiplePlans && (
+          <RightButton position="fixed" right={0} top="50%" width="50px" />
+        )}
       </Grid>
     </Provider>
   );
