@@ -5,20 +5,13 @@ import {
   RiFileTextLine,
   RiListUnordered,
   RiMedicineBottleLine,
-  RiStarFill,
-  RiStarLine,
   RiStethoscopeLine,
 } from "react-icons/ri";
 
-import IHealthPlan from "@/types/HealthPlan";
-
-interface Expands {
-  costs: boolean;
-  info: boolean;
-  star_ratings: boolean;
-  documents: boolean;
-  mgmt_programs: boolean;
-}
+import IHealthPlan, { Benefit } from "@/types/HealthPlan";
+import { Expands } from "../ComparePlans";
+import StarRating from "./StarRating";
+import React from "react";
 
 interface IProps {
   plan: IHealthPlan;
@@ -33,22 +26,17 @@ export default function ComparePlanDetails({
   expands,
   setExpands,
 }: IProps) {
-  const createStarRating = (rating: number) => {
-    return [...Array<null>(5)].map((_, i) =>
-      i + 1 <= rating ? (
-        <Icon as={RiStarFill} key={i} />
-      ) : (
-        <Icon as={RiStarLine} key={i} />
-      )
-    );
-  };
+  const copayMap: { [k: string]: Benefit } =
+    plan.benefits.reduce((acc, curr) => {
+      acc[curr.name] = curr;
+      return acc;
+    }, {}) || {};
 
   return (
     <Grid
       key={plan.id}
       gridTemplateRows={rowTemplate}
       justifyItems="center"
-      alignItems="center"
       borderInline="1px solid lightgray"
       width="100%"
       overflowY="hidden"
@@ -94,22 +82,95 @@ export default function ComparePlanDetails({
       <Box display={expands.star_ratings ? "contents" : "none"}>
         <GridItem />
         <GridItem>
-          {createStarRating(plan.quality_rating.global_rating)}
+          <StarRating
+            numStars={plan.quality_rating.global_rating}
+            reasonForZero={plan.quality_rating.global_not_rated_reason}
+          />
         </GridItem>
         <GridItem />
         <GridItem>
-          {createStarRating(plan.quality_rating.enrollee_experience_rating)}
+          <StarRating
+            numStars={plan.quality_rating.enrollee_experience_rating}
+            reasonForZero={
+              plan.quality_rating.enrollee_experience_not_rated_reason
+            }
+          />
         </GridItem>
         <GridItem />
         <GridItem>
-          {createStarRating(
-            plan.quality_rating.clinical_quality_management_rating
-          )}
+          <StarRating
+            numStars={plan.quality_rating.clinical_quality_management_rating}
+            reasonForZero={
+              plan.quality_rating.clinical_quality_management_not_rated_reason
+            }
+          />
         </GridItem>
         <GridItem />
         <GridItem>
-          {createStarRating(plan.quality_rating.plan_efficiency_rating)}
+          <StarRating
+            numStars={plan.quality_rating.plan_efficiency_rating}
+            reasonForZero={plan.quality_rating.plan_efficiency_not_rated_reason}
+          />
         </GridItem>
+      </Box>
+
+      <GridItem
+        width="100%"
+        height="100%"
+        onClick={() =>
+          setExpands({
+            ...expands,
+            copays: !expands.copays,
+          })
+        }
+      />
+      <Box display={expands.copays ? "contents" : "none"}>
+        <GridItem />
+        <Box justifySelf="start">
+          {copayMap[
+            "Primary Care Visit to Treat an Injury or Illness"
+          ].cost_sharings.map((cs, i) => {
+            return (
+              <React.Fragment key={i}>
+                <Text textDecoration="underline">{cs.network_tier}</Text>
+                <Text>{cs.display_string}</Text>
+              </React.Fragment>
+            );
+          })}
+        </Box>
+        <GridItem />
+        <Box justifySelf="start">
+          {copayMap["Specialist Visit"].cost_sharings.map((cs, i) => {
+            return (
+              <React.Fragment key={i}>
+                <Text textDecoration="underline">{cs.network_tier}</Text>
+                <Text>{cs.display_string}</Text>
+              </React.Fragment>
+            );
+          })}
+        </Box>
+        <GridItem />
+        <Box justifySelf="start">
+          {copayMap["Emergency Room Services"].cost_sharings.map((cs, i) => {
+            return (
+              <React.Fragment key={i}>
+                <Text textDecoration="underline">{cs.network_tier}</Text>
+                <Text>{cs.display_string}</Text>
+              </React.Fragment>
+            );
+          })}
+        </Box>
+        <GridItem />
+        <Box justifySelf="start">
+          {copayMap["Generic Drugs"].cost_sharings.map((cs, i) => {
+            return (
+              <React.Fragment key={i}>
+                <Text textDecoration="underline">{cs.network_tier}</Text>
+                <Text>{cs.display_string}</Text>
+              </React.Fragment>
+            );
+          })}
+        </Box>
       </Box>
 
       <GridItem

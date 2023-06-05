@@ -7,14 +7,16 @@ import {
   RightButton,
 } from "chakra-ui-carousel";
 import { RiCloseFill } from "react-icons/ri";
+import { BsChevronExpand, BsChevronContract } from "react-icons/bs";
 
 import IHealthPlan from "@/types/HealthPlan";
 import ComparePlanDetails from "./compare_plans/ComparePlanDetails";
 
-interface Expands {
+export interface Expands {
   costs: boolean;
   info: boolean;
   star_ratings: boolean;
+  copays: boolean;
   documents: boolean;
   mgmt_programs: boolean;
 }
@@ -29,6 +31,7 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
     costs: true,
     info: true,
     star_ratings: true,
+    copays: true,
     documents: true,
     mgmt_programs: true,
   });
@@ -42,17 +45,22 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
 
   let rowTemplate = "40px ";
   if (expands.costs) {
-    rowTemplate += "repeat(3, 40px 50px) ";
+    rowTemplate += "repeat(3, 20px 40px) ";
   }
 
   rowTemplate += "40px ";
   if (expands.info) {
-    rowTemplate += "repeat(3, 40px 50px) ";
+    rowTemplate += "repeat(3, 20px 40px) ";
   }
 
   rowTemplate += "40px ";
   if (expands.star_ratings) {
-    rowTemplate += "repeat(4, 40px 50px) ";
+    rowTemplate += "repeat(4, 20px 40px) ";
+  }
+
+  rowTemplate += "40px ";
+  if (expands.copays) {
+    rowTemplate += "repeat(4, 20px 110px) ";
   }
 
   rowTemplate += "40px ";
@@ -70,15 +78,23 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
       return (
         <Grid
           key={plan.id}
-          justifyItems="center"
-          alignItems="center"
+          gridTemplateColumns="1fr 30px"
           width="100%"
+          minWidth={0}
+          border="1px solid gray"
         >
-          <Box>{plan.issuer.name}</Box>
-          <Box>{plan.name}</Box>
+          <Text className="ellipsis">{plan.issuer.name}</Text>
           {multiplePlans && (
-            <Icon as={RiCloseFill} onClick={() => savePlan(plan)} />
+            <Icon
+              as={RiCloseFill}
+              boxSize={6}
+              className="pointer"
+              onClick={() => savePlan(plan)}
+            />
           )}
+          <Text className="ellipsis bold" gridColumn="1/3">
+            {plan.name}
+          </Text>
         </Grid>
       );
     });
@@ -86,7 +102,9 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
 
   return (
     <Provider>
-      <Grid id="compareplans-root">
+      <Grid
+        id={multiplePlans ? "compareplans-root" : "compareplans-root-single"}
+      >
         {multiplePlans && (
           <LeftButton position="fixed" left={0} top="50%" width="50px" />
         )}
@@ -94,25 +112,43 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
         <Grid
           gridColumn="2/3"
           gridRow="1/2"
-          gridTemplateRows={"80px " + rowTemplate + " 50px"}
-          paddingTop="4px"
+          gridTemplateRows={"50px " + rowTemplate + " 50px"}
+          paddingTop="8px"
           alignItems="center"
         >
           <GridItem />
-          <GridItem backgroundColor="lightgray" height="100%">
-            <Heading size="md">Costs</Heading>
+          <GridItem backgroundColor="silver" height="100%">
+            <Heading size="md">
+              <Icon
+                as={expands.costs ? BsChevronContract : BsChevronExpand}
+                boxSize={5}
+              />
+              Costs
+            </Heading>
           </GridItem>
           <Box display={expands.costs ? "contents" : "none"}>
-            <Heading size="sm">Estimated Monthly Premium</Heading>
+            <GridItem backgroundColor="lightgray">
+              <Heading size="sm">Estimated Monthly Premium</Heading>
+            </GridItem>
             <GridItem />
-            <Heading size="sm">Deductible</Heading>
+            <GridItem backgroundColor="lightgray">
+              <Heading size="sm">Deductible</Heading>
+            </GridItem>
             <GridItem />
-            <Heading size="sm">Out-of-Pocket Maximum</Heading>
+            <GridItem backgroundColor="lightgray">
+              <Heading size="sm">Out-of-Pocket Maximum</Heading>
+            </GridItem>
             <GridItem />
           </Box>
 
-          <GridItem backgroundColor="lightgray" height="100%">
-            <Heading size="md">Information</Heading>
+          <GridItem backgroundColor="silver" height="100%">
+            <Heading size="md">
+              <Icon
+                as={expands.info ? BsChevronContract : BsChevronExpand}
+                boxSize={5}
+              />
+              Information
+            </Heading>
           </GridItem>
           <Box display={expands.info ? "contents" : "none"}>
             <Heading size="sm">Plan ID</Heading>
@@ -123,8 +159,14 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
             <GridItem />
           </Box>
 
-          <GridItem backgroundColor="lightgray" height="100%">
-            <Heading size="md">Star Ratings</Heading>
+          <GridItem backgroundColor="silver" height="100%">
+            <Heading size="md">
+              <Icon
+                as={expands.star_ratings ? BsChevronContract : BsChevronExpand}
+                boxSize={5}
+              />
+              Star Ratings
+            </Heading>
           </GridItem>
           <Box display={expands.star_ratings ? "contents" : "none"}>
             <Heading size="sm">Overall Rating</Heading>
@@ -137,15 +179,47 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
             <GridItem />
           </Box>
 
-          <GridItem backgroundColor="lightgray" height="100%">
-            <Heading size="md">Documents</Heading>
+          <GridItem backgroundColor="silver" height="100%">
+            <Heading size="md">
+              <Icon
+                as={expands.copays ? BsChevronContract : BsChevronExpand}
+                boxSize={5}
+              />
+              Copays / Coinsurance
+            </Heading>
+          </GridItem>
+          <Box display={expands.copays ? "contents" : "none"}>
+            <Heading size="sm">Primary Care Visit</Heading>
+            <GridItem />
+            <Heading size="sm">Specialist Visit</Heading>
+            <GridItem />
+            <Heading size="sm">Emergency Room Services</Heading>
+            <GridItem />
+            <Heading size="sm">Generic Drugs</Heading>
+            <GridItem />
+          </Box>
+
+          <GridItem backgroundColor="silver" height="100%">
+            <Heading size="md">
+              <Icon
+                as={expands.documents ? BsChevronContract : BsChevronExpand}
+                boxSize={5}
+              />
+              Documents
+            </Heading>
           </GridItem>
           <Box display={expands.documents ? "contents" : "none"}>
             <GridItem />
           </Box>
 
-          <GridItem backgroundColor="lightgray" height="100%">
-            <Heading size="md">Management Programs</Heading>
+          <GridItem backgroundColor="silver" height="100%">
+            <Heading size="md">
+              <Icon
+                as={expands.mgmt_programs ? BsChevronContract : BsChevronExpand}
+                boxSize={5}
+              />
+              Management Programs
+            </Heading>
           </GridItem>
           <Box display={expands.mgmt_programs ? "contents" : "none"}>
             <Heading size="sm">Asthma</Heading>
@@ -173,13 +247,7 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
           <GridItem />
         </Grid>
         <Box gridColumn="2/3" gridRow="1/2">
-          <Box
-            height="80px"
-            position="sticky"
-            top={0}
-            backgroundColor="white"
-            zIndex={1}
-          >
+          <Box position="sticky" top={0} backgroundColor="white" zIndex={1}>
             {multiplePlans ? (
               <Carousel gap={1}>{planNameHeaders(plans)}</Carousel>
             ) : (
