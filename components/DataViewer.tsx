@@ -10,6 +10,7 @@ import { DisplayMode } from "@/types/DisplayMode";
 import Planlist from "./Planlist";
 import ComparePlans from "./ComparePlans";
 import { ModeSelector } from "./ModeSelector";
+import { Estimate } from "@/types/GetCreditEstimate";
 
 interface IProps {
   hideSidebar: boolean;
@@ -17,6 +18,7 @@ interface IProps {
   setDisplayMode: (d: DisplayMode) => void;
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
   filter: IFilter;
+  creditEstimates: Estimate[];
 }
 
 export default function DataViewer({
@@ -25,6 +27,7 @@ export default function DataViewer({
   setDisplayMode,
   results,
   filter,
+  creditEstimates,
 }: IProps) {
   const [savedPlans, setSavedPlans] = useState<Map<string, IHealthPlan>>(
     new Map()
@@ -39,7 +42,7 @@ export default function DataViewer({
     return <></>;
   }
 
-  const altResponse = results.data.pages[0].alt_data;
+  const altResponse = results.data?.pages?.[0].alt_data;
   if (altResponse) {
     if (altResponse.type === "InvalidState") {
       return (
@@ -68,7 +71,9 @@ export default function DataViewer({
         id="planlist"
         display={displayMode === "Planlist" ? "grid" : "none"}
       >
-        <Planlist {...{ results, filter, savePlan, savedPlans }} />
+        <Planlist
+          {...{ results, filter, savePlan, savedPlans, creditEstimates }}
+        />
       </Grid>
       {displayMode === "ComparePlans" && (
         <ComparePlans

@@ -12,13 +12,19 @@ import {
   Center,
 } from "@chakra-ui/react";
 import { BsCurrencyDollar } from "react-icons/bs";
+import { Estimate } from "@/types/GetCreditEstimate";
 
 interface IProps {
   income: number;
   setIncome: (i: number) => void;
+  creditEstimates: Estimate[];
 }
 
-export default function IncomeWidget({ income, setIncome }: IProps) {
+export default function IncomeWidget({
+  income,
+  setIncome,
+  creditEstimates,
+}: IProps) {
   const [innerIncome, setInnerIncome] = useState(0);
   useEffect(() => {
     setInnerIncome(income);
@@ -29,6 +35,11 @@ export default function IncomeWidget({ income, setIncome }: IProps) {
     if (Number.isNaN(n)) n = 0;
     setInnerIncome(n);
   };
+
+  const taxCredit =
+    creditEstimates?.length && creditEstimates[0].aptc > 0
+      ? `$${creditEstimates[0].aptc} tax credit`
+      : "";
 
   return (
     <>
@@ -57,6 +68,7 @@ export default function IncomeWidget({ income, setIncome }: IProps) {
             />
           </Tooltip>
           <Input as={EditableInput} value={innerIncome} />
+          <span id="income-tax-credit">{taxCredit}</span>
         </Editable>
       </InputGroup>
     </>

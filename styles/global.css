@@ -141,6 +141,11 @@
   cursor: pointer;
 }
 
+#income-tax-credit {
+  color: green;
+  font-weight: bold;
+}
+
 @media only screen and (max-width: 1060px) {
   #mainwindow {
     grid-template-columns: 1fr;

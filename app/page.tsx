@@ -23,7 +23,7 @@ export default function IndexPage() {
   return (
     <Box id="root">
       <Flex id="header">
-        <Heading size="lg">HealthCare.gov Next</Heading>
+        <Heading size="lg">HealthPlansNext</Heading>
         <Spacer />
         <Heading size="md">About</Heading>
       </Flex>

@@ -13,12 +13,14 @@ import filterPlans from "@/lib/filterPlans";
 import PlanlistHeader from "./PlanlistHeader";
 import PlanSkeleton from "./PlanSkeleton";
 import PlanModal from "./PlanModal";
+import { Estimate } from "@/types/GetCreditEstimate";
 
 interface IProps {
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
   filter: IFilter;
   savePlan: (plan: IHealthPlan) => void;
   savedPlans: Map<string, IHealthPlan>;
+  creditEstimates: Estimate[];
 }
 
 export default function Planlist({
@@ -26,6 +28,7 @@ export default function Planlist({
   filter,
   savePlan,
   savedPlans,
+  creditEstimates,
 }: IProps) {
   const [modalPlan, setModalPlan] = useState<IHealthPlan>(null);
 
@@ -39,15 +42,26 @@ export default function Planlist({
     }
   }, [inView, fetchNextPage]);
 
+  const planPages = results.data?.pages;
+  if (!planPages) {
+    return <></>;
+  }
+
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+
   const PREMIUM_BAR_W = 135;
   const DEDUCTIBLE_BAR_W = 225;
+  const taxCredit = creditEstimates?.[0].aptc || 0;
 
   const plans: IHealthPlan[] = results.data.pages.reduce((acc, page) => {
     return acc.concat(page.plans);
   }, [] as IHealthPlan[]);
   const premiumExtent: [number, number] = [
-    results.data.pages[0].ranges.premiums.min,
-    results.data.pages[0].ranges.premiums.max,
+    Math.max(results.data.pages[0].ranges.premiums.min - taxCredit, 0),
+    Math.max(results.data.pages[0].ranges.premiums.max - taxCredit, 1),
   ];
   const xScalePremium = d3
     .scaleLinear()
@@ -81,7 +95,8 @@ export default function Planlist({
         }}
       />
       {filteredPlans.map((plan, i) => {
-        const premiumWidth = xScalePremium(plan.premium);
+        const discountPremium = Math.max(plan.premium - taxCredit, 1);
+        const premiumWidth = xScalePremium(discountPremium);
         const deductibleWidth = xScaleDeductible(plan.deductibles[0].amount);
         const moopWidth = xScaleDeductible(plan.moops[0].amount);
         return (
@@ -108,11 +123,11 @@ export default function Planlist({
               onClick={(_) => openPlanModal(i)}
             >
               <Text className="premium-bar-label">Premium</Text>
-              <svg height={30} width={premiumWidth} overflow={"visible"}>
+              <svg height={30} width={PREMIUM_BAR_W} overflow={"visible"}>
                 <rect width={PREMIUM_BAR_W} height={30} fill="darkgreen" />
                 <rect width={premiumWidth} height={30} fill="green" />
                 <text x={5} y={20} fill="white">
-                  ${plan.premium}
+                  {formatter.format(discountPremium)}
                 </text>
               </svg>
             </Box>
@@ -123,15 +138,11 @@ export default function Planlist({
               <Text className="deductible-bar-label">
                 Deductible / Max Out-Of-Pocket
               </Text>
-              <svg
-                height={30}
-                width={Math.max(deductibleWidth, moopWidth)}
-                overflow={"visible"}
-              >
+              <svg height={30} width={DEDUCTIBLE_BAR_W} overflow={"visible"}>
                 <rect width={DEDUCTIBLE_BAR_W} height={15} fill="darkcyan" />
                 <rect width={deductibleWidth} height={15} fill="cyan" />
                 <text x={5} y={12}>
-                  ${plan.deductibles[0].amount}
+                  {formatter.format(plan.deductibles[0].amount)}
                 </text>
                 <rect
                   y={17}
@@ -141,7 +152,7 @@ export default function Planlist({
                 />
                 <rect y={17} width={moopWidth} height={15} fill="cyan" />
                 <text x={5} y={29}>
-                  ${plan.moops[0].amount}
+                  {formatter.format(plan.moops[0].amount)}
                 </text>
               </svg>
             </Box>

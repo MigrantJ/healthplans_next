@@ -6,6 +6,7 @@ import IFilter, {
 import { FacetGroup, Facet } from "@/types/MarketplaceSearch";
 import DualSlider from "./DualSlider";
 import MultiSelect from "./MultiSelect";
+import { Estimate } from "@/types/GetCreditEstimate";
 
 interface IProps {
   filter: IFilter;
@@ -15,6 +16,7 @@ interface IProps {
     premiums: { min: number; max: number };
     deductibles: { min: number; max: number };
   };
+  creditEstimates: Estimate[];
 }
 
 export default function FilterWidget({
@@ -22,6 +24,7 @@ export default function FilterWidget({
   setFilter,
   facetGroups,
   ranges,
+  creditEstimates,
 }: IProps) {
   const facetGroupMap: { [k: string]: Facet[] } =
     facetGroups?.reduce((acc, curr) => {
@@ -29,12 +32,18 @@ export default function FilterWidget({
       return acc;
     }, {}) || {};
 
+  const taxCredit = creditEstimates?.[0].aptc || 0;
+  const premiumRangeExtents = {
+    min: Math.max(ranges.premiums.min - taxCredit, 0),
+    max: Math.max(ranges.premiums.max - taxCredit, 1),
+  };
+
   return (
     <>
       <DualSlider
         label="Premium"
-        initRange={filter?.premium_range || ranges.premiums}
-        rangeExtents={ranges.premiums}
+        initRange={filter?.premium_range || premiumRangeExtents}
+        rangeExtents={premiumRangeExtents}
         onChangeEnd={([min, max]) =>
           setFilter({ ...filter, premium_range: { min, max } })
         }
