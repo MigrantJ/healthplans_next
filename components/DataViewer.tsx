@@ -78,7 +78,7 @@ export default function DataViewer({
       {displayMode === "ComparePlans" && (
         <ComparePlans
           plans={Array.from(savedPlans.values())}
-          {...{ savePlan }}
+          {...{ savePlan, creditEstimates }}
         />
       )}
 

@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Input,
-  InputGroup,
   Icon,
   FormLabel,
   Editable,
@@ -10,9 +9,12 @@ import {
   EditableInput,
   useColorModeValue,
   Center,
+  Flex,
 } from "@chakra-ui/react";
 import { BsCurrencyDollar } from "react-icons/bs";
 import { Estimate } from "@/types/GetCreditEstimate";
+
+const onlyNumbers = /^[0-9]+$/;
 
 interface IProps {
   income: number;
@@ -25,15 +27,17 @@ export default function IncomeWidget({
   setIncome,
   creditEstimates,
 }: IProps) {
-  const [innerIncome, setInnerIncome] = useState(0);
-  useEffect(() => {
-    setInnerIncome(income);
-  }, [income]);
+  const [innerIncome, setInnerIncome] = useState(income.toString());
 
   const changeInput = (t: string) => {
-    let n = parseFloat(t);
-    if (Number.isNaN(n)) n = 0;
-    setInnerIncome(n);
+    if (!onlyNumbers.test(t)) return;
+    setInnerIncome(t);
+  };
+
+  const submitInput = (t: string) => {
+    const toFloat = parseFloat(t);
+    setInnerIncome(toFloat.toString());
+    setIncome(toFloat);
   };
 
   const taxCredit =
@@ -44,18 +48,17 @@ export default function IncomeWidget({
   return (
     <>
       <FormLabel>Income</FormLabel>
-      <InputGroup size="sm">
+      <Flex alignItems="center">
         <Center>
           <Icon as={BsCurrencyDollar} boxSize={5} focusable={true} />
         </Center>
-
         <Editable
-          placeholder={innerIncome.toString()}
+          placeholder={innerIncome}
           isPreviewFocusable={true}
           selectAllOnFocus={false}
-          value={innerIncome.toString()}
+          value={innerIncome}
           onChange={(t) => changeInput(t)}
-          onSubmit={(t) => setIncome(parseFloat(t))}
+          onSubmit={(t) => submitInput(t)}
         >
           <Tooltip hasArrow label="Click to Edit" shouldWrapChildren={true}>
             <EditablePreview
@@ -68,9 +71,9 @@ export default function IncomeWidget({
             />
           </Tooltip>
           <Input as={EditableInput} value={innerIncome} />
-          <span id="income-tax-credit">{taxCredit}</span>
         </Editable>
-      </InputGroup>
+        <span id="income-tax-credit">{taxCredit}</span>
+      </Flex>
     </>
   );
 }

@@ -14,6 +14,7 @@ interface IProps {
   label: string;
   initRange: { min: number; max: number };
   rangeExtents: { min: number; max: number };
+  displayMod: (num: number) => string;
   onChangeEnd: (range: number[]) => void;
 }
 
@@ -21,6 +22,7 @@ export default function DualSlider({
   label,
   initRange,
   rangeExtents,
+  displayMod,
   onChangeEnd,
 }: IProps) {
   const [range, setRange] = useState([initRange.min, initRange.max]);
@@ -46,9 +48,9 @@ export default function DualSlider({
         <RangeSliderThumb index={1} />
       </RangeSlider>
       <Flex>
-        <Box>{range[0]}</Box>
+        <Box>{displayMod(range[0])}</Box>
         <Spacer />
-        <Box>{range[1]}</Box>
+        <Box>{displayMod(range[1])}</Box>
       </Flex>
     </>
   );

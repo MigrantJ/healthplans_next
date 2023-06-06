@@ -31,6 +31,7 @@ export default function MainWindow({ hideSidebar }: IProps) {
     queryKey: ["creditEstimate", { location, income, people }],
     queryFn: getCreditEstimate,
     enabled: !!location && income > 0,
+    keepPreviousData: true,
   });
 
   const results = useInfiniteQuery<GetPlans.Response, Error>({

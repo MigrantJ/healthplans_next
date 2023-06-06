@@ -18,19 +18,30 @@ interface IProps {
   rowTemplate: string;
   expands: Expands;
   setExpands: (e: Expands) => void;
+  taxCredit: number;
 }
+
+const formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
 
 export default function ComparePlanDetails({
   plan,
   rowTemplate,
   expands,
   setExpands,
+  taxCredit,
 }: IProps) {
   const copayMap: { [k: string]: Benefit } =
     plan.benefits.reduce((acc, curr) => {
       acc[curr.name] = curr;
       return acc;
     }, {}) || {};
+
+  const premium = formatter.format(Math.max(plan.premium - taxCredit, 1));
+  const deductible = formatter.format(plan.deductibles[0].amount);
+  const moop = formatter.format(plan.moops[0].amount);
 
   return (
     <Grid
@@ -48,11 +59,11 @@ export default function ComparePlanDetails({
       ></GridItem>
       <Box display={expands.costs ? "contents" : "none"}>
         <GridItem />
-        <Text>{plan.premium}</Text>
+        <Text>{premium}</Text>
         <GridItem />
-        <Text>{plan.deductibles[0].amount}</Text>
+        <Text>{deductible}</Text>
         <GridItem />
-        <Text>{plan.moops[0].amount}</Text>
+        <Text>{moop}</Text>
       </Box>
 
       <GridItem

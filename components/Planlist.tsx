@@ -23,6 +23,11 @@ interface IProps {
   creditEstimates: Estimate[];
 }
 
+const formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
 export default function Planlist({
   results,
   filter,
@@ -46,11 +51,6 @@ export default function Planlist({
   if (!planPages) {
     return <></>;
   }
-
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
 
   const PREMIUM_BAR_W = 135;
   const DEDUCTIBLE_BAR_W = 225;
@@ -76,7 +76,7 @@ export default function Planlist({
     .domain([0, deductibleExtent[1]])
     .range([0, DEDUCTIBLE_BAR_W]);
 
-  const filteredPlans: IHealthPlan[] = filterPlans(plans, filter);
+  const filteredPlans: IHealthPlan[] = filterPlans(plans, filter, taxCredit);
 
   const openPlanModal = (index: number) => {
     setModalPlan(filteredPlans[index]);
@@ -85,7 +85,7 @@ export default function Planlist({
 
   return (
     <>
-      <PlanModal {...{ isOpen, onClose, modalPlan }} />
+      <PlanModal {...{ isOpen, onClose, modalPlan, creditEstimates }} />
       <PlanlistHeader
         {...{
           premiumExtent,

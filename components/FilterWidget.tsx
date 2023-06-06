@@ -19,6 +19,11 @@ interface IProps {
   creditEstimates: Estimate[];
 }
 
+const formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
 export default function FilterWidget({
   filter,
   setFilter,
@@ -44,6 +49,9 @@ export default function FilterWidget({
         label="Premium"
         initRange={filter?.premium_range || premiumRangeExtents}
         rangeExtents={premiumRangeExtents}
+        displayMod={(num) => {
+          return formatter.format(num);
+        }}
         onChangeEnd={([min, max]) =>
           setFilter({ ...filter, premium_range: { min, max } })
         }
@@ -52,6 +60,9 @@ export default function FilterWidget({
         label="Deductible"
         initRange={filter?.deductible_range || ranges.deductibles}
         rangeExtents={ranges.deductibles}
+        displayMod={(num) => {
+          return formatter.format(num);
+        }}
         onChangeEnd={([min, max]) =>
           setFilter({ ...filter, deductible_range: { min, max } })
         }
