@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Divider, Flex, Heading, Grid, Button } from "@chakra-ui/react";
+import { Divider, Flex, Heading, Grid } from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
 import IPerson from "@/types/Person";
 import IFilter from "@/types/Filter";
 import * as GetPlans from "@/types/GetPlans";
+import { DisplayMode } from "@/types/DisplayMode";
 import LocationWidget from "./LocationWidget";
 import IncomeWidget from "./IncomeWidget";
 import PeopleWidget from "./PeopleWidget";
@@ -14,15 +15,15 @@ import FilterWidget from "./FilterWidget";
 import DataViewer from "./DataViewer";
 
 interface IProps {
-  isMobile: boolean;
+  hideSidebar: boolean;
 }
 
-export default function MainWindow({ isMobile }: IProps) {
+export default function MainWindow({ hideSidebar }: IProps) {
   const [location, setLocation] = useState<ILocation>();
   const [income, setIncome] = useState(0);
   const [people, setPeople] = useState<IPerson[]>([]);
   const [filter, setFilter] = useState<IFilter>();
-  const [showResults, setShowResults] = useState(!isMobile);
+  const [displayMode, setDisplayMode] = useState<DisplayMode>("Planlist");
 
   const results = useInfiniteQuery<GetPlans.Response, Error>({
     queryKey: ["query", { location, income, people }],
@@ -37,22 +38,15 @@ export default function MainWindow({ isMobile }: IProps) {
 
   return (
     <Grid id="mainwindow">
-      {isMobile && results.data && (
-        <Flex id="mobile-result-toggle">
-          <Button
-            size={"lg"}
-            onClick={() => {
-              setShowResults(!showResults);
-            }}
-          >
-            {showResults ? "See Filters" : "See Plans"}
-          </Button>
-        </Flex>
-      )}
       <Flex
         id="sidebar"
         direction="column"
-        display={isMobile && showResults ? "none" : "flex"}
+        display={
+          (!hideSidebar && displayMode !== "ComparePlans") ||
+          (hideSidebar && displayMode === "Filters")
+            ? "flex"
+            : "none"
+        }
       >
         <Heading size="md">Setup</Heading>
         <Divider />
@@ -63,16 +57,23 @@ export default function MainWindow({ isMobile }: IProps) {
         <IncomeWidget {...{ income, setIncome }} />
         <PeopleWidget {...{ people, setPeople }} />
         <Divider />
-        {results.data && (
+        {facetGroups && ranges && (
           <>
             <Heading size="sm">Filters</Heading>
             <FilterWidget {...{ filter, setFilter, facetGroups, ranges }} />
           </>
         )}
       </Flex>
-      <Grid id="planlist" display={isMobile && !showResults ? "none" : "grid"}>
-        <DataViewer {...{ results, filter }} />
-      </Grid>
+
+      <DataViewer
+        {...{
+          hideSidebar,
+          displayMode,
+          setDisplayMode,
+          results,
+          filter,
+        }}
+      />
     </Grid>
   );
 }
