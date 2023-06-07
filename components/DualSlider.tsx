@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FormLabel,
   RangeSlider,
@@ -12,7 +12,6 @@ import {
 
 interface IProps {
   label: string;
-  initRange: { min: number; max: number };
   rangeExtents: { min: number; max: number };
   displayMod: (num: number) => string;
   onChangeEnd: (range: number[]) => void;
@@ -20,12 +19,17 @@ interface IProps {
 
 export default function DualSlider({
   label,
-  initRange,
   rangeExtents,
   displayMod,
   onChangeEnd,
 }: IProps) {
-  const [range, setRange] = useState([initRange.min, initRange.max]);
+  const [range, setRange] = useState([rangeExtents.min, rangeExtents.max]);
+  // if rangeExtents changes, setRange to the new extents
+  // useEffect(() => {
+  //   onChangeEnd([rangeExtents.min, rangeExtents.max])
+  //   setRange([rangeExtents.min, rangeExtents.max]);
+  // }, [rangeExtents]);
+
   return (
     <>
       <FormLabel>{label}</FormLabel>

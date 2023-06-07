@@ -14,7 +14,7 @@ import {
 import { BsCurrencyDollar } from "react-icons/bs";
 import { Estimate } from "@/types/GetCreditEstimate";
 
-const onlyNumbers = /^[0-9]+$/;
+const onlyNumbers = /^[0-9]*$/;
 
 interface IProps {
   income: number;
@@ -35,6 +35,7 @@ export default function IncomeWidget({
   };
 
   const submitInput = (t: string) => {
+    t = t || "0";
     const toFloat = parseFloat(t);
     setInnerIncome(toFloat.toString());
     setIncome(toFloat);
@@ -54,6 +55,7 @@ export default function IncomeWidget({
         </Center>
         <Editable
           placeholder={innerIncome}
+          inputMode="numeric"
           isPreviewFocusable={true}
           selectAllOnFocus={false}
           value={innerIncome}

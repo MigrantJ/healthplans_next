@@ -47,9 +47,8 @@ export default function FilterWidget({
     <>
       <DualSlider
         label="Premium"
-        initRange={filter?.premium_range || premiumRangeExtents}
         rangeExtents={premiumRangeExtents}
-        displayMod={(num) => {
+        displayMod={(num: number) => {
           return formatter.format(num);
         }}
         onChangeEnd={([min, max]) =>
@@ -58,9 +57,8 @@ export default function FilterWidget({
       />
       <DualSlider
         label="Deductible"
-        initRange={filter?.deductible_range || ranges.deductibles}
         rangeExtents={ranges.deductibles}
-        displayMod={(num) => {
+        displayMod={(num: number) => {
           return formatter.format(num);
         }}
         onChangeEnd={([min, max]) =>
