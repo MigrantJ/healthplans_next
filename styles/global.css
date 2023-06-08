@@ -41,6 +41,7 @@
 #estimate-notice {
   grid-column: 1/5;
   margin: 0 auto;
+  font-size: 12px;
 }
 
 #planlist > .column-header {

@@ -78,6 +78,14 @@ export default function Planlist({
 
   const filteredPlans: IHealthPlan[] = filterPlans(plans, filter, taxCredit);
 
+  if (!hasNextPage && !filteredPlans.length) {
+    return (
+      <GridItem gridColumn="1/5">
+        <Text>No plans match your filters!</Text>
+      </GridItem>
+    );
+  }
+
   const openPlanModal = (index: number) => {
     setModalPlan(filteredPlans[index]);
     onOpen();

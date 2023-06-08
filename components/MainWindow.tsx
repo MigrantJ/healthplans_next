@@ -15,6 +15,7 @@ import PeopleWidget from "./PeopleWidget";
 import FilterWidget from "./FilterWidget";
 import DataViewer from "./DataViewer";
 import { getCreditEstimate } from "@/lib/getCreditEstimate";
+import MedicaidModal from "./MedicaidModal";
 
 interface IProps {
   hideSidebar: boolean;
@@ -77,6 +78,8 @@ export default function MainWindow({ hideSidebar }: IProps) {
           </>
         )}
       </Flex>
+
+      {creditEstimates?.some((e) => e.is_medicaid_chip) && <MedicaidModal />}
 
       <DataViewer
         {...{

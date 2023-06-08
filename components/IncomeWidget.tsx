@@ -61,6 +61,7 @@ export default function IncomeWidget({
           value={innerIncome}
           onChange={(t) => changeInput(t)}
           onSubmit={(t) => submitInput(t)}
+          width="100px"
         >
           <Tooltip hasArrow label="Click to Edit" shouldWrapChildren={true}>
             <EditablePreview

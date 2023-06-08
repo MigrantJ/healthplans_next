@@ -23,12 +23,19 @@ export default function DualSlider({
   displayMod,
   onChangeEnd,
 }: IProps) {
+  const [oldExtents, setOldExtents] = useState(rangeExtents);
   const [range, setRange] = useState([rangeExtents.min, rangeExtents.max]);
-  // if rangeExtents changes, setRange to the new extents
-  // useEffect(() => {
-  //   onChangeEnd([rangeExtents.min, rangeExtents.max])
-  //   setRange([rangeExtents.min, rangeExtents.max]);
-  // }, [rangeExtents]);
+  // if rangeExtents changes, reset the slider to min and max
+  useEffect(() => {
+    if (
+      rangeExtents.min !== oldExtents.min ||
+      rangeExtents.max !== oldExtents.max
+    ) {
+      setOldExtents(rangeExtents);
+      onChangeEnd([rangeExtents.min, rangeExtents.max]);
+      setRange([rangeExtents.min, rangeExtents.max]);
+    }
+  }, [rangeExtents]);
 
   return (
     <>

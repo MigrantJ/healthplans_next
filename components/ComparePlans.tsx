@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Grid, GridItem, Box, Text, Heading, Icon } from "@chakra-ui/react";
+import {
+  Grid,
+  GridItem,
+  Box,
+  Text,
+  Heading,
+  Icon,
+  Flex,
+} from "@chakra-ui/react";
 import {
   Provider,
   Carousel,
@@ -124,15 +132,13 @@ export default function ComparePlans({
           alignItems="center"
         >
           <GridItem />
-          <GridItem backgroundColor="silver" height="100%">
-            <Heading size="md">
-              <Icon
-                as={expands.costs ? BsChevronContract : BsChevronExpand}
-                boxSize={5}
-              />
-              Costs
-            </Heading>
-          </GridItem>
+          <Flex backgroundColor="silver" height="100%" alignItems="center">
+            <Icon
+              as={expands.costs ? BsChevronContract : BsChevronExpand}
+              boxSize={5}
+            />
+            <Heading size="md">Costs</Heading>
+          </Flex>
           <Box display={expands.costs ? "contents" : "none"}>
             <GridItem backgroundColor="lightgray">
               <Heading size="sm">Estimated Monthly Premium</Heading>

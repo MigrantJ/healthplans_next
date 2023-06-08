@@ -17,7 +17,9 @@ export default function PlanlistHeader({
   return (
     <>
       <GridItem id="estimate-notice">
-        <Text>Note: Estimates Only. Premiums include tax credit.</Text>
+        <Text>
+          Note: Estimates Only. Premiums include tax credit if applicable.
+        </Text>
       </GridItem>
       <Box className="column-header"></Box>
       <Box className="column-header">
