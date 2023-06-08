@@ -6,6 +6,7 @@ import IFilter, {
 import { FacetGroup, Facet } from "@/types/MarketplaceSearch";
 import DualSlider from "./DualSlider";
 import MultiSelect from "./MultiSelect";
+import { Estimate } from "@/types/GetCreditEstimate";
 
 interface IProps {
   filter: IFilter;
@@ -15,13 +16,20 @@ interface IProps {
     premiums: { min: number; max: number };
     deductibles: { min: number; max: number };
   };
+  creditEstimates: Estimate[];
 }
+
+const formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
 
 export default function FilterWidget({
   filter,
   setFilter,
   facetGroups,
   ranges,
+  creditEstimates,
 }: IProps) {
   const facetGroupMap: { [k: string]: Facet[] } =
     facetGroups?.reduce((acc, curr) => {
@@ -29,20 +37,30 @@ export default function FilterWidget({
       return acc;
     }, {}) || {};
 
+  const taxCredit = creditEstimates?.[0].aptc || 0;
+  const premiumRangeExtents = {
+    min: Math.max(ranges.premiums.min - taxCredit, 0),
+    max: Math.max(ranges.premiums.max - taxCredit, 1),
+  };
+
   return (
     <>
       <DualSlider
         label="Premium"
-        initRange={filter?.premium_range || ranges.premiums}
-        rangeExtents={ranges.premiums}
+        rangeExtents={premiumRangeExtents}
+        displayMod={(num: number) => {
+          return formatter.format(num);
+        }}
         onChangeEnd={([min, max]) =>
           setFilter({ ...filter, premium_range: { min, max } })
         }
       />
       <DualSlider
         label="Deductible"
-        initRange={filter?.deductible_range || ranges.deductibles}
         rangeExtents={ranges.deductibles}
+        displayMod={(num: number) => {
+          return formatter.format(num);
+        }}
         onChangeEnd={([min, max]) =>
           setFilter({ ...filter, deductible_range: { min, max } })
         }

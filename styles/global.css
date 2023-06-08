@@ -41,6 +41,7 @@
 #estimate-notice {
   grid-column: 1/5;
   margin: 0 auto;
+  font-size: 12px;
 }
 
 #planlist > .column-header {
@@ -141,6 +142,11 @@
   cursor: pointer;
 }
 
+#income-tax-credit {
+  color: green;
+  font-weight: bold;
+}
+
 @media only screen and (max-width: 1060px) {
   #mainwindow {
     grid-template-columns: 1fr;
@@ -181,6 +187,7 @@
 
   #estimate-notice {
     grid-column: 1/4;
+    font-size: 12px;
   }
 
   #planlist > .column-header {

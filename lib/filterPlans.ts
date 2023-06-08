@@ -3,14 +3,15 @@ import IHealthPlan from "@/types/HealthPlan";
 
 export default function filterPlans(
   plans: IHealthPlan[],
-  filter: IFilter
+  filter: IFilter,
+  taxCredit: number
 ): IHealthPlan[] {
   return plans.filter((plan) => {
     // premium
+    const premium = Math.max(plan.premium - taxCredit, 1);
     if (
       filter?.premium_range &&
-      (filter.premium_range.min > plan.premium ||
-        plan.premium > filter.premium_range.max)
+      (filter.premium_range.min > premium || premium > filter.premium_range.max)
     )
       return false;
 

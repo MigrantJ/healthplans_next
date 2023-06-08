@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Grid, GridItem, Box, Text, Heading, Icon } from "@chakra-ui/react";
+import {
+  Grid,
+  GridItem,
+  Box,
+  Text,
+  Heading,
+  Icon,
+  Flex,
+} from "@chakra-ui/react";
 import {
   Provider,
   Carousel,
@@ -11,6 +19,7 @@ import { BsChevronExpand, BsChevronContract } from "react-icons/bs";
 
 import IHealthPlan from "@/types/HealthPlan";
 import ComparePlanDetails from "./compare_plans/ComparePlanDetails";
+import { Estimate } from "@/types/GetCreditEstimate";
 
 export interface Expands {
   costs: boolean;
@@ -24,9 +33,14 @@ export interface Expands {
 interface IProps {
   plans: IHealthPlan[];
   savePlan: (plan: IHealthPlan) => void;
+  creditEstimates: Estimate[];
 }
 
-export default function ComparePlans({ plans, savePlan }: IProps) {
+export default function ComparePlans({
+  plans,
+  savePlan,
+  creditEstimates,
+}: IProps) {
   const [expands, setExpands] = useState<Expands>({
     costs: true,
     info: true,
@@ -37,6 +51,7 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
   });
 
   const multiplePlans = plans.length > 1;
+  const taxCredit = creditEstimates?.[0].aptc || 0;
 
   //todo: revisit this
   if (!plans.length) {
@@ -117,15 +132,13 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
           alignItems="center"
         >
           <GridItem />
-          <GridItem backgroundColor="silver" height="100%">
-            <Heading size="md">
-              <Icon
-                as={expands.costs ? BsChevronContract : BsChevronExpand}
-                boxSize={5}
-              />
-              Costs
-            </Heading>
-          </GridItem>
+          <Flex backgroundColor="silver" height="100%" alignItems="center">
+            <Icon
+              as={expands.costs ? BsChevronContract : BsChevronExpand}
+              boxSize={5}
+            />
+            <Heading size="md">Costs</Heading>
+          </Flex>
           <Box display={expands.costs ? "contents" : "none"}>
             <GridItem backgroundColor="lightgray">
               <Heading size="sm">Estimated Monthly Premium</Heading>
@@ -259,14 +272,14 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
               {plans.map((plan, i) => (
                 <ComparePlanDetails
                   key={i}
-                  {...{ plan, rowTemplate, expands, setExpands }}
+                  {...{ plan, rowTemplate, expands, setExpands, taxCredit }}
                 />
               ))}
             </Carousel>
           ) : (
             <ComparePlanDetails
               plan={plans[0]}
-              {...{ rowTemplate, expands, setExpands }}
+              {...{ rowTemplate, expands, setExpands, taxCredit }}
             />
           )}
         </Box>
