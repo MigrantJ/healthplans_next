@@ -55,7 +55,6 @@ export default function IncomeWidget({
         </Center>
         <Editable
           placeholder={innerIncome}
-          inputMode="numeric"
           isPreviewFocusable={true}
           selectAllOnFocus={false}
           value={innerIncome}
@@ -73,7 +72,7 @@ export default function IncomeWidget({
               }}
             />
           </Tooltip>
-          <Input as={EditableInput} value={innerIncome} />
+          <Input as={EditableInput} value={innerIncome} inputMode="numeric" />
         </Editable>
         <span id="income-tax-credit">{taxCredit}</span>
       </Flex>

@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 
 import IHealthPlan from "@/types/HealthPlan";
-import ComparePlans from "./ComparePlans";
+import ComparePlans from "../compare_plans/ComparePlans";
 import { Estimate } from "@/types/GetCreditEstimate";
 
 interface IProps {

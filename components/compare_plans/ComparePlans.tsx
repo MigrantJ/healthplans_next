@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Grid,
-  GridItem,
-  Box,
-  Text,
-  Heading,
-  Icon,
-  Flex,
-} from "@chakra-ui/react";
+import { Grid, GridItem, Box, Text, Icon } from "@chakra-ui/react";
 import {
   Provider,
   Carousel,
@@ -15,12 +7,11 @@ import {
   RightButton,
 } from "chakra-ui-carousel";
 import { RiCloseFill } from "react-icons/ri";
-import { BsChevronExpand, BsChevronContract } from "react-icons/bs";
 
 import IHealthPlan from "@/types/HealthPlan";
-import ComparePlanDetails from "./compare_plans/ComparePlanDetails";
+import ComparePlanDetails from "./ComparePlanDetails";
 import { Estimate } from "@/types/GetCreditEstimate";
-import CollapsibleHeaders from "./compare_plans/CollapsibleHeaders";
+import CollapsibleHeaders from "./CollapsibleHeaders";
 
 export interface Expands {
   costs: boolean;
@@ -71,17 +62,17 @@ export default function ComparePlans({
 
   rowTemplate += "40px ";
   if (expands.copays) {
-    rowTemplate += "repeat(4, 20px 110px) ";
+    rowTemplate += "repeat(4, 20px 150px) ";
   }
 
   rowTemplate += "40px ";
   if (expands.documents) {
-    rowTemplate += "150px ";
+    rowTemplate += "1px 150px ";
   }
 
   rowTemplate += "40px ";
   if (expands.mgmt_programs) {
-    rowTemplate += "repeat(9, 40px 20px)";
+    rowTemplate += "repeat(9, 20px 30px)";
   }
 
   const planNameHeaders = (plans: IHealthPlan[]) => {
@@ -93,6 +84,7 @@ export default function ComparePlans({
           width="100%"
           minWidth={0}
           border="1px solid gray"
+          paddingX="4px"
         >
           <Text className="ellipsis">{plan.issuer.name}</Text>
           {multiplePlans && (
@@ -121,10 +113,10 @@ export default function ComparePlans({
         )}
 
         <Grid
+          id="compareplans-headers"
           gridColumn="2/3"
           gridRow="1/2"
-          gridTemplateRows={"50px " + rowTemplate + " 50px"}
-          paddingTop="8px"
+          gridTemplateRows={"58px " + rowTemplate + " 50px"}
           alignItems="center"
           width="100%"
         >
@@ -186,8 +178,14 @@ export default function ComparePlans({
           {/* space at the bottom */}
           <GridItem />
         </Grid>
-        <Box gridColumn="2/3" gridRow="1/2">
-          <Box position="sticky" top={0} backgroundColor="white" zIndex={1}>
+        <Box id="compareplans-data" gridColumn="2/3" gridRow="1/2">
+          <Box
+            id="namecontainer"
+            position="sticky"
+            top={0}
+            backgroundColor="white"
+            zIndex={1}
+          >
             {multiplePlans ? (
               <Carousel gap={1}>{planNameHeaders(plans)}</Carousel>
             ) : (

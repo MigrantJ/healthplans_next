@@ -23,16 +23,19 @@ export default function CollapsibleHeaders({
         {subHeaders.length ? (
           subHeaders.map((s, i) => {
             return (
-              <>
-                <GridItem key={i} backgroundColor="lightgray">
+              <React.Fragment key={i}>
+                <GridItem backgroundColor="lightgray">
                   <Heading size="sm">{s}</Heading>
                 </GridItem>
                 <GridItem />
-              </>
+              </React.Fragment>
             );
           })
         ) : (
-          <GridItem />
+          <>
+            <GridItem />
+            <GridItem />
+          </>
         )}
       </Box>
     </>

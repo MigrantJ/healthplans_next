@@ -9,7 +9,7 @@ interface IProps {
   numSavedPlans: number;
 }
 
-export function ModeSelector({
+export default function ModeSelector({
   hideSidebar,
   displayMode,
   setDisplayMode,

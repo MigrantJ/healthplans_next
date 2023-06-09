@@ -7,9 +7,9 @@ import IFilter from "@/types/Filter";
 import IHealthPlan from "@/types/HealthPlan";
 import InvalidStateMessage from "./InvalidStateMessage";
 import { DisplayMode } from "@/types/DisplayMode";
-import Planlist from "./Planlist";
-import ComparePlans from "./ComparePlans";
-import { ModeSelector } from "./ModeSelector";
+import Planlist from "./planlist/Planlist";
+import ComparePlans from "./compare_plans/ComparePlans";
+import ModeSelector from "./ModeSelector";
 import { Estimate } from "@/types/GetCreditEstimate";
 
 interface IProps {

@@ -14,7 +14,7 @@ import {
 import { RiMapPinLine } from "react-icons/ri";
 
 import ILocation from "@/types/Location";
-import Modal from "./Modal";
+import Modal from "../Modal";
 
 interface IProps {
   location: ILocation;
@@ -83,7 +83,7 @@ export default function LocationWidget({ location, setLocation }: IProps) {
       <Center>
         <Tooltip hasArrow label="Click To Use GPS">
           <Button
-            onClick={(e) => {
+            onClick={(_) => {
               getPosByGPS(setLocation);
             }}
           >
@@ -111,7 +111,11 @@ export default function LocationWidget({ location, setLocation }: IProps) {
             }}
           />
         </Tooltip>
-        <Input as={EditableInput} value={location?.zipcode} />
+        <Input
+          as={EditableInput}
+          value={location?.zipcode}
+          inputMode="numeric"
+        />
       </Editable>
     </Flex>
   );

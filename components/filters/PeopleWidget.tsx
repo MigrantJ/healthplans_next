@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, FormLabel, Text } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 
-import EditPersonModal from "@/components/EditPersonModal";
+import EditPersonModal from "./EditPersonModal";
 import IPerson from "@/types/Person";
 
 interface IProps {
