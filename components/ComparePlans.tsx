@@ -20,6 +20,7 @@ import { BsChevronExpand, BsChevronContract } from "react-icons/bs";
 import IHealthPlan from "@/types/HealthPlan";
 import ComparePlanDetails from "./compare_plans/ComparePlanDetails";
 import { Estimate } from "@/types/GetCreditEstimate";
+import CollapsibleHeaders from "./compare_plans/CollapsibleHeaders";
 
 export interface Expands {
   costs: boolean;
@@ -52,11 +53,6 @@ export default function ComparePlans({
 
   const multiplePlans = plans.length > 1;
   const taxCredit = creditEstimates?.[0].aptc || 0;
-
-  //todo: revisit this
-  if (!plans.length) {
-    return <Text>No plans to compare!</Text>;
-  }
 
   let rowTemplate = "40px ";
   if (expands.costs) {
@@ -130,132 +126,63 @@ export default function ComparePlans({
           gridTemplateRows={"50px " + rowTemplate + " 50px"}
           paddingTop="8px"
           alignItems="center"
+          width="100%"
         >
           <GridItem />
-          <Flex backgroundColor="silver" height="100%" alignItems="center">
-            <Icon
-              as={expands.costs ? BsChevronContract : BsChevronExpand}
-              boxSize={5}
-            />
-            <Heading size="md">Costs</Heading>
-          </Flex>
-          <Box display={expands.costs ? "contents" : "none"}>
-            <GridItem backgroundColor="lightgray">
-              <Heading size="sm">Estimated Monthly Premium</Heading>
-            </GridItem>
-            <GridItem />
-            <GridItem backgroundColor="lightgray">
-              <Heading size="sm">Deductible</Heading>
-            </GridItem>
-            <GridItem />
-            <GridItem backgroundColor="lightgray">
-              <Heading size="sm">Out-of-Pocket Maximum</Heading>
-            </GridItem>
-            <GridItem />
-          </Box>
-
-          <GridItem backgroundColor="silver" height="100%">
-            <Heading size="md">
-              <Icon
-                as={expands.info ? BsChevronContract : BsChevronExpand}
-                boxSize={5}
-              />
-              Information
-            </Heading>
-          </GridItem>
-          <Box display={expands.info ? "contents" : "none"}>
-            <Heading size="sm">Plan ID</Heading>
-            <GridItem />
-            <Heading size="sm">Plan Type</Heading>
-            <GridItem />
-            <Heading size="sm">Metal Level</Heading>
-            <GridItem />
-          </Box>
-
-          <GridItem backgroundColor="silver" height="100%">
-            <Heading size="md">
-              <Icon
-                as={expands.star_ratings ? BsChevronContract : BsChevronExpand}
-                boxSize={5}
-              />
-              Star Ratings
-            </Heading>
-          </GridItem>
-          <Box display={expands.star_ratings ? "contents" : "none"}>
-            <Heading size="sm">Overall Rating</Heading>
-            <GridItem />
-            <Heading size="sm">Member Experience</Heading>
-            <GridItem />
-            <Heading size="sm">Medical Care</Heading>
-            <GridItem />
-            <Heading size="sm">Plan Administration</Heading>
-            <GridItem />
-          </Box>
-
-          <GridItem backgroundColor="silver" height="100%">
-            <Heading size="md">
-              <Icon
-                as={expands.copays ? BsChevronContract : BsChevronExpand}
-                boxSize={5}
-              />
-              Copays / Coinsurance
-            </Heading>
-          </GridItem>
-          <Box display={expands.copays ? "contents" : "none"}>
-            <Heading size="sm">Primary Care Visit</Heading>
-            <GridItem />
-            <Heading size="sm">Specialist Visit</Heading>
-            <GridItem />
-            <Heading size="sm">Emergency Room Services</Heading>
-            <GridItem />
-            <Heading size="sm">Generic Drugs</Heading>
-            <GridItem />
-          </Box>
-
-          <GridItem backgroundColor="silver" height="100%">
-            <Heading size="md">
-              <Icon
-                as={expands.documents ? BsChevronContract : BsChevronExpand}
-                boxSize={5}
-              />
-              Documents
-            </Heading>
-          </GridItem>
-          <Box display={expands.documents ? "contents" : "none"}>
-            <GridItem />
-          </Box>
-
-          <GridItem backgroundColor="silver" height="100%">
-            <Heading size="md">
-              <Icon
-                as={expands.mgmt_programs ? BsChevronContract : BsChevronExpand}
-                boxSize={5}
-              />
-              Management Programs
-            </Heading>
-          </GridItem>
-          <Box display={expands.mgmt_programs ? "contents" : "none"}>
-            <Heading size="sm">Asthma</Heading>
-            <GridItem />
-            <Heading size="sm">Heart Disease</Heading>
-            <GridItem />
-            <Heading size="sm">Depression</Heading>
-            <GridItem />
-            <Heading size="sm">Diabetes</Heading>
-            <GridItem />
-            <Heading size="sm">
-              High Blood Pressure and High Cholesterol
-            </Heading>
-            <GridItem />
-            <Heading size="sm">Low Back Pain</Heading>
-            <GridItem />
-            <Heading size="sm">Pain Management</Heading>
-            <GridItem />
-            <Heading size="sm">Pregnancy</Heading>
-            <GridItem />
-            <Heading size="sm">Weight Loss Programs</Heading>
-            <GridItem />
-          </Box>
+          <CollapsibleHeaders
+            expanded={expands.costs}
+            mainHeader={"Costs"}
+            subHeaders={[
+              "Estimated Monthly Premium",
+              "Deductible",
+              "Out-of-Pocket Maximum",
+            ]}
+          />
+          <CollapsibleHeaders
+            expanded={expands.info}
+            mainHeader={"Information"}
+            subHeaders={["Plan ID", "Plan Type", "Metal Level"]}
+          />
+          <CollapsibleHeaders
+            expanded={expands.star_ratings}
+            mainHeader={"Star Ratings"}
+            subHeaders={[
+              "Overall Rating",
+              "Member Experience",
+              "Medical Care",
+              "Plan Administration",
+            ]}
+          />
+          <CollapsibleHeaders
+            expanded={expands.copays}
+            mainHeader={"Copays / Coinsurance"}
+            subHeaders={[
+              "Primary Care Visit",
+              "Specialist Visit",
+              "Emergency Room Services",
+              "Generic Drugs",
+            ]}
+          />
+          <CollapsibleHeaders
+            expanded={expands.documents}
+            mainHeader={"Documents"}
+            subHeaders={[]}
+          />
+          <CollapsibleHeaders
+            expanded={expands.mgmt_programs}
+            mainHeader={"Management Programs"}
+            subHeaders={[
+              "Asthma",
+              "Heart Disease",
+              "Depression",
+              "Diabetes",
+              "High Blood Pressure and High Cholesterol",
+              "Low Back Pain",
+              "Pain Management",
+              "Pregnancy",
+              "Weight Loss Programs",
+            ]}
+          />
           {/* space at the bottom */}
           <GridItem />
         </Grid>
