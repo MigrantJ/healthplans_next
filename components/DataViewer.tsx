@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, Box, Grid } from "@chakra-ui/react";
+import { Text, Box } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 
 import * as GetPlans from "@/types/GetPlans";
@@ -67,14 +67,11 @@ export default function DataViewer({
 
   return (
     <>
-      <Grid
-        id="planlist"
-        display={displayMode === "Planlist" ? "grid" : "none"}
-      >
+      {displayMode === "Planlist" && (
         <Planlist
           {...{ results, filter, savePlan, savedPlans, creditEstimates }}
         />
-      </Grid>
+      )}
       {displayMode === "ComparePlans" && (
         <ComparePlans
           plans={Array.from(savedPlans.values())}

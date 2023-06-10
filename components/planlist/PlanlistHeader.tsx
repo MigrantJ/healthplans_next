@@ -1,5 +1,6 @@
-import { Box, GridItem, Text } from "@chakra-ui/react";
+import { GridItem, Text } from "@chakra-ui/react";
 import { Axis, Orient } from "d3-axis-for-react";
+import ColumnHeader from "./ColumnHeader";
 
 interface IProps {
   premiumExtent: [number, number];
@@ -16,17 +17,21 @@ export default function PlanlistHeader({
 }: IProps) {
   return (
     <>
-      <GridItem id="estimate-notice">
+      <GridItem
+        gridColumn={{ base: "1/4", md: "1/5" }}
+        margin="0 auto"
+        fontSize="small"
+      >
         <Text>
           Note: Estimates Only. Premiums include tax credit if applicable.
         </Text>
       </GridItem>
-      <Box className="column-header"></Box>
-      <Box className="column-header">
+      <ColumnHeader />
+      <ColumnHeader>
         <Text as="b">Issuer</Text>
         <Text>Plan Name</Text>
-      </Box>
-      <Box className="column-header">
+      </ColumnHeader>
+      <ColumnHeader>
         <Text as="b">Premium</Text>
         <svg height={20} width={xScalePremium(premiumExtent[1]) + 20}>
           <g transform="translate(2, 18)">
@@ -46,8 +51,8 @@ export default function PlanlistHeader({
             />
           </g>
         </svg>
-      </Box>
-      <Box className="column-header">
+      </ColumnHeader>
+      <ColumnHeader>
         <Text as="b">Deductible</Text>
         <svg height={20} width={xScaleDeductible(deductibleExtent[1]) + 20}>
           <g transform="translate(2, 18)">
@@ -69,7 +74,7 @@ export default function PlanlistHeader({
             />
           </g>
         </svg>
-      </Box>
+      </ColumnHeader>
     </>
   );
 }

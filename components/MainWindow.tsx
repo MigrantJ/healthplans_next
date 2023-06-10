@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
-import { Divider, Flex, Heading, Grid } from "@chakra-ui/react";
+import { Divider, Heading, Grid } from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
@@ -16,6 +16,7 @@ import FilterWidget from "./filters/FilterWidget";
 import DataViewer from "./DataViewer";
 import { getCreditEstimate } from "@/lib/getCreditEstimate";
 import MedicaidModal from "./MedicaidModal";
+import Sidebar from "./filters/Sidebar";
 
 interface IProps {
   hideSidebar: boolean;
@@ -49,10 +50,8 @@ export default function MainWindow({ hideSidebar }: IProps) {
   const ranges = results.data?.pages?.[0].ranges;
 
   return (
-    <Grid id="mainwindow">
-      <Flex
-        id="sidebar"
-        direction="column"
+    <Grid gridTemplateColumns={{ base: "1fr", lg: "300px 1fr" }}>
+      <Sidebar
         display={
           (!hideSidebar && displayMode !== "ComparePlans") ||
           (hideSidebar && displayMode === "Filters")
@@ -77,7 +76,7 @@ export default function MainWindow({ hideSidebar }: IProps) {
             />
           </>
         )}
-      </Flex>
+      </Sidebar>
 
       {creditEstimates?.some((e) => e.is_medicaid_chip) && <MedicaidModal />}
 

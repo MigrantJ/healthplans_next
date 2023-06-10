@@ -25,9 +25,9 @@ export default function IndexPage() {
   }, []);
 
   return (
-    <Box id="root">
+    <Box minHeight="100vh">
       <AboutModal {...{ isOpen, onClose }} />
-      <Flex id="header">
+      <Flex padding="10px">
         <Heading size="lg">HealthPlansNext</Heading>
         <Spacer />
         <Button onClick={onOpen}>About</Button>

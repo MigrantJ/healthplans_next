@@ -8,7 +8,6 @@ interface IProps {
 }
 
 export default function InvalidStateMessage({
-  state,
   exchange_name,
   exchange_url,
 }: IProps) {

@@ -14,6 +14,8 @@ import PlanlistHeader from "./PlanlistHeader";
 import PlanSkeleton from "./PlanSkeleton";
 import PlanModal from "./PlanModal";
 import { Estimate } from "@/types/GetCreditEstimate";
+import PlanListContainer from "./PlanListContainer";
+import EllipsisText from "../EllipsisText";
 
 interface IProps {
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
@@ -92,7 +94,7 @@ export default function Planlist({
   };
 
   return (
-    <>
+    <PlanListContainer>
       <PlanModal {...{ isOpen, onClose, modalPlan, creditEstimates }} />
       <PlanlistHeader
         {...{
@@ -110,7 +112,9 @@ export default function Planlist({
         return (
           <Box key={plan.id} className="plan-row">
             <Box
-              className="plan-cell plan-bookmark-container"
+              className="plan-cell"
+              gridColumn={{ base: "1/2" }}
+              padding={{ base: "0 10px", sm: "0 5px", md: "0 10px" }}
               onClick={(_) => savePlan(plan)}
             >
               <Icon
@@ -121,16 +125,20 @@ export default function Planlist({
             </Box>
             <Box
               className="plan-cell plan-name-container"
+              gridColumn={{ base: "2/3", sm: "2/4", md: "auto" }}
+              padding={{ base: "0 10px", sm: "0 5px", md: "0 10px" }}
               onClick={(_) => openPlanModal(i)}
             >
-              <Text className="ellipsis">{plan.issuer.name}</Text>
-              <Text className="ellipsis bold">{plan.name}</Text>
+              <EllipsisText>{plan.issuer.name}</EllipsisText>
+              <EllipsisText fontWeight="bold">{plan.name}</EllipsisText>
             </Box>
             <Box
-              className="plan-cell plan-premium-container"
+              className="plan-cell"
+              gridColumn={{ base: "1/3", md: "auto" }}
+              padding={{ base: "10px 5px", sm: "0 5px", md: "10px 5px" }}
               onClick={(_) => openPlanModal(i)}
             >
-              <Text className="premium-bar-label">Premium</Text>
+              <Text display={{ base: "block", md: "none" }}>Premium</Text>
               <svg height={30} width={PREMIUM_BAR_W} overflow={"visible"}>
                 <rect width={PREMIUM_BAR_W} height={30} fill="darkgreen" />
                 <rect width={premiumWidth} height={30} fill="green" />
@@ -140,10 +148,16 @@ export default function Planlist({
               </svg>
             </Box>
             <Box
-              className="plan-cell plan-deductible-container"
+              className="plan-cell"
+              gridColumn={{ base: "1/3", sm: "3/4", md: "auto" }}
+              padding={{
+                base: "10px 5px",
+                sm: "0px 5px 10px 5px",
+                md: "10px 5px",
+              }}
               onClick={(_) => openPlanModal(i)}
             >
-              <Text className="deductible-bar-label">
+              <Text display={{ base: "block", md: "none" }}>
                 Deductible / Max Out-Of-Pocket
               </Text>
               <svg height={30} width={DEDUCTIBLE_BAR_W} overflow={"visible"}>
@@ -171,10 +185,10 @@ export default function Planlist({
       {hasNextPage && (
         <>
           {/* invisible element for tracking when user scrolls to bottom */}
-          <GridItem ref={ref} id="scroll-ref" display={isFetching && "none"} />
+          <GridItem ref={ref} display={isFetching && "none"} gridColumn="1/5" />
           <PlanSkeleton />
         </>
       )}
-    </>
+    </PlanListContainer>
   );
 }

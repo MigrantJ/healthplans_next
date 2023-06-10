@@ -10,6 +10,7 @@ import {
   useColorModeValue,
   Center,
   Flex,
+  Text,
 } from "@chakra-ui/react";
 import { BsCurrencyDollar } from "react-icons/bs";
 import { Estimate } from "@/types/GetCreditEstimate";
@@ -74,7 +75,9 @@ export default function IncomeWidget({
           </Tooltip>
           <Input as={EditableInput} value={innerIncome} inputMode="numeric" />
         </Editable>
-        <span id="income-tax-credit">{taxCredit}</span>
+        <Text as="span" color="green" fontWeight="bold">
+          {taxCredit}
+        </Text>
       </Flex>
     </>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, GridItem, Box, Text, Icon } from "@chakra-ui/react";
+import { Grid, GridItem, Box, Icon } from "@chakra-ui/react";
 import {
   Provider,
   Carousel,
@@ -12,6 +12,7 @@ import IHealthPlan from "@/types/HealthPlan";
 import ComparePlanDetails from "./ComparePlanDetails";
 import { Estimate } from "@/types/GetCreditEstimate";
 import CollapsibleHeaders from "./CollapsibleHeaders";
+import EllipsisText from "../EllipsisText";
 
 export interface Expands {
   costs: boolean;
@@ -86,18 +87,18 @@ export default function ComparePlans({
           border="1px solid gray"
           paddingX="4px"
         >
-          <Text className="ellipsis">{plan.issuer.name}</Text>
+          <EllipsisText>{plan.issuer.name}</EllipsisText>
           {multiplePlans && (
             <Icon
               as={RiCloseFill}
               boxSize={6}
-              className="pointer"
+              cursor="pointer"
               onClick={() => savePlan(plan)}
             />
           )}
-          <Text className="ellipsis bold" gridColumn="1/3">
+          <EllipsisText gridColumn="1/3" fontWeight="bold">
             {plan.name}
-          </Text>
+          </EllipsisText>
         </Grid>
       );
     });
@@ -106,7 +107,18 @@ export default function ComparePlans({
   return (
     <Provider>
       <Grid
-        id={multiplePlans ? "compareplans-root" : "compareplans-root-single"}
+        gridColumn="1/3"
+        margin={multiplePlans && "0 auto"}
+        gridTemplateColumns={
+          multiplePlans
+            ? {
+                base: "50px 250px 50px",
+                sm: "50px 300px 50px",
+                md: "50px 650px 50px",
+                lg: "50px 900px 50px",
+              }
+            : "50px 1fr 50px"
+        }
       >
         {multiplePlans && (
           <LeftButton position="fixed" left={0} top="50%" width="50px" />
