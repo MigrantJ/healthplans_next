@@ -1,4 +1,4 @@
-import { GridItem, Text } from "@chakra-ui/react";
+import { GridItem, Heading, Text, Flex, Spacer } from "@chakra-ui/react";
 import { Axis, Orient } from "d3-axis-for-react";
 import ColumnHeader from "./ColumnHeader";
 
@@ -17,15 +17,20 @@ export default function PlanlistHeader({
 }: IProps) {
   return (
     <>
-      <GridItem
+      <Flex
         gridColumn={{ base: "1/4", md: "1/5" }}
-        margin="0 auto"
-        fontSize="small"
+        flexDir={{ base: "column", md: "row" }}
+        width="100%"
+        paddingX="10px"
+        paddingBottom="10px"
+        borderBottom="1px solid lightgray"
       >
-        <Text>
+        <Heading size="md">Plans</Heading>
+        <Spacer />
+        <Text fontSize="small">
           Note: Estimates Only. Premiums include tax credit if applicable.
         </Text>
-      </GridItem>
+      </Flex>
       <ColumnHeader />
       <ColumnHeader>
         <Text as="b">Issuer</Text>

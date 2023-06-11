@@ -11,6 +11,9 @@ const PlanListContainer = chakra(Grid, {
     flexShrink: 4,
     minHeight: "100vh",
     alignContent: "start",
+    paddingTop: "10px",
+    backgroundColor: "white",
+    boxShadow: "6px 0 4px -4px black, -6px 0 4px -4px black",
   },
 });
 

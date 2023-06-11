@@ -117,13 +117,13 @@ export default function Planlist({
             <Box
               gridColumn={{ base: "1/2" }}
               padding={{ base: "0 5px" }}
-              backgroundColor="gray.200"
+              backgroundColor="gray.100"
               sx={{
                 ".group:nth-child(odd) &": {
-                  backgroundColor: "gray.300",
+                  backgroundColor: "gray.200",
                 },
                 ".group:hover &": {
-                  backgroundColor: "cyan.100",
+                  backgroundColor: "blue.100",
                 },
               }}
               onClick={(_) => savePlan(plan)}
@@ -137,13 +137,13 @@ export default function Planlist({
             <Box
               gridColumn={{ base: "2/3", sm: "2/4", md: "auto" }}
               padding={{ base: "0 5px" }}
-              backgroundColor="gray.200"
+              backgroundColor="gray.100"
               sx={{
                 ".group:nth-child(odd) &": {
-                  backgroundColor: "gray.300",
+                  backgroundColor: "gray.200",
                 },
                 ".group:hover &": {
-                  backgroundColor: "cyan.100",
+                  backgroundColor: "blue.100",
                   textDecor: "underline",
                 },
               }}
@@ -155,13 +155,13 @@ export default function Planlist({
             <Box
               gridColumn={{ base: "1/3", md: "auto" }}
               padding={{ base: "0 5px", md: "10px 5px" }}
-              backgroundColor="gray.200"
+              backgroundColor="gray.100"
               sx={{
                 ".group:nth-child(odd) &": {
-                  backgroundColor: "gray.300",
+                  backgroundColor: "gray.200",
                 },
                 ".group:hover &": {
-                  backgroundColor: "cyan.100",
+                  backgroundColor: "blue.100",
                   textDecor: "underline",
                 },
               }}
@@ -182,13 +182,13 @@ export default function Planlist({
                 base: "0px 5px 10px 5px",
                 md: "10px 5px",
               }}
-              backgroundColor="gray.200"
+              backgroundColor="gray.100"
               sx={{
                 ".group:nth-child(odd) &": {
-                  backgroundColor: "gray.300",
+                  backgroundColor: "gray.200",
                 },
                 ".group:hover &": {
-                  backgroundColor: "cyan.100",
+                  backgroundColor: "blue.100",
                   textDecor: "underline",
                 },
               }}

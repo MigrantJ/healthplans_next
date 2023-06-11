@@ -13,6 +13,7 @@ const ColumnHeader = chakra(Box, {
     paddingX: "3px",
     top: 0,
     backgroundColor: "white",
+    borderBottom: "2px solid darkgray",
   },
 });
 

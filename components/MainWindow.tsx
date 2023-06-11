@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
-import { Heading, Grid } from "@chakra-ui/react";
+import {
+  Heading,
+  Grid,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionIcon,
+  AccordionPanel,
+  Divider,
+} from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
@@ -51,7 +60,10 @@ export default function MainWindow({ hideSidebar }: IProps) {
   const ranges = results.data?.pages?.[0].ranges;
 
   return (
-    <Grid gridTemplateColumns={{ base: "1fr", lg: "300px 1fr" }}>
+    <Grid
+      gridTemplateColumns={{ base: "1fr", lg: "300px 1fr" }}
+      backgroundColor="blue.700"
+    >
       <Sidebar
         display={
           (!hideSidebar && displayMode !== "ComparePlans") ||
@@ -60,33 +72,60 @@ export default function MainWindow({ hideSidebar }: IProps) {
             : "none"
         }
       >
-        <Heading size="md">Household</Heading>
-        <FilterGroup
-          headingText="Location"
-          infoText="This is used to determine which health plans are available for you to purchase."
-        >
-          <LocationWidget {...{ location, setLocation }} />
-        </FilterGroup>
-        <FilterGroup
-          headingText="Income"
-          infoText="For more accurate premium estimates, enter the total expected income of your entire household for the year you want coverage."
-        >
-          <IncomeWidget {...{ income, setIncome, creditEstimates }} />
-        </FilterGroup>
-        <FilterGroup
-          headingText="People"
-          infoText="Add only individuals in your household that need health coverage."
-        >
-          <PeopleWidget {...{ people, setPeople }} />
-        </FilterGroup>
-        {facetGroups && ranges && (
-          <>
-            <Heading size="md">Filters</Heading>
-            <FilterWidget
-              {...{ filter, setFilter, facetGroups, ranges, creditEstimates }}
-            />
-          </>
-        )}
+        <Accordion allowToggle allowMultiple defaultIndex={[0, 1]}>
+          <AccordionItem border={0}>
+            <AccordionButton>
+              <Heading size="md" flex={1} textAlign="left">
+                Household
+              </Heading>
+              <AccordionIcon />
+            </AccordionButton>
+            <AccordionPanel pb={4}>
+              <FilterGroup
+                headingText="Location"
+                infoText="This is used to determine which health plans are available for you to purchase."
+              >
+                <LocationWidget {...{ location, setLocation }} />
+              </FilterGroup>
+              <FilterGroup
+                headingText="Income"
+                infoText="For more accurate premium estimates, enter the total expected income of your entire household for the year you want coverage."
+              >
+                <IncomeWidget {...{ income, setIncome, creditEstimates }} />
+              </FilterGroup>
+              <FilterGroup
+                headingText="People"
+                infoText="Add only individuals in your household that need health coverage."
+              >
+                <PeopleWidget {...{ people, setPeople }} />
+              </FilterGroup>
+            </AccordionPanel>
+          </AccordionItem>
+
+          <Divider />
+
+          {facetGroups && ranges && (
+            <AccordionItem border={0}>
+              <AccordionButton>
+                <Heading size="md" flex={1} textAlign="left">
+                  Filters
+                </Heading>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel pb={4}>
+                <FilterWidget
+                  {...{
+                    filter,
+                    setFilter,
+                    facetGroups,
+                    ranges,
+                    creditEstimates,
+                  }}
+                />
+              </AccordionPanel>
+            </AccordionItem>
+          )}
+        </Accordion>
       </Sidebar>
 
       {creditEstimates?.some((e) => e.is_medicaid_chip) && <MedicaidModal />}

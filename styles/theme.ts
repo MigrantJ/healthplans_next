@@ -22,8 +22,12 @@ const styles = {
 const components = {
   Button: {
     baseStyle: {
+      boxShadow: "0px 0px 2px 2px black",
       _disabled: {
+        color: "gray.600",
+        backgroundColor: "gray.400",
         opacity: 1,
+        boxShadow: "0px 0px 2px 2px black",
       },
     },
   },
