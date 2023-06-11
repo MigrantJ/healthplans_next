@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
-import { Divider, Heading, Grid } from "@chakra-ui/react";
+import { Heading, Grid } from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
@@ -17,6 +17,7 @@ import DataViewer from "./DataViewer";
 import { getCreditEstimate } from "@/lib/getCreditEstimate";
 import MedicaidModal from "./MedicaidModal";
 import Sidebar from "./filters/Sidebar";
+import FilterGroup from "./filters/FilterGroup";
 
 interface IProps {
   hideSidebar: boolean;
@@ -59,18 +60,28 @@ export default function MainWindow({ hideSidebar }: IProps) {
             : "none"
         }
       >
-        <Heading size="md">Setup</Heading>
-        <Divider />
-        <Heading size="sm">Location</Heading>
-        <LocationWidget {...{ location, setLocation }} />
-        <Divider />
-        <Heading size="sm">Household</Heading>
-        <IncomeWidget {...{ income, setIncome, creditEstimates }} />
-        <PeopleWidget {...{ people, setPeople }} />
-        <Divider />
+        <Heading size="md">Household</Heading>
+        <FilterGroup
+          headingText="Location"
+          infoText="This is used to determine which health plans are available for you to purchase."
+        >
+          <LocationWidget {...{ location, setLocation }} />
+        </FilterGroup>
+        <FilterGroup
+          headingText="Income"
+          infoText="For more accurate premium estimates, enter the total expected income of your entire household for the year you want coverage."
+        >
+          <IncomeWidget {...{ income, setIncome, creditEstimates }} />
+        </FilterGroup>
+        <FilterGroup
+          headingText="People"
+          infoText="Add only individuals in your household that need health coverage."
+        >
+          <PeopleWidget {...{ people, setPeople }} />
+        </FilterGroup>
         {facetGroups && ranges && (
           <>
-            <Heading size="sm">Filters</Heading>
+            <Heading size="md">Filters</Heading>
             <FilterWidget
               {...{ filter, setFilter, facetGroups, ranges, creditEstimates }}
             />

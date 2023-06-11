@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, FormLabel, Text } from "@chakra-ui/react";
+import { Button, Text, VStack } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 
 import EditPersonModal from "./EditPersonModal";
@@ -30,13 +30,14 @@ export default function PeopleWidget({ people, setPeople }: IProps) {
           personIndex,
         }}
       ></EditPersonModal>
-      <FormLabel>People</FormLabel>
-      {people.map((p, i) => (
-        <Button key={i} onClick={(_) => openModal(i)}>
-          {p.relationship} - {p.age}
-          {p.gender[0]}
-        </Button>
-      ))}
+      <VStack>
+        {people.map((p, i) => (
+          <Button key={i} onClick={(_) => openModal(i)}>
+            {p.relationship} - {p.age}
+            {p.gender[0]}
+          </Button>
+        ))}
+      </VStack>
       <Button
         onClick={() => {
           openModal(-1);

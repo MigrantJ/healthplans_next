@@ -1,4 +1,4 @@
-import { Grid, Box, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import {
   RiCheckFill,
   RiFileTextLine,
@@ -14,6 +14,7 @@ import React from "react";
 import CollapsibleContent from "./CollapsibleContent";
 import PlanDocLink from "./PlanDocLink";
 import CopayDetails from "./CopayDetails";
+import DetailsContainer from "./DetailsContainer";
 
 interface IProps {
   plan: IHealthPlan;
@@ -46,17 +47,7 @@ export default function ComparePlanDetails({
   const moop = formatter.format(plan.moops[0].amount);
 
   return (
-    <Grid
-      id="compareplans-datagrid"
-      key={plan.id}
-      gridTemplateRows={rowTemplate}
-      justifyItems="center"
-      alignItems="center"
-      borderInline="1px solid lightgray"
-      width="100%"
-      overflowY="hidden"
-      marginTop="-4px"
-    >
+    <DetailsContainer gridTemplateRows={rowTemplate}>
       <CollapsibleContent
         expanded={expands.costs}
         expandFunc={() => setExpands({ ...expands, costs: !expands.costs })}
@@ -197,6 +188,6 @@ export default function ComparePlanDetails({
           )}
         </Box>
       </CollapsibleContent>
-    </Grid>
+    </DetailsContainer>
   );
 }

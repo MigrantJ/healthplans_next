@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   Input,
   Icon,
-  FormLabel,
   Editable,
   Tooltip,
   EditablePreview,
@@ -49,7 +48,6 @@ export default function IncomeWidget({
 
   return (
     <>
-      <FormLabel>Income</FormLabel>
       <Flex alignItems="center">
         <Center>
           <Icon as={BsCurrencyDollar} boxSize={5} focusable={true} />

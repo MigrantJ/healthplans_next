@@ -10,7 +10,6 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
-import "../styles/global.css";
 
 import MainWindow from "@/components/MainWindow";
 import AboutModal from "@/components/AboutModal";

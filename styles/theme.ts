@@ -16,11 +16,17 @@ const colors = {
 };
 
 const styles = {
-  global: {
-    body: {
-      color: "gray.600",
+  global: {},
+};
+
+const components = {
+  Button: {
+    baseStyle: {
+      _disabled: {
+        opacity: 1,
+      },
     },
   },
 };
 
-export const theme = extendTheme({ colors, breakpoints, styles });
+export const theme = extendTheme({ colors, breakpoints, styles, components });

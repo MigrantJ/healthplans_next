@@ -13,7 +13,7 @@ export default function CopayDetails({ benefit }: IProps) {
       {benefit.cost_sharings.map((cs, i) => {
         return (
           <React.Fragment key={i}>
-            <Text textDecoration="underline">{cs.network_tier}</Text>
+            <Text textDecor="underline">{cs.network_tier}</Text>
             <Text>{cs.display_string}</Text>
           </React.Fragment>
         );

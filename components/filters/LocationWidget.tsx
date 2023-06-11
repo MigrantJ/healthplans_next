@@ -9,7 +9,6 @@ import {
   Editable,
   EditablePreview,
   EditableInput,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import { RiMapPinLine } from "react-icons/ri";
 
@@ -103,11 +102,11 @@ export default function LocationWidget({ location, setLocation }: IProps) {
       >
         <Tooltip hasArrow label="Click to Edit" shouldWrapChildren={true}>
           <EditablePreview
-            bg={useColorModeValue("gray.100", "gray.700")}
+            bg="gray.200"
             px={4}
             py={2}
             _hover={{
-              background: useColorModeValue("gray.200", "gray.700"),
+              background: "gray.100",
             }}
           />
         </Tooltip>

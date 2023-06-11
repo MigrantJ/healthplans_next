@@ -1,15 +1,12 @@
 import { useState } from "react";
-import { FormLabel } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 
 interface IProps<T> {
-  label: string;
   options: [T, number][];
   onChangeEnd: (options: T[]) => void;
 }
 
 export default function MultiSelect<T extends string>({
-  label,
   options,
   onChangeEnd,
 }: IProps<T>) {
@@ -22,9 +19,9 @@ export default function MultiSelect<T extends string>({
   });
   return (
     <>
-      <FormLabel>{label}</FormLabel>
       <Select
         isMulti
+        useBasicStyles
         options={optionObjs}
         placeholder={"Select"}
         selectedOptionStyle="check"

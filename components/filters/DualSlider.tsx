@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  FormLabel,
   RangeSlider,
   RangeSliderFilledTrack,
   RangeSliderTrack,
@@ -11,14 +10,12 @@ import {
 } from "@chakra-ui/react";
 
 interface IProps {
-  label: string;
   rangeExtents: { min: number; max: number };
   displayMod: (num: number) => string;
   onChangeEnd: (range: number[]) => void;
 }
 
 export default function DualSlider({
-  label,
   rangeExtents,
   displayMod,
   onChangeEnd,
@@ -39,7 +36,6 @@ export default function DualSlider({
 
   return (
     <>
-      <FormLabel>{label}</FormLabel>
       <RangeSlider
         // eslint-disable-next-line jsx-a11y/aria-proptypes
         aria-label={["min", "max"]}

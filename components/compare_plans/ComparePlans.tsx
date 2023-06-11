@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import { Grid, GridItem, Box, Icon } from "@chakra-ui/react";
+import { Grid, GridItem, Box } from "@chakra-ui/react";
 import {
   Provider,
   Carousel,
   LeftButton,
   RightButton,
 } from "chakra-ui-carousel";
-import { RiCloseFill } from "react-icons/ri";
 
 import IHealthPlan from "@/types/HealthPlan";
 import ComparePlanDetails from "./ComparePlanDetails";
 import { Estimate } from "@/types/GetCreditEstimate";
 import CollapsibleHeaders from "./CollapsibleHeaders";
-import EllipsisText from "../EllipsisText";
+import NameHeaders from "./NameHeaders";
+import ConditionalWrapper from "../ConditionalWrapper";
 
 export interface Expands {
   costs: boolean;
@@ -76,33 +76,7 @@ export default function ComparePlans({
     rowTemplate += "repeat(9, 20px 30px)";
   }
 
-  const planNameHeaders = (plans: IHealthPlan[]) => {
-    return plans.map((plan) => {
-      return (
-        <Grid
-          key={plan.id}
-          gridTemplateColumns="1fr 30px"
-          width="100%"
-          minWidth={0}
-          border="1px solid gray"
-          paddingX="4px"
-        >
-          <EllipsisText>{plan.issuer.name}</EllipsisText>
-          {multiplePlans && (
-            <Icon
-              as={RiCloseFill}
-              boxSize={6}
-              cursor="pointer"
-              onClick={() => savePlan(plan)}
-            />
-          )}
-          <EllipsisText gridColumn="1/3" fontWeight="bold">
-            {plan.name}
-          </EllipsisText>
-        </Grid>
-      );
-    });
-  };
+  const nameRowHeight = multiplePlans ? "58px " : "50px ";
 
   return (
     <Provider>
@@ -125,10 +99,9 @@ export default function ComparePlans({
         )}
 
         <Grid
-          id="compareplans-headers"
           gridColumn="2/3"
           gridRow="1/2"
-          gridTemplateRows={"58px " + rowTemplate + " 50px"}
+          gridTemplateRows={nameRowHeight + rowTemplate + " 50px"}
           alignItems="center"
           width="100%"
         >
@@ -190,35 +163,19 @@ export default function ComparePlans({
           {/* space at the bottom */}
           <GridItem />
         </Grid>
-        <Box id="compareplans-data" gridColumn="2/3" gridRow="1/2">
-          <Box
-            id="namecontainer"
-            position="sticky"
-            top={0}
-            backgroundColor="white"
-            zIndex={1}
+        <Box gridColumn="2/3" gridRow="1/2">
+          <NameHeaders {...{ plans, savePlan }} />
+          <ConditionalWrapper
+            condition={multiplePlans}
+            wrap={(children) => <Carousel gap={1}>{children}</Carousel>}
           >
-            {multiplePlans ? (
-              <Carousel gap={1}>{planNameHeaders(plans)}</Carousel>
-            ) : (
-              planNameHeaders(plans)
-            )}
-          </Box>
-          {multiplePlans ? (
-            <Carousel gap={1}>
-              {plans.map((plan, i) => (
-                <ComparePlanDetails
-                  key={i}
-                  {...{ plan, rowTemplate, expands, setExpands, taxCredit }}
-                />
-              ))}
-            </Carousel>
-          ) : (
-            <ComparePlanDetails
-              plan={plans[0]}
-              {...{ rowTemplate, expands, setExpands, taxCredit }}
-            />
-          )}
+            {plans.map((plan, i) => (
+              <ComparePlanDetails
+                key={i}
+                {...{ plan, rowTemplate, expands, setExpands, taxCredit }}
+              />
+            ))}
+          </ConditionalWrapper>
         </Box>
         {multiplePlans && (
           <RightButton position="fixed" right={0} top="50%" width="50px" />

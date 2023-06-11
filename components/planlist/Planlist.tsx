@@ -3,7 +3,7 @@ import { Text, Box, GridItem, Icon } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
-import * as d3 from "d3";
+import { scaleLinear } from "d3";
 import { RiBookmarkFill, RiBookmarkLine } from "react-icons/ri";
 
 import * as GetPlans from "@/types/GetPlans";
@@ -65,16 +65,14 @@ export default function Planlist({
     Math.max(results.data.pages[0].ranges.premiums.min - taxCredit, 0),
     Math.max(results.data.pages[0].ranges.premiums.max - taxCredit, 1),
   ];
-  const xScalePremium = d3
-    .scaleLinear()
+  const xScalePremium = scaleLinear()
     .domain([0, premiumExtent[1]])
     .range([0, PREMIUM_BAR_W]);
   const deductibleExtent: [number, number] = [
     results.data.pages[0].ranges.deductibles.min,
     results.data.pages[0].ranges.deductibles.max,
   ];
-  const xScaleDeductible = d3
-    .scaleLinear()
+  const xScaleDeductible = scaleLinear()
     .domain([0, deductibleExtent[1]])
     .range([0, DEDUCTIBLE_BAR_W]);
 
@@ -110,11 +108,24 @@ export default function Planlist({
         const deductibleWidth = xScaleDeductible(plan.deductibles[0].amount);
         const moopWidth = xScaleDeductible(plan.moops[0].amount);
         return (
-          <Box key={plan.id} className="plan-row">
+          <Box
+            key={plan.id}
+            className="group"
+            display="contents"
+            cursor="pointer"
+          >
             <Box
-              className="plan-cell"
               gridColumn={{ base: "1/2" }}
-              padding={{ base: "0 10px", sm: "0 5px", md: "0 10px" }}
+              padding={{ base: "0 5px" }}
+              backgroundColor="gray.200"
+              sx={{
+                ".group:nth-child(odd) &": {
+                  backgroundColor: "gray.300",
+                },
+                ".group:hover &": {
+                  backgroundColor: "cyan.100",
+                },
+              }}
               onClick={(_) => savePlan(plan)}
             >
               <Icon
@@ -124,18 +135,36 @@ export default function Planlist({
               />
             </Box>
             <Box
-              className="plan-cell plan-name-container"
               gridColumn={{ base: "2/3", sm: "2/4", md: "auto" }}
-              padding={{ base: "0 10px", sm: "0 5px", md: "0 10px" }}
+              padding={{ base: "0 5px" }}
+              backgroundColor="gray.200"
+              sx={{
+                ".group:nth-child(odd) &": {
+                  backgroundColor: "gray.300",
+                },
+                ".group:hover &": {
+                  backgroundColor: "cyan.100",
+                  textDecor: "underline",
+                },
+              }}
               onClick={(_) => openPlanModal(i)}
             >
               <EllipsisText>{plan.issuer.name}</EllipsisText>
               <EllipsisText fontWeight="bold">{plan.name}</EllipsisText>
             </Box>
             <Box
-              className="plan-cell"
               gridColumn={{ base: "1/3", md: "auto" }}
-              padding={{ base: "10px 5px", sm: "0 5px", md: "10px 5px" }}
+              padding={{ base: "0 5px", md: "10px 5px" }}
+              backgroundColor="gray.200"
+              sx={{
+                ".group:nth-child(odd) &": {
+                  backgroundColor: "gray.300",
+                },
+                ".group:hover &": {
+                  backgroundColor: "cyan.100",
+                  textDecor: "underline",
+                },
+              }}
               onClick={(_) => openPlanModal(i)}
             >
               <Text display={{ base: "block", md: "none" }}>Premium</Text>
@@ -148,12 +177,20 @@ export default function Planlist({
               </svg>
             </Box>
             <Box
-              className="plan-cell"
               gridColumn={{ base: "1/3", sm: "3/4", md: "auto" }}
               padding={{
-                base: "10px 5px",
-                sm: "0px 5px 10px 5px",
+                base: "0px 5px 10px 5px",
                 md: "10px 5px",
+              }}
+              backgroundColor="gray.200"
+              sx={{
+                ".group:nth-child(odd) &": {
+                  backgroundColor: "gray.300",
+                },
+                ".group:hover &": {
+                  backgroundColor: "cyan.100",
+                  textDecor: "underline",
+                },
               }}
               onClick={(_) => openPlanModal(i)}
             >
