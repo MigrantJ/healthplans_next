@@ -2,7 +2,7 @@ import { Skeleton, SkeletonText, Box, Icon } from "@chakra-ui/react";
 import React from "react";
 import { RiBookmarkLine } from "react-icons/ri";
 
-export default function PlanSkeleton() {
+export default React.memo(function PlanSkeleton() {
   const skeletons = [...Array<null>(5)].map((_, i) => (
     <React.Fragment key={i}>
       <Box gridColumn={{ base: "1/2", md: "auto" }}>
@@ -34,4 +34,4 @@ export default function PlanSkeleton() {
   ));
 
   return <>{skeletons}</>;
-}
+});

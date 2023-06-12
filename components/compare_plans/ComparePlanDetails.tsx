@@ -15,6 +15,7 @@ import CollapsibleContent from "./CollapsibleContent";
 import PlanDocLink from "./PlanDocLink";
 import CopayDetails from "./CopayDetails";
 import DetailsContainer from "./DetailsContainer";
+import currencyFormatter from "@/lib/currencyFormatter";
 
 interface IProps {
   plan: IHealthPlan;
@@ -23,11 +24,6 @@ interface IProps {
   setExpands: (e: Expands) => void;
   taxCredit: number;
 }
-
-const formatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
 
 export default function ComparePlanDetails({
   plan,
@@ -42,9 +38,11 @@ export default function ComparePlanDetails({
       return acc;
     }, {}) || {};
 
-  const premium = formatter.format(Math.max(plan.premium - taxCredit, 1));
-  const deductible = formatter.format(plan.deductibles[0].amount);
-  const moop = formatter.format(plan.moops[0].amount);
+  const premium = currencyFormatter.format(
+    Math.max(plan.premium - taxCredit, 1)
+  );
+  const deductible = currencyFormatter.format(plan.deductibles[0].amount);
+  const moop = currencyFormatter.format(plan.moops[0].amount);
 
   return (
     <DetailsContainer gridTemplateRows={rowTemplate}>

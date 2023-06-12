@@ -78,7 +78,7 @@ export default function LocationWidget({ location, setLocation }: IProps) {
 
   return (
     <Flex>
-      <Modal {...{ getPosByGPS, getPosByZipCode, setLocation }} />
+      {/* <Modal {...{ getPosByGPS, getPosByZipCode, setLocation }} /> */}
       <Center>
         <Tooltip hasArrow label="Click To Use GPS">
           <Button

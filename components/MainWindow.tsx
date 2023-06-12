@@ -64,69 +64,66 @@ export default function MainWindow({ hideSidebar }: IProps) {
       gridTemplateColumns={{ base: "1fr", lg: "300px 1fr" }}
       backgroundColor="blue.700"
     >
-      <Sidebar
-        display={
-          (!hideSidebar && displayMode !== "ComparePlans") ||
-          (hideSidebar && displayMode === "Filters")
-            ? "flex"
-            : "none"
-        }
-      >
-        <Accordion allowToggle allowMultiple defaultIndex={[0, 1]}>
-          <AccordionItem border={0}>
-            <AccordionButton>
-              <Heading size="md" flex={1} textAlign="left">
-                Household
-              </Heading>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel paddingTop={0} paddingBottom="4px">
-              <FilterGroup
-                headingText="Location"
-                infoText="This is used to determine which health plans are available for you to purchase."
-              >
-                <LocationWidget {...{ location, setLocation }} />
-              </FilterGroup>
-              <FilterGroup
-                headingText="Income"
-                infoText="For more accurate premium estimates, enter the total expected income of your entire household for the year you want coverage."
-              >
-                <IncomeWidget {...{ income, setIncome, creditEstimates }} />
-              </FilterGroup>
-              <FilterGroup
-                headingText="People"
-                infoText="Add only individuals in your household that need health coverage."
-              >
-                <PeopleWidget {...{ people, setPeople }} />
-              </FilterGroup>
-            </AccordionPanel>
-          </AccordionItem>
-
-          <Divider />
-
-          {facetGroups && ranges && (
+      {(!location ||
+        (!hideSidebar && displayMode !== "ComparePlans") ||
+        (hideSidebar && displayMode === "Filters")) && (
+        <Sidebar>
+          <Accordion allowMultiple defaultIndex={[0, 1]}>
             <AccordionItem border={0}>
               <AccordionButton>
                 <Heading size="md" flex={1} textAlign="left">
-                  Filters
+                  Household
                 </Heading>
                 <AccordionIcon />
               </AccordionButton>
               <AccordionPanel paddingTop={0} paddingBottom="4px">
-                <FilterWidget
-                  {...{
-                    filter,
-                    setFilter,
-                    facetGroups,
-                    ranges,
-                    creditEstimates,
-                  }}
-                />
+                <FilterGroup
+                  headingText="Location"
+                  infoText="This is used to determine which health plans are available for you to purchase."
+                >
+                  <LocationWidget {...{ location, setLocation }} />
+                </FilterGroup>
+                <FilterGroup
+                  headingText="Income"
+                  infoText="For more accurate premium estimates, enter the total expected income of your entire household for the year you want coverage."
+                >
+                  <IncomeWidget {...{ income, setIncome, creditEstimates }} />
+                </FilterGroup>
+                <FilterGroup
+                  headingText="People"
+                  infoText="Add only individuals in your household that need health coverage."
+                >
+                  <PeopleWidget {...{ people, setPeople }} />
+                </FilterGroup>
               </AccordionPanel>
             </AccordionItem>
-          )}
-        </Accordion>
-      </Sidebar>
+
+            <Divider />
+
+            {facetGroups && ranges && (
+              <AccordionItem border={0}>
+                <AccordionButton>
+                  <Heading size="md" flex={1} textAlign="left">
+                    Filters
+                  </Heading>
+                  <AccordionIcon />
+                </AccordionButton>
+                <AccordionPanel paddingTop={0} paddingBottom="4px">
+                  <FilterWidget
+                    {...{
+                      filter,
+                      setFilter,
+                      facetGroups,
+                      ranges,
+                      creditEstimates,
+                    }}
+                  />
+                </AccordionPanel>
+              </AccordionItem>
+            )}
+          </Accordion>
+        </Sidebar>
+      )}
 
       {creditEstimates?.some((e) => e.is_medicaid_chip) && <MedicaidModal />}
 

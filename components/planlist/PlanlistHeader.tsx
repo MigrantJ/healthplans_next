@@ -1,4 +1,4 @@
-import { GridItem, Heading, Text, Flex, Spacer } from "@chakra-ui/react";
+import { Heading, Text, Flex, Spacer } from "@chakra-ui/react";
 import { Axis, Orient } from "d3-axis-for-react";
 import ColumnHeader from "./ColumnHeader";
 

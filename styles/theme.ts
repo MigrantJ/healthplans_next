@@ -34,6 +34,12 @@ const components = {
         zIndex: 2,
         position: "fixed",
         bottom: "10px",
+        _hover: {
+          backgroundColor: "blue.300",
+          _disabled: {
+            backgroundColor: "gray.400",
+          },
+        },
         _disabled: {
           color: "gray.600",
           backgroundColor: "gray.400",

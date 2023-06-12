@@ -8,6 +8,7 @@ import DualSlider from "./DualSlider";
 import MultiSelect from "./MultiSelect";
 import { Estimate } from "@/types/GetCreditEstimate";
 import FilterGroup from "./FilterGroup";
+import currencyFormatter from "@/lib/currencyFormatter";
 
 interface IProps {
   filter: IFilter;
@@ -19,11 +20,6 @@ interface IProps {
   };
   creditEstimates: Estimate[];
 }
-
-const formatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
 
 export default function FilterWidget({
   filter,
@@ -53,7 +49,7 @@ export default function FilterWidget({
         <DualSlider
           rangeExtents={premiumRangeExtents}
           displayMod={(num: number) => {
-            return formatter.format(num);
+            return currencyFormatter.format(num);
           }}
           onChangeEnd={([min, max]) =>
             setFilter({ ...filter, premium_range: { min, max } })
@@ -67,7 +63,7 @@ export default function FilterWidget({
         <DualSlider
           rangeExtents={ranges.deductibles}
           displayMod={(num: number) => {
-            return formatter.format(num);
+            return currencyFormatter.format(num);
           }}
           onChangeEnd={([min, max]) =>
             setFilter({ ...filter, deductible_range: { min, max } })
