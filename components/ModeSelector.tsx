@@ -1,16 +1,14 @@
-import { Button, chakra } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { RiFilter3Line, RiListCheck, RiBookmarkFill } from "react-icons/ri";
 import { DisplayMode } from "@/types/DisplayMode";
 
 interface IProps {
-  hideSidebar?: boolean;
   displayMode: DisplayMode;
   setDisplayMode: (d: DisplayMode) => void;
   numSavedPlans: number;
 }
 
 export default function ModeSelector({
-  hideSidebar,
   displayMode,
   setDisplayMode,
   numSavedPlans,
@@ -30,16 +28,15 @@ export default function ModeSelector({
 
       {displayMode === "Planlist" && (
         <>
-          {hideSidebar && (
-            <Button
-              variant="modeselect"
-              rightIcon={<RiFilter3Line />}
-              left="10px"
-              onClick={() => setDisplayMode("Filters")}
-            >
-              Filters
-            </Button>
-          )}
+          <Button
+            variant="modeselect"
+            display={{ lg: "none" }}
+            rightIcon={<RiFilter3Line />}
+            left="10px"
+            onClick={() => setDisplayMode("Filters")}
+          >
+            Filters
+          </Button>
 
           <Button
             variant="modeselect"

@@ -13,7 +13,6 @@ import ModeSelector from "./ModeSelector";
 import { Estimate } from "@/types/GetCreditEstimate";
 
 interface IProps {
-  hideSidebar: boolean;
   displayMode: DisplayMode;
   setDisplayMode: (d: DisplayMode) => void;
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
@@ -22,7 +21,6 @@ interface IProps {
 }
 
 export default function DataViewer({
-  hideSidebar,
   displayMode,
   setDisplayMode,
   results,
@@ -80,9 +78,7 @@ export default function DataViewer({
       )}
 
       {results.data && (
-        <ModeSelector
-          {...{ hideSidebar, displayMode, setDisplayMode, numSavedPlans }}
-        />
+        <ModeSelector {...{ displayMode, setDisplayMode, numSavedPlans }} />
       )}
     </>
   );
