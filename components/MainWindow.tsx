@@ -80,7 +80,7 @@ export default function MainWindow({ hideSidebar }: IProps) {
               </Heading>
               <AccordionIcon />
             </AccordionButton>
-            <AccordionPanel pb={4}>
+            <AccordionPanel paddingTop={0} paddingBottom="4px">
               <FilterGroup
                 headingText="Location"
                 infoText="This is used to determine which health plans are available for you to purchase."
@@ -112,7 +112,7 @@ export default function MainWindow({ hideSidebar }: IProps) {
                 </Heading>
                 <AccordionIcon />
               </AccordionButton>
-              <AccordionPanel pb={4}>
+              <AccordionPanel paddingTop={0} paddingBottom="4px">
                 <FilterWidget
                   {...{
                     filter,

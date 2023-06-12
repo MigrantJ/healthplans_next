@@ -9,7 +9,7 @@ interface IProps {
 
 export default function CopayDetails({ benefit }: IProps) {
   return (
-    <Box justifySelf="start" alignSelf="start">
+    <Box justifySelf="start" alignSelf="start" padding="10px">
       {benefit.cost_sharings.map((cs, i) => {
         return (
           <React.Fragment key={i}>

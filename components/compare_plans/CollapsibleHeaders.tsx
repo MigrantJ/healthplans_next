@@ -15,8 +15,12 @@ export default function CollapsibleHeaders({
 }: IProps) {
   return (
     <>
-      <Flex backgroundColor="silver" height="100%" alignItems="center">
-        <Icon as={expanded ? BsChevronContract : BsChevronExpand} boxSize={5} />
+      <Flex backgroundColor="gray.300" height="100%" padding="5px">
+        <Icon
+          as={expanded ? BsChevronContract : BsChevronExpand}
+          boxSize={5}
+          margin="3px"
+        />
         <Heading size="md">{mainHeader}</Heading>
       </Flex>
       <Box display={expanded ? "contents" : "none"}>
@@ -24,10 +28,10 @@ export default function CollapsibleHeaders({
           subHeaders.map((s, i) => {
             return (
               <React.Fragment key={i}>
-                <GridItem backgroundColor="lightgray">
+                <GridItem backgroundColor="gray.200" padding="5px 10px">
                   <Heading size="sm">{s}</Heading>
                 </GridItem>
-                <GridItem />
+                <GridItem backgroundColor="white" />
               </React.Fragment>
             );
           })

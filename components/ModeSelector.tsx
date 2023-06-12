@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Button, chakra } from "@chakra-ui/react";
 import { RiFilter3Line, RiListCheck, RiBookmarkFill } from "react-icons/ri";
 import { DisplayMode } from "@/types/DisplayMode";
 
@@ -19,11 +19,9 @@ export default function ModeSelector({
     <>
       {displayMode === "Filters" && (
         <Button
-          size="md"
+          variant="modeselect"
           leftIcon={<RiListCheck />}
           right="10px"
-          position="fixed"
-          bottom="10px"
           onClick={() => setDisplayMode("Planlist")}
         >
           Show Plans
@@ -34,11 +32,9 @@ export default function ModeSelector({
         <>
           {hideSidebar && (
             <Button
-              size="md"
+              variant="modeselect"
               rightIcon={<RiFilter3Line />}
               left="10px"
-              position="fixed"
-              bottom="10px"
               onClick={() => setDisplayMode("Filters")}
             >
               Filters
@@ -46,12 +42,10 @@ export default function ModeSelector({
           )}
 
           <Button
-            size="md"
+            variant="modeselect"
             leftIcon={<RiBookmarkFill />}
             isDisabled={numSavedPlans === 0}
             right="10px"
-            position="fixed"
-            bottom="10px"
             onClick={() => setDisplayMode("ComparePlans")}
           >
             Compare ({numSavedPlans})
@@ -61,11 +55,9 @@ export default function ModeSelector({
 
       {displayMode === "ComparePlans" && (
         <Button
-          size="md"
+          variant="modeselect"
           rightIcon={<RiListCheck />}
           left="10px"
-          position="fixed"
-          bottom="10px"
           onClick={() => setDisplayMode("Planlist")}
         >
           Show Plans

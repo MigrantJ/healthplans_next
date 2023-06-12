@@ -48,7 +48,7 @@ export default function DualSlider({
           setRange(range);
         }}
       >
-        <RangeSliderTrack>
+        <RangeSliderTrack bg="blue.700">
           <RangeSliderFilledTrack />
         </RangeSliderTrack>
         <RangeSliderThumb index={0} />

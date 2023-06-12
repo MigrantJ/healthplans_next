@@ -16,20 +16,35 @@ const colors = {
 };
 
 const styles = {
-  global: {},
+  global: {
+    body: {
+      backgroundColor: "blue.700",
+    },
+  },
 };
 
 const components = {
   Button: {
-    baseStyle: {
-      boxShadow: "0px 0px 2px 2px black",
-      _disabled: {
-        color: "gray.600",
-        backgroundColor: "gray.400",
-        opacity: 1,
+    baseStyle: {},
+    variants: {
+      modeselect: {
         boxShadow: "0px 0px 2px 2px black",
+        backgroundColor: "blue.500",
+        color: "white",
+        zIndex: 2,
+        position: "fixed",
+        bottom: "10px",
+        _disabled: {
+          color: "gray.600",
+          backgroundColor: "gray.400",
+          opacity: 1,
+          boxShadow: "0px 0px 2px 2px black",
+        },
       },
     },
+  },
+  Divider: {
+    baseStyle: { borderColor: "blue.600" },
   },
 };
 

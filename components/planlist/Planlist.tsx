@@ -120,7 +120,7 @@ export default function Planlist({
               backgroundColor="gray.100"
               sx={{
                 ".group:nth-child(odd) &": {
-                  backgroundColor: "gray.200",
+                  backgroundColor: "gray.300",
                 },
                 ".group:hover &": {
                   backgroundColor: "blue.100",
@@ -135,12 +135,12 @@ export default function Planlist({
               />
             </Box>
             <Box
-              gridColumn={{ base: "2/3", sm: "2/4", md: "auto" }}
+              gridColumn={{ base: "2/4", sm: "2/4", md: "auto" }}
               padding={{ base: "0 5px" }}
               backgroundColor="gray.100"
               sx={{
                 ".group:nth-child(odd) &": {
-                  backgroundColor: "gray.200",
+                  backgroundColor: "gray.300",
                 },
                 ".group:hover &": {
                   backgroundColor: "blue.100",
@@ -153,12 +153,12 @@ export default function Planlist({
               <EllipsisText fontWeight="bold">{plan.name}</EllipsisText>
             </Box>
             <Box
-              gridColumn={{ base: "1/3", md: "auto" }}
+              gridColumn={{ base: "1/4", sm: "1/3", md: "auto" }}
               padding={{ base: "0 5px", md: "10px 5px" }}
               backgroundColor="gray.100"
               sx={{
                 ".group:nth-child(odd) &": {
-                  backgroundColor: "gray.200",
+                  backgroundColor: "gray.300",
                 },
                 ".group:hover &": {
                   backgroundColor: "blue.100",
@@ -169,15 +169,15 @@ export default function Planlist({
             >
               <Text display={{ base: "block", md: "none" }}>Premium</Text>
               <svg height={30} width={PREMIUM_BAR_W} overflow={"visible"}>
-                <rect width={PREMIUM_BAR_W} height={30} fill="darkgreen" />
-                <rect width={premiumWidth} height={30} fill="green" />
+                <rect width={PREMIUM_BAR_W} height={30} fill="#22543D" />
+                <rect width={premiumWidth} height={30} fill="#2F855A" />
                 <text x={5} y={20} fill="white">
                   {formatter.format(discountPremium)}
                 </text>
               </svg>
             </Box>
             <Box
-              gridColumn={{ base: "1/3", sm: "3/4", md: "auto" }}
+              gridColumn={{ base: "1/4", sm: "3/4", md: "auto" }}
               padding={{
                 base: "0px 5px 10px 5px",
                 md: "10px 5px",
@@ -185,7 +185,7 @@ export default function Planlist({
               backgroundColor="gray.100"
               sx={{
                 ".group:nth-child(odd) &": {
-                  backgroundColor: "gray.200",
+                  backgroundColor: "gray.300",
                 },
                 ".group:hover &": {
                   backgroundColor: "blue.100",
@@ -198,8 +198,8 @@ export default function Planlist({
                 Deductible / Max Out-Of-Pocket
               </Text>
               <svg height={30} width={DEDUCTIBLE_BAR_W} overflow={"visible"}>
-                <rect width={DEDUCTIBLE_BAR_W} height={15} fill="darkcyan" />
-                <rect width={deductibleWidth} height={15} fill="cyan" />
+                <rect width={DEDUCTIBLE_BAR_W} height={15} fill="#285E61" />
+                <rect width={deductibleWidth} height={15} fill="#81E6D9" />
                 <text x={5} y={12}>
                   {formatter.format(plan.deductibles[0].amount)}
                 </text>
@@ -207,9 +207,9 @@ export default function Planlist({
                   y={17}
                   width={DEDUCTIBLE_BAR_W}
                   height={15}
-                  fill="darkcyan"
+                  fill="#285E61"
                 />
-                <rect y={17} width={moopWidth} height={15} fill="cyan" />
+                <rect y={17} width={moopWidth} height={15} fill="#81E6D9" />
                 <text x={5} y={29}>
                   {formatter.format(plan.moops[0].amount)}
                 </text>

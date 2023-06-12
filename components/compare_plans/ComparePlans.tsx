@@ -99,6 +99,7 @@ export default function ComparePlans({
         )}
 
         <Grid
+          backgroundColor="white"
           gridColumn="2/3"
           gridRow="1/2"
           gridTemplateRows={nameRowHeight + rowTemplate + " 50px"}
