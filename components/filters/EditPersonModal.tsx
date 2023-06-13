@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import IPerson, { Relationship, relationshipOptions } from "@/types/Person";
 import {
   Modal,
@@ -49,9 +49,6 @@ export default function EditPersonModal({
   personIndex,
 }: IProps) {
   const [person, setPerson] = useState(people[personIndex]);
-  useEffect(() => {
-    setPerson(people[personIndex] || null);
-  }, [personIndex]);
 
   const age = person?.age || "";
   const sex = person?.gender || "";

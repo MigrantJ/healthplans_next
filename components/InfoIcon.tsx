@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Icon, Tooltip } from "@chakra-ui/react";
 import { RiInformationLine, RiInformationFill } from "react-icons/ri";
 
@@ -6,7 +6,7 @@ interface IProps {
   text: string;
 }
 
-export default function InfoIcon({ text }: IProps) {
+export default memo(function InfoIcon({ text }: IProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleTooltip = () => setIsOpen(!isOpen);
@@ -23,4 +23,4 @@ export default function InfoIcon({ text }: IProps) {
       </span>
     </Tooltip>
   );
-}
+});

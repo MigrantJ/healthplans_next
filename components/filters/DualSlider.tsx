@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   RangeSlider,
   RangeSliderFilledTrack,
@@ -22,17 +22,15 @@ export default function DualSlider({
 }: IProps) {
   const [oldExtents, setOldExtents] = useState(rangeExtents);
   const [range, setRange] = useState([rangeExtents.min, rangeExtents.max]);
-  // if rangeExtents changes, reset the slider to min and max
-  useEffect(() => {
-    if (
-      rangeExtents.min !== oldExtents.min ||
-      rangeExtents.max !== oldExtents.max
-    ) {
-      setOldExtents(rangeExtents);
-      onChangeEnd([rangeExtents.min, rangeExtents.max]);
-      setRange([rangeExtents.min, rangeExtents.max]);
-    }
-  }, [rangeExtents]);
+  // if a household change makes the extents different, reset the slider to the new min and max
+  if (
+    rangeExtents.min !== oldExtents.min ||
+    rangeExtents.max !== oldExtents.max
+  ) {
+    setOldExtents(rangeExtents);
+    onChangeEnd([rangeExtents.min, rangeExtents.max]);
+    setRange([rangeExtents.min, rangeExtents.max]);
+  }
 
   return (
     <>
@@ -44,8 +42,10 @@ export default function DualSlider({
         step={25}
         value={range}
         onChange={(range) => {
-          onChangeEnd(range);
           setRange(range);
+        }}
+        onChangeEnd={(range) => {
+          onChangeEnd(range);
         }}
       >
         <RangeSliderTrack bg="blue.700">

@@ -21,15 +21,18 @@ export default function PeopleWidget({ people, setPeople }: IProps) {
 
   return (
     <>
-      <EditPersonModal
-        {...{
-          isOpen,
-          onClose,
-          people,
-          setPeople,
-          personIndex,
-        }}
-      ></EditPersonModal>
+      {isOpen && (
+        <EditPersonModal
+          {...{
+            isOpen,
+            onClose,
+            people,
+            setPeople,
+            personIndex,
+          }}
+        />
+      )}
+
       <VStack>
         {people.map((p, i) => (
           <Button key={i} onClick={(_) => openModal(i)}>

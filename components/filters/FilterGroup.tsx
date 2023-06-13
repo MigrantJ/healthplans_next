@@ -8,7 +8,7 @@ interface IProps {
   children: React.ReactNode;
 }
 
-export default function LocationWidget({
+export default function FilterGroup({
   headingText,
   infoText,
   children,

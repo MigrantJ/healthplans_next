@@ -1,5 +1,5 @@
-import { Box, Flex, Heading, Icon, GridItem } from "@chakra-ui/react";
 import React from "react";
+import { Box, Flex, Heading, Icon, GridItem } from "@chakra-ui/react";
 import { BsChevronExpand, BsChevronContract } from "react-icons/bs";
 
 interface IProps {

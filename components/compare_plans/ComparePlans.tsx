@@ -170,9 +170,9 @@ export default function ComparePlans({
             condition={multiplePlans}
             wrap={(children) => <Carousel gap={1}>{children}</Carousel>}
           >
-            {plans.map((plan, i) => (
+            {plans.map((plan) => (
               <ComparePlanDetails
-                key={i}
+                key={plan.id}
                 {...{ plan, rowTemplate, expands, setExpands, taxCredit }}
               />
             ))}

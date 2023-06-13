@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Flex,
   Center,
@@ -13,7 +13,6 @@ import {
 import { RiMapPinLine } from "react-icons/ri";
 
 import ILocation from "@/types/Location";
-import Modal from "../Modal";
 
 interface IProps {
   location: ILocation;
@@ -23,6 +22,7 @@ interface IProps {
 const getLocationByLatLong = async (
   lat: number,
   long: number,
+  setZipcode: (z: string) => void,
   setLocation: (location: ILocation) => void
 ) => {
   const res = await fetch(`/api/location`, {
@@ -34,14 +34,19 @@ const getLocationByLatLong = async (
     throw new Error(`Error: ${res.status}`);
   }
   const location = (await res.json()) as ILocation;
+  setZipcode(location.zipcode);
   setLocation(location);
 };
 
-const getPosByGPS = function (setLocation: (location: ILocation) => void) {
+const getPosByGPS = function (
+  setZipcode: (z: string) => void,
+  setLocation: (location: ILocation) => void
+) {
   const successCallback: PositionCallback = (position) => {
     void getLocationByLatLong(
       position.coords.latitude,
       position.coords.longitude,
+      setZipcode,
       setLocation
     );
   };
@@ -71,19 +76,15 @@ const getPosByZipCode = async (
 };
 
 export default function LocationWidget({ location, setLocation }: IProps) {
-  const [zipcode, setZipcode] = useState("");
-  useEffect(() => {
-    setZipcode(location?.zipcode || "");
-  }, [location]);
+  const [zipcode, setZipcode] = useState(location?.zipcode || "");
 
   return (
     <Flex>
-      {/* <Modal {...{ getPosByGPS, getPosByZipCode, setLocation }} /> */}
       <Center>
         <Tooltip hasArrow label="Click To Use GPS">
           <Button
             onClick={(_) => {
-              getPosByGPS(setLocation);
+              getPosByGPS(setZipcode, setLocation);
             }}
           >
             <Icon as={RiMapPinLine} boxSize={5} focusable={true} />
@@ -110,11 +111,7 @@ export default function LocationWidget({ location, setLocation }: IProps) {
             }}
           />
         </Tooltip>
-        <Input
-          as={EditableInput}
-          value={location?.zipcode}
-          inputMode="numeric"
-        />
+        <Input as={EditableInput} value={zipcode} inputMode="numeric" />
       </Editable>
     </Flex>
   );

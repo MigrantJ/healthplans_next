@@ -1,15 +1,6 @@
 import { useState } from "react";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
-import {
-  Heading,
-  Grid,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionIcon,
-  AccordionPanel,
-  Divider,
-} from "@chakra-ui/react";
+import { Grid } from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
@@ -18,15 +9,10 @@ import IFilter from "@/types/Filter";
 import * as GetPlans from "@/types/GetPlans";
 import * as GCE from "@/types/GetCreditEstimate";
 import { DisplayMode } from "@/types/DisplayMode";
-import LocationWidget from "./filters/LocationWidget";
-import IncomeWidget from "./filters/IncomeWidget";
-import PeopleWidget from "./filters/PeopleWidget";
-import FilterWidget from "./filters/FilterWidget";
 import DataViewer from "./DataViewer";
 import { getCreditEstimate } from "@/lib/getCreditEstimate";
 import MedicaidModal from "./MedicaidModal";
 import Sidebar from "./filters/Sidebar";
-import FilterGroup from "./filters/FilterGroup";
 
 export default function MainWindow() {
   const [location, setLocation] = useState<ILocation>();
@@ -61,66 +47,21 @@ export default function MainWindow() {
       backgroundColor="blue.700"
     >
       <Sidebar
-        display={{
-          base: displayMode !== "Filters" && location && "none",
-          lg: "flex",
+        {...{
+          displayMode,
+          location,
+          setLocation,
+          income,
+          setIncome,
+          people,
+          setPeople,
+          filter,
+          setFilter,
+          facetGroups,
+          ranges,
+          creditEstimates,
         }}
-      >
-        <Accordion allowMultiple defaultIndex={[0, 1]}>
-          <AccordionItem border={0}>
-            <AccordionButton>
-              <Heading size="md" flex={1} textAlign="left">
-                Household
-              </Heading>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel paddingTop={0} paddingBottom="4px">
-              <FilterGroup
-                headingText="Location"
-                infoText="This is used to determine which health plans are available for you to purchase."
-              >
-                <LocationWidget {...{ location, setLocation }} />
-              </FilterGroup>
-              <FilterGroup
-                headingText="Income"
-                infoText="For more accurate premium estimates, enter the total expected income of your entire household for the year you want coverage."
-              >
-                <IncomeWidget {...{ income, setIncome, creditEstimates }} />
-              </FilterGroup>
-              <FilterGroup
-                headingText="People"
-                infoText="Add only individuals in your household that need health coverage."
-              >
-                <PeopleWidget {...{ people, setPeople }} />
-              </FilterGroup>
-            </AccordionPanel>
-          </AccordionItem>
-
-          <Divider />
-
-          {facetGroups && ranges && (
-            <AccordionItem border={0}>
-              <AccordionButton>
-                <Heading size="md" flex={1} textAlign="left">
-                  Filters
-                </Heading>
-                <AccordionIcon />
-              </AccordionButton>
-              <AccordionPanel paddingTop={0} paddingBottom="4px">
-                <FilterWidget
-                  {...{
-                    filter,
-                    setFilter,
-                    facetGroups,
-                    ranges,
-                    creditEstimates,
-                  }}
-                />
-              </AccordionPanel>
-            </AccordionItem>
-          )}
-        </Accordion>
-      </Sidebar>
+      />
 
       {creditEstimates?.some((e) => e.is_medicaid_chip) && <MedicaidModal />}
 
