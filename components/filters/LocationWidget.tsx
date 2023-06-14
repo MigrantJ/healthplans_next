@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import {
   Flex,
   Center,
@@ -75,7 +75,7 @@ const getPosByZipCode = async (
   setLocation(location);
 };
 
-export default function LocationWidget({ location, setLocation }: IProps) {
+export default memo(function LocationWidget({ location, setLocation }: IProps) {
   const [zipcode, setZipcode] = useState(location?.zipcode || "");
 
   return (
@@ -115,4 +115,4 @@ export default function LocationWidget({ location, setLocation }: IProps) {
       </Editable>
     </Flex>
   );
-}
+});

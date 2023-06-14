@@ -1,5 +1,5 @@
 import { useState, memo } from "react";
-import { Icon, Tooltip } from "@chakra-ui/react";
+import { Box, Icon, Tooltip } from "@chakra-ui/react";
 import { RiInformationLine, RiInformationFill } from "react-icons/ri";
 
 interface IProps {
@@ -13,14 +13,22 @@ export default memo(function InfoIcon({ text }: IProps) {
 
   return (
     <Tooltip label={text} isOpen={isOpen}>
-      <span>
+      <Box
+        as="span"
+        onClick={toggleTooltip}
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
+      >
+        {/* conditional rendering is too slow and results in the tooltip getting stuck open, this method works */}
         <Icon
-          as={isOpen ? RiInformationFill : RiInformationLine}
-          onClick={toggleTooltip}
-          onMouseEnter={() => setIsOpen(true)}
-          onMouseLeave={() => setIsOpen(false)}
+          as={RiInformationFill}
+          display={isOpen ? "inline-block" : "none"}
         />
-      </span>
+        <Icon
+          as={RiInformationLine}
+          display={!isOpen ? "inline-block" : "none"}
+        />
+      </Box>
     </Tooltip>
   );
 });

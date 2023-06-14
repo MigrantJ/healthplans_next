@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Text, Box, GridItem, Icon } from "@chakra-ui/react";
+import { Text, Box, GridItem } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { scaleLinear } from "d3";
-import { RiBookmarkFill, RiBookmarkLine } from "react-icons/ri";
 
 import * as GetPlans from "@/types/GetPlans";
 import IFilter from "@/types/Filter";
@@ -19,8 +18,11 @@ import constants from "../../styles/constants";
 import PremiumBar from "./PremiumBar";
 import DeductibleBar from "./DeductibleBar";
 import NameBar from "./NameBar";
+import { DisplayMode } from "@/types/DisplayMode";
+import BookmarkButton from "./BookmarkButton";
 
 interface IProps {
+  displayMode: DisplayMode;
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
   filter: IFilter;
   savePlan: (plan: IHealthPlan) => void;
@@ -29,6 +31,7 @@ interface IProps {
 }
 
 export default function Planlist({
+  displayMode,
   results,
   filter,
   savePlan,
@@ -53,13 +56,13 @@ export default function Planlist({
   const taxCredit = creditEstimates?.[0].aptc || 0;
   const filteredPlans: IHealthPlan[] = filterPlans(plans, filter, taxCredit);
 
-  const openPlanModal = useCallback(
-    (index: number) => {
-      setModalPlan(filteredPlans[index]);
-      onOpen();
-    },
-    [filteredPlans, onOpen]
-  );
+  // const openPlanModal = useCallback(
+  //   (plan: IHealthPlan) => {
+  //     setModalPlan(plan);
+  //     onOpen();
+  //   },
+  //   [onOpen]
+  // );
 
   const planPages = results.data?.pages;
   if (!planPages) {
@@ -90,7 +93,9 @@ export default function Planlist({
   }
 
   return (
-    <PlanListContainer>
+    <PlanListContainer
+      display={displayMode === "ComparePlans" ? "none" : "grid"}
+    >
       <PlanModal {...{ isOpen, onClose, modalPlan, creditEstimates }} />
       <PlanlistHeader
         {...{
@@ -100,7 +105,7 @@ export default function Planlist({
           xScaleDeductible,
         }}
       />
-      {filteredPlans.map((plan, i) => {
+      {filteredPlans.map((plan) => {
         const discountPremium = Math.max(plan.premium - taxCredit, 1);
         const premiumWidth = xScalePremium(discountPremium);
         const deductible = plan.deductibles[0].amount;
@@ -114,26 +119,10 @@ export default function Planlist({
             display="contents"
             cursor="pointer"
           >
-            <Box
-              gridColumn={{ base: "1/2" }}
-              padding={{ base: "0 5px" }}
-              backgroundColor="gray.100"
-              sx={{
-                ".group:nth-child(odd) &": {
-                  backgroundColor: "gray.300",
-                },
-                ".group:hover &": {
-                  backgroundColor: "blue.100",
-                },
-              }}
-              onClick={(_) => savePlan(plan)}
-            >
-              <Icon
-                as={savedPlans.has(plan.id) ? RiBookmarkFill : RiBookmarkLine}
-                boxSize={7}
-                marginTop="10px"
-              />
-            </Box>
+            <BookmarkButton
+              saved={savedPlans.has(plan.id)}
+              {...{ plan, savePlan }}
+            />
 
             <NameBar planName={plan.name} issuerName={plan.issuer.name} />
 

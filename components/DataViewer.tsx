@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Text, Box } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 
@@ -31,6 +31,19 @@ export default function DataViewer({
     new Map()
   );
 
+  const savePlan = useCallback(
+    (plan: IHealthPlan) => {
+      const clonedMap = new Map(savedPlans);
+      if (clonedMap.has(plan.id)) {
+        clonedMap.delete(plan.id);
+      } else {
+        clonedMap.set(plan.id, plan);
+      }
+      setSavedPlans(clonedMap);
+    },
+    [savedPlans]
+  );
+
   // todo: improve error handling
   if (results.isError) {
     return <Text>{results.error.message}</Text>;
@@ -51,25 +64,20 @@ export default function DataViewer({
     }
   }
 
-  const savePlan = (plan: IHealthPlan) => {
-    const clonedMap = new Map(savedPlans);
-    if (clonedMap.has(plan.id)) {
-      clonedMap.delete(plan.id);
-    } else {
-      clonedMap.set(plan.id, plan);
-    }
-    setSavedPlans(clonedMap);
-  };
-
   const numSavedPlans = savedPlans.size;
 
   return (
     <>
-      {displayMode === "Planlist" && (
-        <Planlist
-          {...{ results, filter, savePlan, savedPlans, creditEstimates }}
-        />
-      )}
+      <Planlist
+        {...{
+          displayMode,
+          results,
+          filter,
+          savePlan,
+          savedPlans,
+          creditEstimates,
+        }}
+      />
       {displayMode === "ComparePlans" && (
         <ComparePlans
           plans={Array.from(savedPlans.values())}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import {
   Input,
   Icon,
@@ -22,7 +22,7 @@ interface IProps {
   creditEstimates: Estimate[];
 }
 
-export default function IncomeWidget({
+export default memo(function IncomeWidget({
   income,
   setIncome,
   creditEstimates,
@@ -79,4 +79,4 @@ export default function IncomeWidget({
       </Flex>
     </>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Button, Text, VStack } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 
@@ -10,7 +10,7 @@ interface IProps {
   setPeople: (h: IPerson[]) => void;
 }
 
-export default function PeopleWidget({ people, setPeople }: IProps) {
+export default memo(function PeopleWidget({ people, setPeople }: IProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [personIndex, setPersonIndex] = useState(-1);
 
@@ -54,4 +54,4 @@ export default function PeopleWidget({ people, setPeople }: IProps) {
       </Button>
     </>
   );
-}
+});

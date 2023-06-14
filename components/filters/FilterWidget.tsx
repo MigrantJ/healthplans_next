@@ -1,3 +1,4 @@
+import { memo } from "react";
 import IFilter, {
   MetalLevel,
   DiseaseMgmtPrograms,
@@ -21,7 +22,7 @@ interface IProps {
   creditEstimates: Estimate[];
 }
 
-export default function FilterWidget({
+export default memo(function FilterWidget({
   filter,
   setFilter,
   facetGroups,
@@ -137,4 +138,4 @@ export default function FilterWidget({
       </FilterGroup>
     </>
   );
-}
+});
