@@ -14,7 +14,7 @@ export default React.memo(function PremiumBar({
 }: IProps) {
   return (
     <Box
-      gridColumn={{ base: "1/4", sm: "1/3", md: "auto" }}
+      gridColumn={{ base: "1/3", sm: "1/3", md: "auto" }}
       padding={{ base: "0 5px", md: "10px 5px" }}
       backgroundColor="gray.100"
       sx={{

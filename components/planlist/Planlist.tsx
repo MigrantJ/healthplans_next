@@ -93,9 +93,7 @@ export default function Planlist({
   }
 
   return (
-    <PlanListContainer
-      display={displayMode === "ComparePlans" ? "none" : "grid"}
-    >
+    <PlanListContainer display={displayMode === "Planlist" ? "grid" : "none"}>
       <PlanModal {...{ isOpen, onClose, modalPlan, creditEstimates }} />
       <PlanlistHeader
         {...{

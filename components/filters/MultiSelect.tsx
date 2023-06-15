@@ -20,6 +20,7 @@ export default function MultiSelect<T extends string>({
   return (
     <>
       <Select
+        variant="sidebar"
         isMulti
         useBasicStyles
         options={optionObjs}

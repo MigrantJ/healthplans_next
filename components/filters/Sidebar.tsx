@@ -131,6 +131,7 @@ export default function Sidebar({
                   creditEstimates,
                 }}
               />
+              <Flex height="160px" />
             </AccordionPanel>
           </AccordionItem>
         )}

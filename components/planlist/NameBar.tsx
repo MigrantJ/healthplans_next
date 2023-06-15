@@ -13,7 +13,7 @@ export default React.memo(function PremiumBar({
 }: IProps) {
   return (
     <Box
-      gridColumn={{ base: "2/4", sm: "2/4", md: "auto" }}
+      gridColumn={{ base: "2/3", sm: "2/4", md: "auto" }}
       padding={{ base: "0 5px" }}
       backgroundColor="gray.100"
       sx={{
@@ -26,8 +26,8 @@ export default React.memo(function PremiumBar({
         },
       }}
     >
-      <EllipsisText>{issuerName}</EllipsisText>
-      <EllipsisText fontWeight="bold">{planName}</EllipsisText>
+      <EllipsisText fontWeight="bold">{issuerName}</EllipsisText>
+      <EllipsisText>{planName}</EllipsisText>
     </Box>
   );
 });

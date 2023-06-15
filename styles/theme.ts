@@ -1,18 +1,14 @@
-import { extendTheme } from "@chakra-ui/react";
+import { extendTheme, createMultiStyleConfigHelpers } from "@chakra-ui/react";
+import { inputAnatomy, tagAnatomy } from "@chakra-ui/anatomy";
+
+const inputConfig = createMultiStyleConfigHelpers(inputAnatomy.keys);
+const tagConfig = createMultiStyleConfigHelpers(tagAnatomy.keys);
 
 // uses min-width
 const breakpoints = {
   sm: "400px",
   md: "768px",
   lg: "1060px",
-};
-
-const colors = {
-  brand: {
-    900: "#1a365d",
-    800: "#153e75",
-    700: "#2a69ac",
-  },
 };
 
 const styles = {
@@ -24,9 +20,45 @@ const styles = {
 };
 
 const components = {
+  Input: inputConfig.defineMultiStyleConfig({
+    baseStyle: inputConfig.definePartsStyle({
+      field: {
+        paddingBottom: "2px",
+        backgroundColor: "blue.50",
+        border: "1px solid",
+        borderColor: "blue.500",
+        _focus: {
+          backgroundColor: "white",
+          border: "2px solid",
+          borderColor: "blue.300",
+        },
+      },
+    }),
+  }),
+  Tag: tagConfig.defineMultiStyleConfig({
+    baseStyle: tagConfig.definePartsStyle({
+      container: {
+        backgroundColor: "blue.300",
+        border: "1px solid",
+        borderColor: "blue.500",
+      },
+      label: { color: "white" },
+      closeButton: { color: "white" },
+    }),
+  }),
   Button: {
-    baseStyle: {},
     variants: {
+      sidebar: {
+        backgroundColor: "blue.500",
+        border: "1px solid blue.500",
+        color: "white",
+        _hover: {
+          backgroundColor: "blue.300",
+          _disabled: {
+            backgroundColor: "gray.400",
+          },
+        },
+      },
       modeselect: {
         boxShadow: "0px 0px 2px 2px black",
         backgroundColor: "blue.500",
@@ -54,4 +86,4 @@ const components = {
   },
 };
 
-export const theme = extendTheme({ colors, breakpoints, styles, components });
+export const theme = extendTheme({ breakpoints, styles, components });

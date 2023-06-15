@@ -18,7 +18,7 @@ export default function PlanlistHeader({
   return (
     <>
       <Flex
-        gridColumn={{ base: "1/4", md: "1/5" }}
+        gridColumn={{ base: "1/3", sm: "1/4", md: "1/5" }}
         flexDir={{ base: "column", md: "row" }}
         width="100%"
         paddingX="10px"

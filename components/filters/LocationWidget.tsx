@@ -1,14 +1,13 @@
 import { useState, memo } from "react";
 import {
   Flex,
-  Center,
   Input,
   Button,
   Tooltip,
   Icon,
-  Editable,
-  EditablePreview,
-  EditableInput,
+  InputGroup,
+  InputLeftElement,
+  Spinner,
 } from "@chakra-ui/react";
 import { RiMapPinLine } from "react-icons/ri";
 
@@ -23,7 +22,8 @@ const getLocationByLatLong = async (
   lat: number,
   long: number,
   setZipcode: (z: string) => void,
-  setLocation: (location: ILocation) => void
+  setLocation: (location: ILocation) => void,
+  setIsLoading: (l: boolean) => void
 ) => {
   const res = await fetch(`/api/location`, {
     method: "post",
@@ -36,18 +36,21 @@ const getLocationByLatLong = async (
   const location = (await res.json()) as ILocation;
   setZipcode(location.zipcode);
   setLocation(location);
+  setIsLoading(false);
 };
 
 const getPosByGPS = function (
   setZipcode: (z: string) => void,
-  setLocation: (location: ILocation) => void
+  setLocation: (location: ILocation) => void,
+  setIsLoading: (l: boolean) => void
 ) {
   const successCallback: PositionCallback = (position) => {
     void getLocationByLatLong(
       position.coords.latitude,
       position.coords.longitude,
       setZipcode,
-      setLocation
+      setLocation,
+      setIsLoading
     );
   };
 
@@ -56,13 +59,17 @@ const getPosByGPS = function (
     console.log(error);
   };
 
+  setIsLoading(true);
   navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
 };
 
 const getPosByZipCode = async (
   zipcode: string,
-  setLocation: (location: ILocation) => void
+  setLocation: (location: ILocation) => void,
+  setIsLoading: (l: boolean) => void
 ) => {
+  if (zipcode === "") return;
+  setIsLoading(true);
   const res = await fetch(`/api/location`, {
     method: "post",
     body: JSON.stringify({ zipcode }),
@@ -73,46 +80,47 @@ const getPosByZipCode = async (
   }
   const location = (await res.json()) as ILocation;
   setLocation(location);
+  setIsLoading(false);
 };
 
 export default memo(function LocationWidget({ location, setLocation }: IProps) {
   const [zipcode, setZipcode] = useState(location?.zipcode || "");
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <Flex>
-      <Center>
-        <Tooltip hasArrow label="Click To Use GPS">
-          <Button
-            onClick={(_) => {
-              getPosByGPS(setZipcode, setLocation);
-            }}
-          >
-            <Icon as={RiMapPinLine} boxSize={5} focusable={true} />
-          </Button>
-        </Tooltip>
-      </Center>
-
-      <Editable
-        placeholder={zipcode || "Zip Code"}
-        isPreviewFocusable={true}
-        selectAllOnFocus={false}
-        value={zipcode}
-        onChange={(t) => setZipcode(t)}
-        onSubmit={(t) => void getPosByZipCode(t, setLocation)}
-        w={100}
-      >
-        <Tooltip hasArrow label="Click to Edit" shouldWrapChildren={true}>
-          <EditablePreview
-            bg="gray.200"
-            px={4}
-            py={2}
-            _hover={{
-              background: "gray.100",
-            }}
-          />
-        </Tooltip>
-        <Input as={EditableInput} value={zipcode} inputMode="numeric" />
-      </Editable>
+      <InputGroup sx={{ "div[data-lastpass-icon-root]": { display: "none" } }}>
+        <InputLeftElement>
+          {isLoading ? (
+            <Spinner size="sm" marginLeft="5px" />
+          ) : (
+            <Tooltip hasArrow label="Click To Use GPS">
+              <Button
+                variant="sidebar"
+                onClick={(_) => {
+                  getPosByGPS(setZipcode, setLocation, setIsLoading);
+                }}
+              >
+                <Icon as={RiMapPinLine} boxSize={5} focusable={true} />
+              </Button>
+            </Tooltip>
+          )}
+        </InputLeftElement>
+        <Input
+          variant="sidebar"
+          width="125px"
+          marginLeft="7px"
+          placeholder="Zip Code"
+          value={zipcode}
+          inputMode="numeric"
+          autoComplete="off"
+          type="number"
+          onChange={(e) => setZipcode(e.target.value)}
+          onBlur={(_) =>
+            void getPosByZipCode(zipcode, setLocation, setIsLoading)
+          }
+        />
+      </InputGroup>
     </Flex>
   );
 });

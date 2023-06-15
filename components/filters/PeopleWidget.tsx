@@ -1,5 +1,5 @@
 import { useState, memo } from "react";
-import { Button, Text, VStack } from "@chakra-ui/react";
+import { Button, Divider, Text, VStack, Flex } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 
 import EditPersonModal from "./EditPersonModal";
@@ -33,15 +33,24 @@ export default memo(function PeopleWidget({ people, setPeople }: IProps) {
         />
       )}
 
-      <VStack>
+      <Flex flexWrap="wrap" gap="5px">
         {people.map((p, i) => (
-          <Button key={i} onClick={(_) => openModal(i)}>
+          <Button
+            variant="sidebar"
+            size="sm"
+            key={i}
+            onClick={(_) => openModal(i)}
+          >
             {p.relationship} - {p.age}
             {p.gender[0]}
           </Button>
         ))}
-      </VStack>
+      </Flex>
+      <Divider marginY="10px" />
       <Button
+        variant="sidebar"
+        size="sm"
+        width="100%"
         onClick={() => {
           openModal(-1);
         }}
