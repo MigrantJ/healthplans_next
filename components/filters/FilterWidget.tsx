@@ -44,6 +44,7 @@ export default memo(function FilterWidget({
   return (
     <>
       <FilterGroup
+        isFormLabel={false}
         headingText="Premium"
         infoText="This is the amount you'll pay for your insurance each month."
       >
@@ -58,6 +59,7 @@ export default memo(function FilterWidget({
         />
       </FilterGroup>
       <FilterGroup
+        isFormLabel={false}
         headingText="Deductible"
         infoText="This is the amount you'll pay for covered services before your plan starts to pay."
       >

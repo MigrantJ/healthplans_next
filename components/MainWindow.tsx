@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
-import { Grid } from "@chakra-ui/react";
+import { Grid, Spinner } from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
@@ -65,15 +65,27 @@ export default function MainWindow() {
 
       {creditEstimates?.some((e) => e.is_medicaid_chip) && <MedicaidModal />}
 
-      <DataViewer
-        {...{
-          displayMode,
-          setDisplayMode,
-          results,
-          filter,
-          creditEstimates,
-        }}
-      />
+      {results.isInitialLoading ? (
+        <Spinner
+          thickness="4px"
+          color="white"
+          emptyColor="gray.500"
+          height={50}
+          width={50}
+          alignSelf="center"
+          justifySelf="center"
+        />
+      ) : (
+        <DataViewer
+          {...{
+            displayMode,
+            setDisplayMode,
+            results,
+            filter,
+            creditEstimates,
+          }}
+        />
+      )}
     </Grid>
   );
 }

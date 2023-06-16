@@ -84,6 +84,9 @@ const components = {
   Divider: {
     baseStyle: { borderColor: "blue.600" },
   },
+  FormLabel: {
+    baseStyle: { margin: 0 },
+  },
 };
 
 export const theme = extendTheme({ breakpoints, styles, components });

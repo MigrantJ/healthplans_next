@@ -103,6 +103,7 @@ export default function Sidebar({
               <IncomeWidget {...{ income, setIncome, creditEstimates }} />
             </FilterGroup>
             <FilterGroup
+              isFormLabel={false}
               headingText="People"
               infoText="Add only individuals in your household that need health coverage."
             >

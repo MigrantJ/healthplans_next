@@ -1,5 +1,5 @@
 import { useState, memo } from "react";
-import { Button, Divider, Text, VStack, Flex } from "@chakra-ui/react";
+import { Button, Divider, Text, Flex } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 
 import EditPersonModal from "./EditPersonModal";
