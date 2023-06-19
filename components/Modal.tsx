@@ -58,7 +58,7 @@ export default function PModal({
                 onChange={(e) => setZipCode(e.target.value)}
               />
               <Button
-                onClick={(e) => {
+                onClick={(_) => {
                   void getPosByZipCode(zipCode, setLocation);
                   onClose();
                 }}
@@ -66,7 +66,7 @@ export default function PModal({
                 Enter
               </Button>
               <Button
-                onClick={(e) => {
+                onClick={(_) => {
                   getPosByGPS(setLocation);
                   onClose();
                 }}

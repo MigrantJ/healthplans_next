@@ -1,5 +1,4 @@
-import NextLink from "next/link";
-import { Grid, GridItem, Box, Text, Link, Icon, Flex } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import {
   RiCheckFill,
   RiFileTextLine,
@@ -9,9 +8,14 @@ import {
 } from "react-icons/ri";
 
 import IHealthPlan, { Benefit } from "@/types/HealthPlan";
-import { Expands } from "../ComparePlans";
+import { Expands } from "./ComparePlans";
 import StarRating from "./StarRating";
 import React from "react";
+import CollapsibleContent from "./CollapsibleContent";
+import PlanDocLink from "./PlanDocLink";
+import CopayDetails from "./CopayDetails";
+import DetailsContainer from "./DetailsContainer";
+import currencyFormatter from "@/lib/currencyFormatter";
 
 interface IProps {
   plan: IHealthPlan;
@@ -20,11 +24,6 @@ interface IProps {
   setExpands: (e: Expands) => void;
   taxCredit: number;
 }
-
-const formatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
 
 export default function ComparePlanDetails({
   plan,
@@ -39,268 +38,154 @@ export default function ComparePlanDetails({
       return acc;
     }, {}) || {};
 
-  const premium = formatter.format(Math.max(plan.premium - taxCredit, 1));
-  const deductible = formatter.format(plan.deductibles[0].amount);
-  const moop = formatter.format(plan.moops[0].amount);
+  const premium = currencyFormatter.format(
+    Math.max(plan.premium - taxCredit, 1)
+  );
+  const deductible = currencyFormatter.format(plan.deductibles[0].amount);
+  const moop = currencyFormatter.format(plan.moops[0].amount);
 
   return (
-    <Grid
-      key={plan.id}
-      gridTemplateRows={rowTemplate}
-      justifyItems="center"
-      borderInline="1px solid lightgray"
-      width="100%"
-      overflowY="hidden"
-    >
-      <GridItem
-        width="100%"
-        height="100%"
-        onClick={() => setExpands({ ...expands, costs: !expands.costs })}
-      ></GridItem>
-      <Box display={expands.costs ? "contents" : "none"}>
-        <GridItem />
+    <DetailsContainer gridTemplateRows={rowTemplate}>
+      <CollapsibleContent
+        expanded={expands.costs}
+        expandFunc={() => setExpands({ ...expands, costs: !expands.costs })}
+      >
         <Text>{premium}</Text>
-        <GridItem />
         <Text>{deductible}</Text>
-        <GridItem />
         <Text>{moop}</Text>
-      </Box>
+      </CollapsibleContent>
 
-      <GridItem
-        width="100%"
-        height="100%"
-        onClick={() => setExpands({ ...expands, info: !expands.info })}
-      />
-      <Box display={expands.info ? "contents" : "none"}>
-        <GridItem />
+      <CollapsibleContent
+        expanded={expands.info}
+        expandFunc={() => setExpands({ ...expands, info: !expands.info })}
+      >
         <Text>{plan.id}</Text>
-        <GridItem />
         <Text>{plan.type}</Text>
-        <GridItem />
         <Text>{plan.metal_level}</Text>
-      </Box>
+      </CollapsibleContent>
 
-      <GridItem
-        width="100%"
-        height="100%"
-        onClick={() =>
-          setExpands({
-            ...expands,
-            star_ratings: !expands.star_ratings,
-          })
+      <CollapsibleContent
+        expanded={expands.star_ratings}
+        expandFunc={() =>
+          setExpands({ ...expands, star_ratings: !expands.star_ratings })
         }
-      />
-      <Box display={expands.star_ratings ? "contents" : "none"}>
-        <GridItem />
-        <GridItem>
-          <StarRating
-            numStars={plan.quality_rating.global_rating}
-            reasonForZero={plan.quality_rating.global_not_rated_reason}
-          />
-        </GridItem>
-        <GridItem />
-        <GridItem>
-          <StarRating
-            numStars={plan.quality_rating.enrollee_experience_rating}
-            reasonForZero={
-              plan.quality_rating.enrollee_experience_not_rated_reason
-            }
-          />
-        </GridItem>
-        <GridItem />
-        <GridItem>
-          <StarRating
-            numStars={plan.quality_rating.clinical_quality_management_rating}
-            reasonForZero={
-              plan.quality_rating.clinical_quality_management_not_rated_reason
-            }
-          />
-        </GridItem>
-        <GridItem />
-        <GridItem>
-          <StarRating
-            numStars={plan.quality_rating.plan_efficiency_rating}
-            reasonForZero={plan.quality_rating.plan_efficiency_not_rated_reason}
-          />
-        </GridItem>
-      </Box>
+      >
+        <StarRating
+          numStars={plan.quality_rating.global_rating}
+          reasonForZero={plan.quality_rating.global_not_rated_reason}
+        />
+        <StarRating
+          numStars={plan.quality_rating.enrollee_experience_rating}
+          reasonForZero={
+            plan.quality_rating.enrollee_experience_not_rated_reason
+          }
+        />
+        <StarRating
+          numStars={plan.quality_rating.clinical_quality_management_rating}
+          reasonForZero={
+            plan.quality_rating.clinical_quality_management_not_rated_reason
+          }
+        />
+        <StarRating
+          numStars={plan.quality_rating.plan_efficiency_rating}
+          reasonForZero={plan.quality_rating.plan_efficiency_not_rated_reason}
+        />
+      </CollapsibleContent>
 
-      <GridItem
-        width="100%"
-        height="100%"
-        onClick={() =>
-          setExpands({
-            ...expands,
-            copays: !expands.copays,
-          })
-        }
-      />
-      <Box display={expands.copays ? "contents" : "none"}>
-        <GridItem />
-        <Box justifySelf="start">
-          {copayMap[
-            "Primary Care Visit to Treat an Injury or Illness"
-          ].cost_sharings.map((cs, i) => {
-            return (
-              <React.Fragment key={i}>
-                <Text textDecoration="underline">{cs.network_tier}</Text>
-                <Text>{cs.display_string}</Text>
-              </React.Fragment>
-            );
-          })}
-        </Box>
-        <GridItem />
-        <Box justifySelf="start">
-          {copayMap["Specialist Visit"].cost_sharings.map((cs, i) => {
-            return (
-              <React.Fragment key={i}>
-                <Text textDecoration="underline">{cs.network_tier}</Text>
-                <Text>{cs.display_string}</Text>
-              </React.Fragment>
-            );
-          })}
-        </Box>
-        <GridItem />
-        <Box justifySelf="start">
-          {copayMap["Emergency Room Services"].cost_sharings.map((cs, i) => {
-            return (
-              <React.Fragment key={i}>
-                <Text textDecoration="underline">{cs.network_tier}</Text>
-                <Text>{cs.display_string}</Text>
-              </React.Fragment>
-            );
-          })}
-        </Box>
-        <GridItem />
-        <Box justifySelf="start">
-          {copayMap["Generic Drugs"].cost_sharings.map((cs, i) => {
-            return (
-              <React.Fragment key={i}>
-                <Text textDecoration="underline">{cs.network_tier}</Text>
-                <Text>{cs.display_string}</Text>
-              </React.Fragment>
-            );
-          })}
-        </Box>
-      </Box>
+      <CollapsibleContent
+        expanded={expands.copays}
+        expandFunc={() => setExpands({ ...expands, copays: !expands.copays })}
+      >
+        <CopayDetails
+          benefit={copayMap["Primary Care Visit to Treat an Injury or Illness"]}
+        />
+        <CopayDetails benefit={copayMap["Specialist Visit"]} />
+        <CopayDetails benefit={copayMap["Emergency Room Services"]} />
+        <CopayDetails benefit={copayMap["Generic Drugs"]} />
+      </CollapsibleContent>
 
-      <GridItem
-        width="100%"
-        height="100%"
-        onClick={() =>
-          setExpands({
-            ...expands,
-            documents: !expands.documents,
-          })
+      <CollapsibleContent
+        expanded={expands.documents}
+        expandFunc={() =>
+          setExpands({ ...expands, documents: !expands.documents })
         }
-      />
-      <Box display={expands.documents ? "contents" : "none"}>
+      >
         <Box>
           {plan.brochure_url && (
-            <Link as={NextLink} href={plan.brochure_url} isExternal>
-              <Flex alignItems="center">
-                <span>
-                  <Icon as={RiFileTextLine} boxSize={7} />
-                </span>
-                <Text display="inline-block">Plan Brochure</Text>
-              </Flex>
-            </Link>
+            <PlanDocLink
+              text="Plan Brochure"
+              icon={RiFileTextLine}
+              url={plan.brochure_url}
+            />
           )}
           {plan.benefits_url && (
-            <Link as={NextLink} href={plan.benefits_url} isExternal>
-              <Flex alignItems="center">
-                <span>
-                  <Icon as={RiListUnordered} boxSize={7} />
-                </span>
-                <Text display="inline-block">Summary of Benefits</Text>
-              </Flex>
-            </Link>
+            <PlanDocLink
+              text="Summary of Benefits"
+              icon={RiListUnordered}
+              url={plan.benefits_url}
+            />
           )}
           {plan.network_url && (
-            <Link as={NextLink} href={plan.network_url} isExternal>
-              <Flex alignItems="center">
-                <span>
-                  <Icon as={RiStethoscopeLine} boxSize={7} />
-                </span>
-                <Text display="inline-block">Find In-Network Doctors</Text>
-              </Flex>
-            </Link>
+            <PlanDocLink
+              text="Find In-Network Doctors"
+              icon={RiStethoscopeLine}
+              url={plan.network_url}
+            />
           )}
           {plan.formulary_url && (
-            <Link as={NextLink} href={plan.formulary_url} isExternal>
-              <Flex alignItems="center">
-                <span>
-                  <Icon
-                    as={RiMedicineBottleLine}
-                    boxSize={7}
-                    display="inline-block"
-                  />
-                </span>
-                <Text display="inline-block">Find covered medications</Text>
-              </Flex>
-            </Link>
+            <PlanDocLink
+              text="Find Covered Medications"
+              icon={RiMedicineBottleLine}
+              url={plan.formulary_url}
+            />
           )}
         </Box>
-      </Box>
+      </CollapsibleContent>
 
-      <GridItem
-        width="100%"
-        height="100%"
-        onClick={() =>
-          setExpands({
-            ...expands,
-            mgmt_programs: !expands.mgmt_programs,
-          })
+      <CollapsibleContent
+        expanded={expands.mgmt_programs}
+        expandFunc={() =>
+          setExpands({ ...expands, mgmt_programs: !expands.mgmt_programs })
         }
-      />
-      <Box display={expands.mgmt_programs ? "contents" : "none"}>
-        <GridItem />
+      >
         <Box>
           {plan.disease_mgmt_programs.includes("Asthma") && <RiCheckFill />}
         </Box>
-        <GridItem />
         <Box>
           {plan.disease_mgmt_programs.includes("Heart Disease") && (
             <RiCheckFill />
           )}
         </Box>
-        <GridItem />
         <Box>
           {plan.disease_mgmt_programs.includes("Depression") && <RiCheckFill />}
         </Box>
-        <GridItem />
         <Box>
           {plan.disease_mgmt_programs.includes("Diabetes") && <RiCheckFill />}
         </Box>
-        <GridItem />
         <Box>
           {plan.disease_mgmt_programs.includes(
             "High Blood Pressure and High Cholesterol"
           ) && <RiCheckFill />}
         </Box>
-        <GridItem />
         <Box>
           {plan.disease_mgmt_programs.includes("Low Back Pain") && (
             <RiCheckFill />
           )}
         </Box>
-        <GridItem />
         <Box>
           {plan.disease_mgmt_programs.includes("Pain Management") && (
             <RiCheckFill />
           )}
         </Box>
-        <GridItem />
         <Box>
           {plan.disease_mgmt_programs.includes("Pregnancy") && <RiCheckFill />}
         </Box>
-        <GridItem />
         <Box>
           {plan.disease_mgmt_programs.includes("Weight Loss Programs") && (
             <RiCheckFill />
           )}
         </Box>
-      </Box>
-    </Grid>
+      </CollapsibleContent>
+    </DetailsContainer>
   );
 }

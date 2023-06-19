@@ -10,7 +10,7 @@ interface IProps {
 export default function StarRating({ numStars, reasonForZero }: IProps) {
   if (numStars > 0) {
     return (
-      <>
+      <Flex>
         {[...Array<null>(5)].map((_, i) =>
           i + 1 <= numStars ? (
             <Icon as={RiStarFill} key={i} />
@@ -18,7 +18,7 @@ export default function StarRating({ numStars, reasonForZero }: IProps) {
             <Icon as={RiStarLine} key={i} />
           )
         )}
-      </>
+      </Flex>
     );
   } else {
     return (

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Text, Box, Grid } from "@chakra-ui/react";
+import React, { useCallback, useState } from "react";
+import { Text, Box, useToast } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 
 import * as GetPlans from "@/types/GetPlans";
@@ -7,13 +7,13 @@ import IFilter from "@/types/Filter";
 import IHealthPlan from "@/types/HealthPlan";
 import InvalidStateMessage from "./InvalidStateMessage";
 import { DisplayMode } from "@/types/DisplayMode";
-import Planlist from "./Planlist";
-import ComparePlans from "./ComparePlans";
-import { ModeSelector } from "./ModeSelector";
+import Planlist from "./planlist/Planlist";
+import ComparePlans from "./compare_plans/ComparePlans";
+import ModeSelector from "./ModeSelector";
 import { Estimate } from "@/types/GetCreditEstimate";
+import constants from "../styles/constants";
 
 interface IProps {
-  hideSidebar: boolean;
   displayMode: DisplayMode;
   setDisplayMode: (d: DisplayMode) => void;
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
@@ -22,7 +22,6 @@ interface IProps {
 }
 
 export default function DataViewer({
-  hideSidebar,
   displayMode,
   setDisplayMode,
   results,
@@ -31,6 +30,29 @@ export default function DataViewer({
 }: IProps) {
   const [savedPlans, setSavedPlans] = useState<Map<string, IHealthPlan>>(
     new Map()
+  );
+  const toast = useToast();
+
+  const savePlan = useCallback(
+    (plan: IHealthPlan) => {
+      const clonedMap = new Map(savedPlans);
+      if (clonedMap.has(plan.id)) {
+        clonedMap.delete(plan.id);
+      } else {
+        if (savedPlans.size === constants.MAX_SAVED_PLANS) {
+          toast({
+            description: `You can compare a maximum of ${constants.MAX_SAVED_PLANS} plans`,
+            status: "error",
+            duration: constants.TOAST_DURATION,
+            isClosable: true,
+          });
+          return;
+        }
+        clonedMap.set(plan.id, plan);
+      }
+      setSavedPlans(clonedMap);
+    },
+    [savedPlans, toast]
   );
 
   // todo: improve error handling
@@ -53,28 +75,20 @@ export default function DataViewer({
     }
   }
 
-  const savePlan = (plan: IHealthPlan) => {
-    const clonedMap = new Map(savedPlans);
-    if (clonedMap.has(plan.id)) {
-      clonedMap.delete(plan.id);
-    } else {
-      clonedMap.set(plan.id, plan);
-    }
-    setSavedPlans(clonedMap);
-  };
-
   const numSavedPlans = savedPlans.size;
 
   return (
     <>
-      <Grid
-        id="planlist"
-        display={displayMode === "Planlist" ? "grid" : "none"}
-      >
-        <Planlist
-          {...{ results, filter, savePlan, savedPlans, creditEstimates }}
-        />
-      </Grid>
+      <Planlist
+        {...{
+          displayMode,
+          results,
+          filter,
+          savePlan,
+          savedPlans,
+          creditEstimates,
+        }}
+      />
       {displayMode === "ComparePlans" && (
         <ComparePlans
           plans={Array.from(savedPlans.values())}
@@ -83,9 +97,7 @@ export default function DataViewer({
       )}
 
       {results.data && (
-        <ModeSelector
-          {...{ hideSidebar, displayMode, setDisplayMode, numSavedPlans }}
-        />
+        <ModeSelector {...{ displayMode, setDisplayMode, numSavedPlans }} />
       )}
     </>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import IPerson, { Relationship, relationshipOptions } from "@/types/Person";
 import {
   Modal,
@@ -20,6 +20,8 @@ import {
   Stack,
   Select,
   Spacer,
+  FormControl,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 
 interface IProps {
@@ -49,9 +51,6 @@ export default function EditPersonModal({
   personIndex,
 }: IProps) {
   const [person, setPerson] = useState(people[personIndex]);
-  useEffect(() => {
-    setPerson(people[personIndex] || null);
-  }, [personIndex]);
 
   const age = person?.age || "";
   const sex = person?.gender || "";
@@ -98,51 +97,70 @@ export default function EditPersonModal({
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <InputGroup size="sm">
-            <FormLabel>Age</FormLabel>
-            <Input
-              value={age}
-              onChange={(e) =>
-                setPerson({ ...person, age: parseInt(e.target.value) })
-              }
-            />
-          </InputGroup>
-          <InputGroup size="sm">
-            <FormLabel>Sex</FormLabel>
-            <RadioGroup
-              onChange={(e) =>
-                setPerson({ ...person, gender: e as "Male" | "Female" })
-              }
-              value={sex}
-            >
-              <Radio value="Male">Male</Radio>
-              <Radio value="Female">Female</Radio>
-            </RadioGroup>
-          </InputGroup>
-          {isSelf(personIndex, people) && (
+          <FormControl
+            id="Age"
+            isRequired
+            isInvalid={person?.age < 1 || person?.age > 125}
+          >
             <InputGroup size="sm">
-              <FormLabel>Relationship</FormLabel>
-              <Select
-                placeholder="Select option"
-                value={relationship}
+              <FormLabel>Age</FormLabel>
+              <Input
+                type="number"
+                inputMode="numeric"
+                min={1}
+                max={125}
+                step={1}
+                value={age}
+                marginLeft="5px"
                 onChange={(e) =>
-                  setPerson({
-                    ...person,
-                    relationship: e.target.value as Relationship,
-                  })
+                  setPerson({ ...person, age: parseInt(e.target.value) })
                 }
-              >
-                {relationshipOptions.map((r: Relationship, i) => {
-                  // we don't want Self appearing in the dropdown, it will be the assumed default
-                  if (r === "Self") return;
-                  return (
-                    <option key={i} value={r}>
-                      {r}
-                    </option>
-                  );
-                })}
-              </Select>
+              />
             </InputGroup>
+            <FormErrorMessage>Age is required.</FormErrorMessage>
+          </FormControl>
+          <FormControl isRequired>
+            <InputGroup size="sm">
+              <FormLabel htmlFor="Sex">Sex</FormLabel>
+              <RadioGroup
+                name="Sex"
+                paddingLeft="10px"
+                onChange={(e) =>
+                  setPerson({ ...person, gender: e as "Male" | "Female" })
+                }
+                value={sex}
+              >
+                <Radio value="Male">Male</Radio>
+                <Radio value="Female">Female</Radio>
+              </RadioGroup>
+            </InputGroup>
+          </FormControl>
+          {isSelf(personIndex, people) && (
+            <FormControl isRequired>
+              <InputGroup size="sm">
+                <FormLabel>Relationship</FormLabel>
+                <Select
+                  placeholder="Select option"
+                  value={relationship}
+                  onChange={(e) =>
+                    setPerson({
+                      ...person,
+                      relationship: e.target.value as Relationship,
+                    })
+                  }
+                >
+                  {relationshipOptions.map((r: Relationship, i) => {
+                    // we don't want Self appearing in the dropdown, it will be the assumed default
+                    if (r === "Self") return;
+                    return (
+                      <option key={i} value={r}>
+                        {r}
+                      </option>
+                    );
+                  })}
+                </Select>
+              </InputGroup>
+            </FormControl>
           )}
           <Text>Select any that apply:</Text>
           <CheckboxGroup

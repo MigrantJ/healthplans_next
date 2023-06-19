@@ -1,5 +1,6 @@
-import { Box, GridItem, Text } from "@chakra-ui/react";
+import { Heading, Text, Flex, Spacer } from "@chakra-ui/react";
 import { Axis, Orient } from "d3-axis-for-react";
+import ColumnHeader from "./ColumnHeader";
 
 interface IProps {
   premiumExtent: [number, number];
@@ -16,17 +17,26 @@ export default function PlanlistHeader({
 }: IProps) {
   return (
     <>
-      <GridItem id="estimate-notice">
-        <Text>
+      <Flex
+        gridColumn={{ base: "1/3", sm: "1/4", md: "1/5" }}
+        flexDir={{ base: "column", md: "row" }}
+        width="100%"
+        paddingX="10px"
+        paddingBottom="10px"
+        borderBottom="1px solid lightgray"
+      >
+        <Heading size="md">Plans</Heading>
+        <Spacer />
+        <Text fontSize="small">
           Note: Estimates Only. Premiums include tax credit if applicable.
         </Text>
-      </GridItem>
-      <Box className="column-header"></Box>
-      <Box className="column-header">
+      </Flex>
+      <ColumnHeader />
+      <ColumnHeader>
         <Text as="b">Issuer</Text>
         <Text>Plan Name</Text>
-      </Box>
-      <Box className="column-header">
+      </ColumnHeader>
+      <ColumnHeader>
         <Text as="b">Premium</Text>
         <svg height={20} width={xScalePremium(premiumExtent[1]) + 20}>
           <g transform="translate(2, 18)">
@@ -46,8 +56,8 @@ export default function PlanlistHeader({
             />
           </g>
         </svg>
-      </Box>
-      <Box className="column-header">
+      </ColumnHeader>
+      <ColumnHeader>
         <Text as="b">Deductible</Text>
         <svg height={20} width={xScaleDeductible(deductibleExtent[1]) + 20}>
           <g transform="translate(2, 18)">
@@ -69,7 +79,7 @@ export default function PlanlistHeader({
             />
           </g>
         </svg>
-      </Box>
+      </ColumnHeader>
     </>
   );
 }

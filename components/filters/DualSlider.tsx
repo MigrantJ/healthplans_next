@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
-  FormLabel,
   RangeSlider,
   RangeSliderFilledTrack,
   RangeSliderTrack,
@@ -11,35 +10,30 @@ import {
 } from "@chakra-ui/react";
 
 interface IProps {
-  label: string;
   rangeExtents: { min: number; max: number };
   displayMod: (num: number) => string;
   onChangeEnd: (range: number[]) => void;
 }
 
 export default function DualSlider({
-  label,
   rangeExtents,
   displayMod,
   onChangeEnd,
 }: IProps) {
   const [oldExtents, setOldExtents] = useState(rangeExtents);
   const [range, setRange] = useState([rangeExtents.min, rangeExtents.max]);
-  // if rangeExtents changes, reset the slider to min and max
-  useEffect(() => {
-    if (
-      rangeExtents.min !== oldExtents.min ||
-      rangeExtents.max !== oldExtents.max
-    ) {
-      setOldExtents(rangeExtents);
-      onChangeEnd([rangeExtents.min, rangeExtents.max]);
-      setRange([rangeExtents.min, rangeExtents.max]);
-    }
-  }, [rangeExtents]);
+  // if a household change makes the extents different, reset the slider to the new min and max
+  if (
+    rangeExtents.min !== oldExtents.min ||
+    rangeExtents.max !== oldExtents.max
+  ) {
+    setOldExtents(rangeExtents);
+    onChangeEnd([rangeExtents.min, rangeExtents.max]);
+    setRange([rangeExtents.min, rangeExtents.max]);
+  }
 
   return (
     <>
-      <FormLabel>{label}</FormLabel>
       <RangeSlider
         // eslint-disable-next-line jsx-a11y/aria-proptypes
         aria-label={["min", "max"]}
@@ -48,11 +42,13 @@ export default function DualSlider({
         step={25}
         value={range}
         onChange={(range) => {
-          onChangeEnd(range);
           setRange(range);
         }}
+        onChangeEnd={(range) => {
+          onChangeEnd(range);
+        }}
       >
-        <RangeSliderTrack>
+        <RangeSliderTrack bg="blue.700">
           <RangeSliderFilledTrack />
         </RangeSliderTrack>
         <RangeSliderThumb index={0} />

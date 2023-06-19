@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
-import { Divider, Flex, Heading, Grid } from "@chakra-ui/react";
+import { Grid, Spinner } from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
 import ILocation from "@/types/Location";
@@ -9,19 +9,12 @@ import IFilter from "@/types/Filter";
 import * as GetPlans from "@/types/GetPlans";
 import * as GCE from "@/types/GetCreditEstimate";
 import { DisplayMode } from "@/types/DisplayMode";
-import LocationWidget from "./LocationWidget";
-import IncomeWidget from "./IncomeWidget";
-import PeopleWidget from "./PeopleWidget";
-import FilterWidget from "./FilterWidget";
 import DataViewer from "./DataViewer";
 import { getCreditEstimate } from "@/lib/getCreditEstimate";
 import MedicaidModal from "./MedicaidModal";
+import Sidebar from "./filters/Sidebar";
 
-interface IProps {
-  hideSidebar: boolean;
-}
-
-export default function MainWindow({ hideSidebar }: IProps) {
+export default function MainWindow() {
   const [location, setLocation] = useState<ILocation>();
   const [income, setIncome] = useState(0);
   const [people, setPeople] = useState<IPerson[]>([]);
@@ -33,6 +26,7 @@ export default function MainWindow({ hideSidebar }: IProps) {
     queryFn: getCreditEstimate,
     enabled: !!location && income > 0,
     keepPreviousData: true,
+    retry: 10,
   });
 
   const results = useInfiniteQuery<GetPlans.Response, Error>({
@@ -41,6 +35,7 @@ export default function MainWindow({ hideSidebar }: IProps) {
     enabled: !!location,
     keepPreviousData: true,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
+    retry: 10,
   });
 
   const creditEstimates = creditResults.data?.estimates;
@@ -49,48 +44,50 @@ export default function MainWindow({ hideSidebar }: IProps) {
   const ranges = results.data?.pages?.[0].ranges;
 
   return (
-    <Grid id="mainwindow">
-      <Flex
-        id="sidebar"
-        direction="column"
-        display={
-          (!hideSidebar && displayMode !== "ComparePlans") ||
-          (hideSidebar && displayMode === "Filters")
-            ? "flex"
-            : "none"
-        }
-      >
-        <Heading size="md">Setup</Heading>
-        <Divider />
-        <Heading size="sm">Location</Heading>
-        <LocationWidget {...{ location, setLocation }} />
-        <Divider />
-        <Heading size="sm">Household</Heading>
-        <IncomeWidget {...{ income, setIncome, creditEstimates }} />
-        <PeopleWidget {...{ people, setPeople }} />
-        <Divider />
-        {facetGroups && ranges && (
-          <>
-            <Heading size="sm">Filters</Heading>
-            <FilterWidget
-              {...{ filter, setFilter, facetGroups, ranges, creditEstimates }}
-            />
-          </>
-        )}
-      </Flex>
-
-      {creditEstimates?.some((e) => e.is_medicaid_chip) && <MedicaidModal />}
-
-      <DataViewer
+    <Grid
+      gridTemplateColumns={{ base: "1fr", lg: "300px 1fr" }}
+      backgroundColor="blue.700"
+    >
+      <Sidebar
         {...{
-          hideSidebar,
           displayMode,
-          setDisplayMode,
-          results,
+          location,
+          setLocation,
+          income,
+          setIncome,
+          people,
+          setPeople,
           filter,
+          setFilter,
+          facetGroups,
+          ranges,
           creditEstimates,
         }}
       />
+
+      {creditEstimates?.some((e) => e.is_medicaid_chip) && <MedicaidModal />}
+
+      {results.isInitialLoading ? (
+        <Spinner
+          thickness="4px"
+          color="white"
+          emptyColor="gray.500"
+          height={50}
+          width={50}
+          alignSelf="center"
+          justifySelf="center"
+        />
+      ) : (
+        <DataViewer
+          {...{
+            displayMode,
+            setDisplayMode,
+            results,
+            filter,
+            creditEstimates,
+          }}
+        />
+      )}
     </Grid>
   );
 }

@@ -3,14 +3,12 @@ import { RiFilter3Line, RiListCheck, RiBookmarkFill } from "react-icons/ri";
 import { DisplayMode } from "@/types/DisplayMode";
 
 interface IProps {
-  hideSidebar?: boolean;
   displayMode: DisplayMode;
   setDisplayMode: (d: DisplayMode) => void;
   numSavedPlans: number;
 }
 
-export function ModeSelector({
-  hideSidebar,
+export default function ModeSelector({
   displayMode,
   setDisplayMode,
   numSavedPlans,
@@ -19,11 +17,9 @@ export function ModeSelector({
     <>
       {displayMode === "Filters" && (
         <Button
-          size="md"
+          variant="modeselect"
           leftIcon={<RiListCheck />}
           right="10px"
-          position="fixed"
-          bottom="10px"
           onClick={() => setDisplayMode("Planlist")}
         >
           Show Plans
@@ -32,26 +28,21 @@ export function ModeSelector({
 
       {displayMode === "Planlist" && (
         <>
-          {hideSidebar && (
-            <Button
-              size="md"
-              rightIcon={<RiFilter3Line />}
-              left="10px"
-              position="fixed"
-              bottom="10px"
-              onClick={() => setDisplayMode("Filters")}
-            >
-              Filters
-            </Button>
-          )}
+          <Button
+            variant="modeselect"
+            display={{ lg: "none" }}
+            rightIcon={<RiFilter3Line />}
+            left="10px"
+            onClick={() => setDisplayMode("Filters")}
+          >
+            Filters
+          </Button>
 
           <Button
-            size="md"
+            variant="modeselect"
             leftIcon={<RiBookmarkFill />}
             isDisabled={numSavedPlans === 0}
             right="10px"
-            position="fixed"
-            bottom="10px"
             onClick={() => setDisplayMode("ComparePlans")}
           >
             Compare ({numSavedPlans})
@@ -61,11 +52,9 @@ export function ModeSelector({
 
       {displayMode === "ComparePlans" && (
         <Button
-          size="md"
+          variant="modeselect"
           rightIcon={<RiListCheck />}
           left="10px"
-          position="fixed"
-          bottom="10px"
           onClick={() => setDisplayMode("Planlist")}
         >
           Show Plans
