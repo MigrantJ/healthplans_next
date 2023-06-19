@@ -1,4 +1,3 @@
-import { useState } from "react";
 import IPerson, { Relationship, relationshipOptions } from "@/types/Person";
 import {
   Modal,
@@ -23,6 +22,7 @@ import {
   FormControl,
   FormErrorMessage,
 } from "@chakra-ui/react";
+import { useForm, Controller } from "react-hook-form";
 
 interface IProps {
   isOpen: boolean;
@@ -50,28 +50,27 @@ export default function EditPersonModal({
   setPeople,
   personIndex,
 }: IProps) {
-  const [person, setPerson] = useState(people[personIndex]);
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    formState: { errors },
+  } = useForm();
 
+  const person = people[personIndex];
   const age = person?.age || "";
   const sex = person?.gender || "";
   const relationship = person?.relationship || "";
   const options = checkbox_options.filter((o) => !!person && person[o]);
 
-  const setOptions = (oldOptions: string[]) => {
-    const newOptions = {};
-    for (const option of checkbox_options) {
-      newOptions[option] = oldOptions.includes(option);
-    }
-    setPerson({ ...person, ...newOptions });
-  };
-
-  const onSave = () => {
-    person.relationship = person.relationship || "Self";
+  const onSubmit = (data: IPerson) => {
+    data.relationship = data.relationship || "Self";
     const newPeople = people.slice();
     if (personIndex >= 0) {
-      newPeople[personIndex] = person;
+      newPeople[personIndex] = data;
     } else {
-      newPeople.push(person);
+      newPeople.push(data);
     }
     setPeople(newPeople);
     onClose();
@@ -96,103 +95,105 @@ export default function EditPersonModal({
           )}
         </ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <FormControl
-            id="Age"
-            isRequired
-            isInvalid={person?.age < 1 || person?.age > 125}
-          >
-            <InputGroup size="sm">
-              <FormLabel>Age</FormLabel>
-              <Input
-                type="number"
-                inputMode="numeric"
-                min={1}
-                max={125}
-                step={1}
-                value={age}
-                marginLeft="5px"
-                onChange={(e) =>
-                  setPerson({ ...person, age: parseInt(e.target.value) })
-                }
-              />
-            </InputGroup>
-            <FormErrorMessage>Age is required.</FormErrorMessage>
-          </FormControl>
-          <FormControl isRequired>
-            <InputGroup size="sm">
-              <FormLabel htmlFor="Sex">Sex</FormLabel>
-              <RadioGroup
-                name="Sex"
-                paddingLeft="10px"
-                onChange={(e) =>
-                  setPerson({ ...person, gender: e as "Male" | "Female" })
-                }
-                value={sex}
-              >
-                <Radio value="Male">Male</Radio>
-                <Radio value="Female">Female</Radio>
-              </RadioGroup>
-            </InputGroup>
-          </FormControl>
-          {isSelf(personIndex, people) && (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalBody>
+            <FormControl
+              id="Age"
+              isRequired
+              isInvalid={person?.age < 1 || person?.age > 125}
+            >
+              <InputGroup size="sm">
+                <FormLabel>Age</FormLabel>
+                <Input
+                  type="number"
+                  inputMode="numeric"
+                  defaultValue={age}
+                  {...register("age", { required: true, min: 1, max: 125 })}
+                  marginLeft="5px"
+                />
+              </InputGroup>
+              <FormErrorMessage>Age is required.</FormErrorMessage>
+            </FormControl>
             <FormControl isRequired>
               <InputGroup size="sm">
-                <FormLabel>Relationship</FormLabel>
-                <Select
-                  placeholder="Select option"
-                  value={relationship}
-                  onChange={(e) =>
-                    setPerson({
-                      ...person,
-                      relationship: e.target.value as Relationship,
-                    })
-                  }
-                >
-                  {relationshipOptions.map((r: Relationship, i) => {
-                    // we don't want Self appearing in the dropdown, it will be the assumed default
-                    if (r === "Self") return;
-                    return (
-                      <option key={i} value={r}>
-                        {r}
-                      </option>
-                    );
-                  })}
-                </Select>
+                <FormLabel htmlFor="Sex">Sex</FormLabel>
+                <Controller
+                  name="gender"
+                  control={control}
+                  render={({ field }) => (
+                    <RadioGroup
+                      {...field}
+                      defaultValue={sex}
+                      paddingLeft="10px"
+                    >
+                      <Radio value="Male">Male</Radio>
+                      <Radio value="Female">Female</Radio>
+                    </RadioGroup>
+                  )}
+                  rules={{
+                    required: { value: true, message: "This is required." },
+                  }}
+                />
               </InputGroup>
             </FormControl>
-          )}
-          <Text>Select any that apply:</Text>
-          <CheckboxGroup
-            defaultValue={[]}
-            value={options}
-            onChange={(e) => setOptions(e as string[])}
-          >
-            <Stack direction="column">
-              <Checkbox value="is_parent">
-                Legal parent or guardian of a child under 19
-              </Checkbox>
-              <Checkbox value="is_pregnant">Pregnant</Checkbox>
-              <Checkbox value="uses_tobacco">Tobacco User</Checkbox>
-              <Checkbox value="has_mec">
-                Eligible for health coverage through a job, Medicare, Medicaid,
-                or CHIP
-              </Checkbox>
-            </Stack>
-          </CheckboxGroup>
-        </ModalBody>
-        <ModalFooter>
-          {personIndex > 0 && (
-            <Button colorScheme="red" onClick={onDelete}>
-              Delete
+            {isSelf(personIndex, people) && (
+              <FormControl isRequired>
+                <InputGroup size="sm">
+                  <FormLabel>Relationship</FormLabel>
+                  <Select
+                    placeholder="Select option"
+                    defaultValue={relationship}
+                    {...register("relationship")}
+                  >
+                    {relationshipOptions.map((r: Relationship, i) => {
+                      // we don't want Self appearing in the dropdown, it will be the assumed default
+                      if (r === "Self") return;
+                      return (
+                        <option key={i} value={r}>
+                          {r}
+                        </option>
+                      );
+                    })}
+                  </Select>
+                </InputGroup>
+              </FormControl>
+            )}
+            <Text>Select any that apply:</Text>
+            <FormControl>
+              <Controller
+                name="options"
+                control={control}
+                render={({ field: { ref, ...rest } }) => (
+                  <CheckboxGroup {...rest}>
+                    <Stack direction="column">
+                      <Checkbox value="is_parent">
+                        Legal parent or guardian of a child under 19
+                      </Checkbox>
+                      <Checkbox value="is_pregnant">Pregnant</Checkbox>
+                      <Checkbox value="uses_tobacco">Tobacco User</Checkbox>
+                      <Checkbox value="has_mec">
+                        Eligible for health coverage through a job, Medicare,
+                        Medicaid, or CHIP
+                      </Checkbox>
+                    </Stack>
+                  </CheckboxGroup>
+                )}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            {personIndex > 0 && (
+              <Button colorScheme="red" onClick={onDelete}>
+                Delete
+              </Button>
+            )}
+            <Spacer />
+            <Button onClick={onClose}>Cancel</Button>
+            <Button colorScheme="blue" type="submit">
+              Save
             </Button>
-          )}
-          <Spacer />
-          <Button onClick={onClose}>Cancel</Button>
-          <Button colorScheme="blue" onClick={onSave}>
-            Save
-          </Button>
-        </ModalFooter>
+          </ModalFooter>
+        </form>
       </ModalContent>
     </Modal>
   );
