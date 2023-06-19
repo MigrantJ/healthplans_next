@@ -7,10 +7,7 @@ interface IProps {
   issuerName: string;
 }
 
-export default React.memo(function PremiumBar({
-  planName,
-  issuerName,
-}: IProps) {
+export default React.memo(function NameBar({ planName, issuerName }: IProps) {
   return (
     <Box
       gridColumn={{ base: "2/3", sm: "2/4", md: "auto" }}

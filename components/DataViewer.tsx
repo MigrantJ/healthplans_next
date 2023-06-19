@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Text, Box } from "@chakra-ui/react";
+import { Text, Box, useToast } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 
 import * as GetPlans from "@/types/GetPlans";
@@ -11,6 +11,7 @@ import Planlist from "./planlist/Planlist";
 import ComparePlans from "./compare_plans/ComparePlans";
 import ModeSelector from "./ModeSelector";
 import { Estimate } from "@/types/GetCreditEstimate";
+import constants from "../styles/constants";
 
 interface IProps {
   displayMode: DisplayMode;
@@ -30,6 +31,7 @@ export default function DataViewer({
   const [savedPlans, setSavedPlans] = useState<Map<string, IHealthPlan>>(
     new Map()
   );
+  const toast = useToast();
 
   const savePlan = useCallback(
     (plan: IHealthPlan) => {
@@ -37,11 +39,20 @@ export default function DataViewer({
       if (clonedMap.has(plan.id)) {
         clonedMap.delete(plan.id);
       } else {
+        if (savedPlans.size === constants.MAX_SAVED_PLANS) {
+          toast({
+            description: `You can compare a maximum of ${constants.MAX_SAVED_PLANS} plans`,
+            status: "error",
+            duration: constants.TOAST_DURATION,
+            isClosable: true,
+          });
+          return;
+        }
         clonedMap.set(plan.id, plan);
       }
       setSavedPlans(clonedMap);
     },
-    [savedPlans]
+    [savedPlans, toast]
   );
 
   // todo: improve error handling

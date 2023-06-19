@@ -23,6 +23,12 @@ export default memo(function IncomeWidget({
 }: IProps) {
   const [innerIncome, setInnerIncome] = useState(income.toString());
 
+  const focusInput = () => {
+    if (innerIncome === "0") {
+      setInnerIncome("");
+    }
+  };
+
   const submitInput = (t: string) => {
     t = t || "0";
     const toFloat = parseFloat(t);
@@ -54,6 +60,7 @@ export default memo(function IncomeWidget({
           inputMode="numeric"
           type="number"
           onChange={(e) => setInnerIncome(e.target.value)}
+          onFocus={(_) => focusInput()}
           onBlur={(_) => submitInput(innerIncome)}
         />
       </InputGroup>

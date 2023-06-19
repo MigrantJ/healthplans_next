@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as GCE from "@/types/GetCreditEstimate";
-
-const API_KEY = process.env.HEALTHCARE_API_KEY;
+import Requester from "@/lib/requester";
 
 export async function POST(req: NextRequest) {
   const reqBody = (await req.json()) as GCE.InitRequest;
@@ -14,15 +13,7 @@ export async function POST(req: NextRequest) {
     },
   };
 
-  const res = await fetch(
-    `https://marketplace.api.healthcare.gov/api/v1/households/eligibility/estimates?apikey=${API_KEY}`,
-    {
-      method: "post",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-
+  const res = await Requester.getEligibility(body);
   const resJson = (await res.json()) as GCE.Response;
   return NextResponse.json(resJson);
 }

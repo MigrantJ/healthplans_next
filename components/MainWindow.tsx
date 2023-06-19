@@ -26,6 +26,7 @@ export default function MainWindow() {
     queryFn: getCreditEstimate,
     enabled: !!location && income > 0,
     keepPreviousData: true,
+    retry: 10,
   });
 
   const results = useInfiniteQuery<GetPlans.Response, Error>({
@@ -34,6 +35,7 @@ export default function MainWindow() {
     enabled: !!location,
     keepPreviousData: true,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
+    retry: 10,
   });
 
   const creditEstimates = creditResults.data?.estimates;

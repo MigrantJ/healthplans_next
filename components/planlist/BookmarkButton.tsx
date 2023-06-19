@@ -23,7 +23,10 @@ export default memo(function BookmarkButton({ plan, saved, savePlan }: IProps) {
           backgroundColor: "blue.100",
         },
       }}
-      onClick={(_) => savePlan(plan)}
+      onClick={(e) => {
+        e.stopPropagation();
+        savePlan(plan);
+      }}
     >
       <Icon
         as={saved ? RiBookmarkFill : RiBookmarkLine}

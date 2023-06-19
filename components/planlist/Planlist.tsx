@@ -56,13 +56,13 @@ export default function Planlist({
   const taxCredit = creditEstimates?.[0].aptc || 0;
   const filteredPlans: IHealthPlan[] = filterPlans(plans, filter, taxCredit);
 
-  // const openPlanModal = useCallback(
-  //   (plan: IHealthPlan) => {
-  //     setModalPlan(plan);
-  //     onOpen();
-  //   },
-  //   [onOpen]
-  // );
+  const openPlanModal = useCallback(
+    (plan: IHealthPlan) => {
+      setModalPlan(plan);
+      onOpen();
+    },
+    [onOpen]
+  );
 
   const planPages = results.data?.pages;
   if (!planPages) {
@@ -116,6 +116,7 @@ export default function Planlist({
             className="group"
             display="contents"
             cursor="pointer"
+            onClick={() => openPlanModal(plan)}
           >
             <BookmarkButton
               saved={savedPlans.has(plan.id)}
