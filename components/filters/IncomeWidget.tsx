@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, memo, useRef, KeyboardEvent } from "react";
 import {
   Input,
   Icon,
@@ -22,10 +22,18 @@ export default memo(function IncomeWidget({
   creditEstimates,
 }: IProps) {
   const [innerIncome, setInnerIncome] = useState(income.toString());
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const focusInput = () => {
     if (innerIncome === "0") {
       setInnerIncome("");
+    }
+  };
+
+  const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.code === "Enter") {
+      inputRef.current.blur();
+      submitInput(innerIncome);
     }
   };
 
@@ -53,6 +61,7 @@ export default memo(function IncomeWidget({
           />
         </InputLeftElement>
         <Input
+          ref={inputRef}
           variant="sidebar"
           width="130px"
           paddingLeft="30px"
@@ -62,6 +71,7 @@ export default memo(function IncomeWidget({
           onChange={(e) => setInnerIncome(e.target.value)}
           onFocus={(_) => focusInput()}
           onBlur={(_) => submitInput(innerIncome)}
+          onKeyUp={handleKeyUp}
         />
       </InputGroup>
       <Text as="span" color="green" fontWeight="bold" paddingLeft="10px">
