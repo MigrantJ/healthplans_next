@@ -1,3 +1,4 @@
+import { useState } from "react";
 import IPerson, { Relationship, relationshipOptions } from "@/types/Person";
 import {
   Modal,
@@ -24,14 +25,6 @@ import {
 } from "@chakra-ui/react";
 import { useForm, Controller } from "react-hook-form";
 
-interface IProps {
-  isOpen: boolean;
-  onClose: () => void;
-  people: IPerson[];
-  setPeople: (h: IPerson[]) => void;
-  personIndex: number;
-}
-
 const checkbox_options = [
   "has_mec",
   "is_parent",
@@ -39,9 +32,23 @@ const checkbox_options = [
   "uses_tobacco",
 ];
 
+interface FormData {
+  age: string;
+  gender: "Male" | "Female";
+  relationship: Relationship;
+}
+
 const isSelf = (personIndex: number, people: IPerson[]) => {
   return personIndex > 0 || (personIndex === -1 && people.length > 0);
 };
+
+interface IProps {
+  isOpen: boolean;
+  onClose: () => void;
+  people: IPerson[];
+  setPeople: (h: IPerson[]) => void;
+  personIndex: number;
+}
 
 export default function EditPersonModal({
   isOpen,
@@ -54,23 +61,34 @@ export default function EditPersonModal({
     register,
     handleSubmit,
     control,
-    watch,
     formState: { errors },
   } = useForm();
+  const [options, setOptions] = useState(
+    checkbox_options.filter(
+      (o) => !!people[personIndex] && people[personIndex][o]
+    )
+  );
 
   const person = people[personIndex];
   const age = person?.age || "";
   const sex = person?.gender || "";
   const relationship = person?.relationship || "";
-  const options = checkbox_options.filter((o) => !!person && person[o]);
 
-  const onSubmit = (data: IPerson) => {
-    data.relationship = data.relationship || "Self";
+  const onSubmit = (data: FormData) => {
+    const newPerson: IPerson = {
+      age: parseInt(data.age),
+      gender: data.gender,
+      relationship: data.relationship || "Self",
+      has_mec: options.includes("has_mec"),
+      is_parent: options.includes("is_parent"),
+      is_pregnant: options.includes("is_pregnant"),
+      uses_tobacco: options.includes("uses_tobacco"),
+    };
     const newPeople = people.slice();
     if (personIndex >= 0) {
-      newPeople[personIndex] = data;
+      newPeople[personIndex] = newPerson;
     } else {
-      newPeople.push(data);
+      newPeople.push(newPerson);
     }
     setPeople(newPeople);
     onClose();
@@ -97,53 +115,64 @@ export default function EditPersonModal({
         <ModalCloseButton />
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalBody>
-            <FormControl
-              id="Age"
-              isRequired
-              isInvalid={person?.age < 1 || person?.age > 125}
-            >
+            <FormControl id="Age" isInvalid={!!errors.age}>
               <InputGroup size="sm">
                 <FormLabel>Age</FormLabel>
                 <Input
                   type="number"
                   inputMode="numeric"
                   defaultValue={age}
-                  {...register("age", { required: true, min: 1, max: 125 })}
+                  {...register("age", {
+                    required: "This field is required.",
+                    min: { value: 1, message: "Must be between 1 and 125." },
+                    max: { value: 125, message: "Must be between 1 and 125." },
+                    pattern: {
+                      value: /^[0-9]{1,3}$/,
+                      message: "Please round to the nearest year.",
+                    },
+                  })}
                   marginLeft="5px"
                 />
               </InputGroup>
-              <FormErrorMessage>Age is required.</FormErrorMessage>
+              <FormErrorMessage>
+                {errors.age?.message.toString()}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl isRequired>
+            <FormControl isInvalid={!!errors.gender}>
               <InputGroup size="sm">
                 <FormLabel htmlFor="Sex">Sex</FormLabel>
                 <Controller
                   name="gender"
                   control={control}
+                  defaultValue={sex}
                   render={({ field }) => (
-                    <RadioGroup
-                      {...field}
-                      defaultValue={sex}
-                      paddingLeft="10px"
-                    >
+                    <RadioGroup {...field} paddingLeft="10px">
                       <Radio value="Male">Male</Radio>
                       <Radio value="Female">Female</Radio>
                     </RadioGroup>
                   )}
                   rules={{
-                    required: { value: true, message: "This is required." },
+                    required: {
+                      value: true,
+                      message: "This field is required.",
+                    },
                   }}
                 />
               </InputGroup>
+              <FormErrorMessage>
+                {errors.gender?.message.toString()}
+              </FormErrorMessage>
             </FormControl>
             {isSelf(personIndex, people) && (
-              <FormControl isRequired>
+              <FormControl isInvalid={!!errors.relationship}>
                 <InputGroup size="sm">
                   <FormLabel>Relationship</FormLabel>
                   <Select
                     placeholder="Select option"
                     defaultValue={relationship}
-                    {...register("relationship")}
+                    {...register("relationship", {
+                      required: "This field is required.",
+                    })}
                   >
                     {relationshipOptions.map((r: Relationship, i) => {
                       // we don't want Self appearing in the dropdown, it will be the assumed default
@@ -156,6 +185,9 @@ export default function EditPersonModal({
                     })}
                   </Select>
                 </InputGroup>
+                <FormErrorMessage>
+                  {errors.relationship?.message.toString()}
+                </FormErrorMessage>
               </FormControl>
             )}
             <Text>Select any that apply:</Text>
@@ -163,8 +195,12 @@ export default function EditPersonModal({
               <Controller
                 name="options"
                 control={control}
-                render={({ field: { ref, ...rest } }) => (
-                  <CheckboxGroup {...rest}>
+                render={({ field }) => (
+                  <CheckboxGroup
+                    {...field}
+                    value={options}
+                    onChange={(e) => setOptions(e as string[])}
+                  >
                     <Stack direction="column">
                       <Checkbox value="is_parent">
                         Legal parent or guardian of a child under 19
