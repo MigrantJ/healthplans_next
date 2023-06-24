@@ -12,7 +12,6 @@ import filterPlans from "@/lib/filterPlans";
 import PlanlistHeader from "./PlanlistHeader";
 import PlanSkeleton from "./PlanSkeleton";
 import PlanModal from "./PlanModal";
-import { Estimate } from "@/types/GetCreditEstimate";
 import PlanListContainer from "./PlanListContainer";
 import constants from "../../styles/constants";
 import PremiumBar from "./PremiumBar";
@@ -20,6 +19,7 @@ import DeductibleBar from "./DeductibleBar";
 import NameBar from "./NameBar";
 import { DisplayMode } from "@/types/DisplayMode";
 import BookmarkButton from "./BookmarkButton";
+import { useCreditEstimate } from "@/lib/store";
 
 interface IProps {
   displayMode: DisplayMode;
@@ -27,7 +27,6 @@ interface IProps {
   filter: IFilter;
   savePlan: (plan: IHealthPlan) => void;
   savedPlans: Map<string, IHealthPlan>;
-  creditEstimate: Estimate;
 }
 
 export default function Planlist({
@@ -36,7 +35,6 @@ export default function Planlist({
   filter,
   savePlan,
   savedPlans,
-  creditEstimate,
 }: IProps) {
   const [modalPlan, setModalPlan] = useState<IHealthPlan>(null);
 
@@ -49,6 +47,7 @@ export default function Planlist({
       void fetchNextPage();
     }
   }, [inView, fetchNextPage]);
+  const creditEstimate = useCreditEstimate().data;
 
   const plans: IHealthPlan[] = results.data.pages.reduce((acc, page) => {
     return acc.concat(page.plans);

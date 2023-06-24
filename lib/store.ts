@@ -1,10 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { create } from "zustand";
 
 import ILocation from "@/types/Location";
 import IPerson from "@/types/Person";
 import * as GCE from "@/types/GetCreditEstimate";
+import * as GetPlans from "@/types/GetPlans";
 import { getCreditEstimate } from "./useCreditEstimate";
+import { getPlans } from "./getPlans";
 
 interface State {
   location: ILocation;
@@ -59,6 +61,43 @@ export const useCreditEstimate = () => {
       ],
     },
   });
+};
+
+export const usePlans = () => {
+  const location = useLocation();
+  const income = useIncome();
+  const people = usePeople();
+  return useInfiniteQuery<GetPlans.Response, Error>({
+    queryKey: ["plans", { location, income, people }],
+    queryFn: getPlans,
+    enabled: !!location,
+    keepPreviousData: true,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    retry: 10,
+  });
+};
+// const planFacetGroupSelect = (data: InfiniteData<GetPlans.Response>) => {
+//   return data.pages[0].facet_groups;
+// };
+export const usePlanFacetGroups = () => {
+  const result = usePlans();
+  return result.data?.pages[0].facet_groups || [];
+};
+
+export const usePlanRanges = () => {
+  const result = usePlans();
+  return (
+    result.data?.pages[0].ranges || {
+      premiums: {
+        min: 0,
+        max: 1000,
+      },
+      deductibles: {
+        min: 0,
+        max: 1000,
+      },
+    }
+  );
 };
 
 // CUSTOM HOOKS

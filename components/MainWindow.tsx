@@ -1,39 +1,21 @@
 import { useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { Grid, Spinner } from "@chakra-ui/react";
 
-import { getPlans } from "@/lib/getPlans";
-import { useIncome } from "@/lib/store";
-import ILocation from "@/types/Location";
 import IPerson from "@/types/Person";
 import IFilter from "@/types/Filter";
-import * as GetPlans from "@/types/GetPlans";
 import { DisplayMode } from "@/types/DisplayMode";
 import DataViewer from "./DataViewer";
-import { useCreditEstimate } from "@/lib/useCreditEstimate";
+import { useCreditEstimate, usePlans } from "@/lib/store";
 import MedicaidModal from "./MedicaidModal";
 import Sidebar from "./filters/Sidebar";
 
 export default function MainWindow() {
-  const [location, setLocation] = useState<ILocation>();
-  const income = useIncome();
   const [people, setPeople] = useState<IPerson[]>([]);
   const [filter, setFilter] = useState<IFilter>();
   const [displayMode, setDisplayMode] = useState<DisplayMode>("Planlist");
 
-  const creditEstimate = useCreditEstimate(location, income, people).data;
-
-  const results = useInfiniteQuery<GetPlans.Response, Error>({
-    queryKey: ["plans", { location, income, people }],
-    queryFn: getPlans,
-    enabled: !!location,
-    keepPreviousData: true,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-    retry: 10,
-  });
-
-  const facetGroups = results.data?.pages?.[0].facet_groups;
-  const ranges = results.data?.pages?.[0].ranges;
+  const creditEstimate = useCreditEstimate().data;
+  const results = usePlans((data) => data);
 
   return (
     <Grid
@@ -43,15 +25,10 @@ export default function MainWindow() {
       <Sidebar
         {...{
           displayMode,
-          location,
-          setLocation,
           people,
           setPeople,
           filter,
           setFilter,
-          facetGroups,
-          ranges,
-          creditEstimate,
         }}
       />
 
@@ -74,7 +51,6 @@ export default function MainWindow() {
             setDisplayMode,
             results,
             filter,
-            creditEstimate,
           }}
         />
       )}

@@ -4,31 +4,26 @@ import IFilter, {
   DiseaseMgmtPrograms,
   PlanType,
 } from "@/types/Filter";
-import { FacetGroup, Facet } from "@/types/MarketplaceSearch";
+import { Facet } from "@/types/MarketplaceSearch";
 import DualSlider from "./DualSlider";
 import MultiSelect from "./MultiSelect";
-import { Estimate } from "@/types/GetCreditEstimate";
 import FilterGroup from "./FilterGroup";
 import currencyFormatter from "@/lib/currencyFormatter";
+import {
+  useCreditEstimate,
+  usePlanFacetGroups,
+  usePlanRanges,
+} from "@/lib/store";
 
 interface IProps {
   filter: IFilter;
   setFilter: (f: IFilter) => void;
-  facetGroups: FacetGroup[];
-  ranges: {
-    premiums: { min: number; max: number };
-    deductibles: { min: number; max: number };
-  };
-  creditEstimate: Estimate;
 }
 
-export default memo(function FilterWidget({
-  filter,
-  setFilter,
-  facetGroups,
-  ranges,
-  creditEstimate,
-}: IProps) {
+export default memo(function FilterWidget({ filter, setFilter }: IProps) {
+  const facetGroups = usePlanFacetGroups();
+  const ranges = usePlanRanges();
+  const creditEstimate = useCreditEstimate().data;
   const facetGroupMap: { [k: string]: Facet[] } =
     facetGroups?.reduce((acc, curr) => {
       acc[curr.name] = curr.facets;

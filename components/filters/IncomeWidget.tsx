@@ -17,8 +17,6 @@ export default memo(function IncomeWidget() {
   const inputRef = useRef<HTMLInputElement>(null);
   const creditEstimate = useCreditEstimate().data;
 
-  console.log(creditEstimate);
-
   const focusInput = () => {
     if (innerIncome === "0") {
       setInnerIncome("");

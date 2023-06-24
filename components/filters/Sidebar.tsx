@@ -14,12 +14,10 @@ import LocationWidget from "./LocationWidget";
 import IncomeWidget from "./IncomeWidget";
 import PeopleWidget from "./PeopleWidget";
 import FilterWidget from "./FilterWidget";
-import ILocation from "@/types/Location";
 import IPerson from "@/types/Person";
 import IFilter from "@/types/Filter";
-import { FacetGroup } from "@/types/MarketplaceSearch";
-import { Estimate } from "@/types/GetCreditEstimate";
 import { DisplayMode } from "@/types/DisplayMode";
+import { useLocation } from "@/lib/store";
 
 const SidebarContainer = chakra(Flex, {
   baseStyle: {
@@ -44,32 +42,21 @@ const SidebarContainer = chakra(Flex, {
 
 interface IProps {
   displayMode: DisplayMode;
-  location: ILocation;
-  setLocation: (l: ILocation) => void;
   people: IPerson[];
   setPeople: (p: IPerson[]) => void;
   filter: IFilter;
   setFilter: (p: IFilter) => void;
-  facetGroups: FacetGroup[];
-  ranges: {
-    premiums: { min: number; max: number };
-    deductibles: { min: number; max: number };
-  };
-  creditEstimate: Estimate;
 }
 
 export default function Sidebar({
   displayMode,
-  location,
-  setLocation,
   people,
   setPeople,
   filter,
   setFilter,
-  facetGroups,
-  ranges,
-  creditEstimate,
 }: IProps) {
+  const location = useLocation();
+
   return (
     <SidebarContainer
       display={{
@@ -90,13 +77,13 @@ export default function Sidebar({
               headingText="Location"
               infoText="This is used to determine which health plans are available for you to purchase."
             >
-              <LocationWidget {...{ location, setLocation }} />
+              <LocationWidget />
             </FilterGroup>
             <FilterGroup
               headingText="Income"
               infoText="For more accurate premium estimates, enter the total expected income of your entire household for the year you want coverage."
             >
-              <IncomeWidget {...{ creditEstimate }} />
+              <IncomeWidget />
             </FilterGroup>
             <FilterGroup
               isFormLabel={false}
@@ -110,7 +97,7 @@ export default function Sidebar({
 
         <Divider />
 
-        {facetGroups && ranges && (
+        {location && (
           <AccordionItem border={0}>
             <AccordionButton>
               <Heading size="md" flex={1} textAlign="left">
@@ -123,9 +110,6 @@ export default function Sidebar({
                 {...{
                   filter,
                   setFilter,
-                  facetGroups,
-                  ranges,
-                  creditEstimate,
                 }}
               />
               <Flex height="160px" />
