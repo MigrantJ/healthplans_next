@@ -19,7 +19,7 @@ interface IProps {
     premiums: { min: number; max: number };
     deductibles: { min: number; max: number };
   };
-  creditEstimates: Estimate[];
+  creditEstimate: Estimate;
 }
 
 export default memo(function FilterWidget({
@@ -27,7 +27,7 @@ export default memo(function FilterWidget({
   setFilter,
   facetGroups,
   ranges,
-  creditEstimates,
+  creditEstimate,
 }: IProps) {
   const facetGroupMap: { [k: string]: Facet[] } =
     facetGroups?.reduce((acc, curr) => {
@@ -35,7 +35,7 @@ export default memo(function FilterWidget({
       return acc;
     }, {}) || {};
 
-  const taxCredit = creditEstimates?.[0].aptc || 0;
+  const taxCredit = creditEstimate.aptc || 0;
   const premiumRangeExtents = {
     min: Math.max(ranges.premiums.min - taxCredit, 0),
     max: Math.max(ranges.premiums.max - taxCredit, 1),

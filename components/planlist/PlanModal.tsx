@@ -15,14 +15,14 @@ interface IProps {
   isOpen: boolean;
   onClose: () => void;
   modalPlan: IHealthPlan;
-  creditEstimates: Estimate[];
+  creditEstimate: Estimate;
 }
 
 export default function PlanModal({
   isOpen,
   onClose,
   modalPlan,
-  creditEstimates,
+  creditEstimate,
 }: IProps) {
   if (!modalPlan) return;
 
@@ -35,7 +35,7 @@ export default function PlanModal({
           <ComparePlans
             plans={[modalPlan]}
             savePlan={null}
-            {...{ creditEstimates }}
+            {...{ creditEstimate }}
           />
         </ModalBody>
         <ModalFooter></ModalFooter>

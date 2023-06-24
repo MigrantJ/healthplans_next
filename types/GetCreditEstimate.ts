@@ -25,7 +25,7 @@ interface IHousehold {
 
 export interface Estimate {
   aptc: number;
-  csr: CSR;
+  csr?: CSR;
   hardship_exemption: boolean;
   is_medicaid_chip: boolean;
   in_coverage_gap: boolean;

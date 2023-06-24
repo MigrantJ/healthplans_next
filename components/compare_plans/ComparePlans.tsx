@@ -26,13 +26,13 @@ export interface Expands {
 interface IProps {
   plans: IHealthPlan[];
   savePlan: (plan: IHealthPlan) => void;
-  creditEstimates: Estimate[];
+  creditEstimate: Estimate;
 }
 
 export default function ComparePlans({
   plans,
   savePlan,
-  creditEstimates,
+  creditEstimate,
 }: IProps) {
   const [expands, setExpands] = useState<Expands>({
     costs: true,
@@ -42,9 +42,9 @@ export default function ComparePlans({
     documents: true,
     mgmt_programs: true,
   });
+  const taxCredit = creditEstimate.aptc;
 
   const multiplePlans = plans.length > 1;
-  const taxCredit = creditEstimates?.[0].aptc || 0;
 
   let rowTemplate = "40px ";
   if (expands.costs) {

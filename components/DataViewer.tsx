@@ -18,7 +18,7 @@ interface IProps {
   setDisplayMode: (d: DisplayMode) => void;
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
   filter: IFilter;
-  creditEstimates: Estimate[];
+  creditEstimate: Estimate;
 }
 
 export default function DataViewer({
@@ -26,7 +26,7 @@ export default function DataViewer({
   setDisplayMode,
   results,
   filter,
-  creditEstimates,
+  creditEstimate,
 }: IProps) {
   const [savedPlans, setSavedPlans] = useState<Map<string, IHealthPlan>>(
     new Map()
@@ -86,13 +86,13 @@ export default function DataViewer({
           filter,
           savePlan,
           savedPlans,
-          creditEstimates,
+          creditEstimate,
         }}
       />
       {displayMode === "ComparePlans" && (
         <ComparePlans
           plans={Array.from(savedPlans.values())}
-          {...{ savePlan, creditEstimates }}
+          {...{ savePlan, creditEstimate }}
         />
       )}
 

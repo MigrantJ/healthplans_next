@@ -57,7 +57,7 @@ interface IProps {
     premiums: { min: number; max: number };
     deductibles: { min: number; max: number };
   };
-  creditEstimates: Estimate[];
+  creditEstimate: Estimate;
 }
 
 export default function Sidebar({
@@ -72,7 +72,7 @@ export default function Sidebar({
   setFilter,
   facetGroups,
   ranges,
-  creditEstimates,
+  creditEstimate,
 }: IProps) {
   return (
     <SidebarContainer
@@ -100,7 +100,7 @@ export default function Sidebar({
               headingText="Income"
               infoText="For more accurate premium estimates, enter the total expected income of your entire household for the year you want coverage."
             >
-              <IncomeWidget {...{ income, setIncome, creditEstimates }} />
+              <IncomeWidget {...{ income, setIncome, creditEstimate }} />
             </FilterGroup>
             <FilterGroup
               isFormLabel={false}
@@ -129,7 +129,7 @@ export default function Sidebar({
                   setFilter,
                   facetGroups,
                   ranges,
-                  creditEstimates,
+                  creditEstimate,
                 }}
               />
               <Flex height="160px" />

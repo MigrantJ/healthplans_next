@@ -27,7 +27,7 @@ interface IProps {
   filter: IFilter;
   savePlan: (plan: IHealthPlan) => void;
   savedPlans: Map<string, IHealthPlan>;
-  creditEstimates: Estimate[];
+  creditEstimate: Estimate;
 }
 
 export default function Planlist({
@@ -36,7 +36,7 @@ export default function Planlist({
   filter,
   savePlan,
   savedPlans,
-  creditEstimates,
+  creditEstimate,
 }: IProps) {
   const [modalPlan, setModalPlan] = useState<IHealthPlan>(null);
 
@@ -53,8 +53,11 @@ export default function Planlist({
   const plans: IHealthPlan[] = results.data.pages.reduce((acc, page) => {
     return acc.concat(page.plans);
   }, [] as IHealthPlan[]);
-  const taxCredit = creditEstimates?.[0].aptc || 0;
-  const filteredPlans: IHealthPlan[] = filterPlans(plans, filter, taxCredit);
+  const filteredPlans: IHealthPlan[] = filterPlans(
+    plans,
+    filter,
+    creditEstimate.aptc
+  );
 
   const openPlanModal = useCallback(
     (plan: IHealthPlan) => {
@@ -70,8 +73,14 @@ export default function Planlist({
   }
 
   const premiumExtent: [number, number] = [
-    Math.max(results.data.pages[0].ranges.premiums.min - taxCredit, 0),
-    Math.max(results.data.pages[0].ranges.premiums.max - taxCredit, 1),
+    Math.max(
+      results.data.pages[0].ranges.premiums.min - creditEstimate.aptc,
+      0
+    ),
+    Math.max(
+      results.data.pages[0].ranges.premiums.max - creditEstimate.aptc,
+      1
+    ),
   ];
   const xScalePremium = scaleLinear()
     .domain([0, premiumExtent[1]])
@@ -94,7 +103,7 @@ export default function Planlist({
 
   return (
     <PlanListContainer display={displayMode === "Planlist" ? "grid" : "none"}>
-      <PlanModal {...{ isOpen, onClose, modalPlan, creditEstimates }} />
+      <PlanModal {...{ isOpen, onClose, modalPlan, creditEstimate }} />
       <PlanlistHeader
         {...{
           premiumExtent,
@@ -104,7 +113,7 @@ export default function Planlist({
         }}
       />
       {filteredPlans.map((plan) => {
-        const discountPremium = Math.max(plan.premium - taxCredit, 1);
+        const discountPremium = Math.max(plan.premium - creditEstimate.aptc, 1);
         const premiumWidth = xScalePremium(discountPremium);
         const deductible = plan.deductibles[0].amount;
         const deductibleWidth = xScaleDeductible(deductible);

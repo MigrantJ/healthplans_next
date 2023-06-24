@@ -13,13 +13,13 @@ import { Estimate } from "@/types/GetCreditEstimate";
 interface IProps {
   income: number;
   setIncome: (i: number) => void;
-  creditEstimates: Estimate[];
+  creditEstimate: Estimate;
 }
 
 export default memo(function IncomeWidget({
   income,
   setIncome,
-  creditEstimates,
+  creditEstimate,
 }: IProps) {
   const [innerIncome, setInnerIncome] = useState(income.toString());
   const inputRef = useRef<HTMLInputElement>(null);
@@ -45,9 +45,7 @@ export default memo(function IncomeWidget({
   };
 
   const taxCredit =
-    creditEstimates?.length && creditEstimates[0].aptc > 0
-      ? `$${creditEstimates[0].aptc} tax credit`
-      : "";
+    creditEstimate.aptc > 0 ? `$${creditEstimate.aptc} tax credit` : "";
 
   return (
     <Flex flexDirection="column">

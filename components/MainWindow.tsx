@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Grid, Spinner } from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
@@ -7,10 +7,9 @@ import ILocation from "@/types/Location";
 import IPerson from "@/types/Person";
 import IFilter from "@/types/Filter";
 import * as GetPlans from "@/types/GetPlans";
-import * as GCE from "@/types/GetCreditEstimate";
 import { DisplayMode } from "@/types/DisplayMode";
 import DataViewer from "./DataViewer";
-import { getCreditEstimate } from "@/lib/getCreditEstimate";
+import { useCreditEstimate } from "@/lib/useCreditEstimate";
 import MedicaidModal from "./MedicaidModal";
 import Sidebar from "./filters/Sidebar";
 
@@ -21,13 +20,13 @@ export default function MainWindow() {
   const [filter, setFilter] = useState<IFilter>();
   const [displayMode, setDisplayMode] = useState<DisplayMode>("Planlist");
 
-  const creditResults = useQuery<GCE.Response, Error>({
-    queryKey: ["creditEstimate", { location, income, people }],
-    queryFn: getCreditEstimate,
-    enabled: !!location && income > 0,
-    keepPreviousData: true,
-    retry: 10,
-  });
+  const creditResults = useCreditEstimate(location, income, people);
+  const creditEstimate = creditResults.data || {
+    aptc: 0,
+    hardship_exemption: false,
+    is_medicaid_chip: false,
+    in_coverage_gap: false,
+  };
 
   const results = useInfiniteQuery<GetPlans.Response, Error>({
     queryKey: ["plans", { location, income, people }],
@@ -37,8 +36,6 @@ export default function MainWindow() {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     retry: 10,
   });
-
-  const creditEstimates = creditResults.data?.estimates;
 
   const facetGroups = results.data?.pages?.[0].facet_groups;
   const ranges = results.data?.pages?.[0].ranges;
@@ -61,11 +58,11 @@ export default function MainWindow() {
           setFilter,
           facetGroups,
           ranges,
-          creditEstimates,
+          creditEstimate,
         }}
       />
 
-      {creditEstimates?.some((e) => e.is_medicaid_chip) && <MedicaidModal />}
+      {creditEstimate.is_medicaid_chip && <MedicaidModal />}
 
       {results.isInitialLoading ? (
         <Spinner
@@ -84,7 +81,7 @@ export default function MainWindow() {
             setDisplayMode,
             results,
             filter,
-            creditEstimates,
+            creditEstimate,
           }}
         />
       )}
