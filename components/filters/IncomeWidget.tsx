@@ -8,21 +8,16 @@ import {
   InputLeftElement,
 } from "@chakra-ui/react";
 import { BsCurrencyDollar } from "react-icons/bs";
-import { Estimate } from "@/types/GetCreditEstimate";
+import { useIncome, useActions, useCreditEstimate } from "@/lib/store";
 
-interface IProps {
-  income: number;
-  setIncome: (i: number) => void;
-  creditEstimate: Estimate;
-}
-
-export default memo(function IncomeWidget({
-  income,
-  setIncome,
-  creditEstimate,
-}: IProps) {
+export default memo(function IncomeWidget() {
+  const income = useIncome();
+  const { setIncome } = useActions();
   const [innerIncome, setInnerIncome] = useState(income.toString());
   const inputRef = useRef<HTMLInputElement>(null);
+  const creditEstimate = useCreditEstimate().data;
+
+  console.log(creditEstimate);
 
   const focusInput = () => {
     if (innerIncome === "0") {

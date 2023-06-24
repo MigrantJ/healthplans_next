@@ -3,6 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { Grid, Spinner } from "@chakra-ui/react";
 
 import { getPlans } from "@/lib/getPlans";
+import { useIncome } from "@/lib/store";
 import ILocation from "@/types/Location";
 import IPerson from "@/types/Person";
 import IFilter from "@/types/Filter";
@@ -15,18 +16,12 @@ import Sidebar from "./filters/Sidebar";
 
 export default function MainWindow() {
   const [location, setLocation] = useState<ILocation>();
-  const [income, setIncome] = useState(0);
+  const income = useIncome();
   const [people, setPeople] = useState<IPerson[]>([]);
   const [filter, setFilter] = useState<IFilter>();
   const [displayMode, setDisplayMode] = useState<DisplayMode>("Planlist");
 
-  const creditResults = useCreditEstimate(location, income, people);
-  const creditEstimate = creditResults.data || {
-    aptc: 0,
-    hardship_exemption: false,
-    is_medicaid_chip: false,
-    in_coverage_gap: false,
-  };
+  const creditEstimate = useCreditEstimate(location, income, people).data;
 
   const results = useInfiniteQuery<GetPlans.Response, Error>({
     queryKey: ["plans", { location, income, people }],
@@ -50,8 +45,6 @@ export default function MainWindow() {
           displayMode,
           location,
           setLocation,
-          income,
-          setIncome,
           people,
           setPeople,
           filter,

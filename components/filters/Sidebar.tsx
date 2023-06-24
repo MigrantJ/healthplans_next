@@ -46,8 +46,6 @@ interface IProps {
   displayMode: DisplayMode;
   location: ILocation;
   setLocation: (l: ILocation) => void;
-  income: number;
-  setIncome: (i: number) => void;
   people: IPerson[];
   setPeople: (p: IPerson[]) => void;
   filter: IFilter;
@@ -64,8 +62,6 @@ export default function Sidebar({
   displayMode,
   location,
   setLocation,
-  income,
-  setIncome,
   people,
   setPeople,
   filter,
@@ -100,7 +96,7 @@ export default function Sidebar({
               headingText="Income"
               infoText="For more accurate premium estimates, enter the total expected income of your entire household for the year you want coverage."
             >
-              <IncomeWidget {...{ income, setIncome, creditEstimate }} />
+              <IncomeWidget {...{ creditEstimate }} />
             </FilterGroup>
             <FilterGroup
               isFormLabel={false}

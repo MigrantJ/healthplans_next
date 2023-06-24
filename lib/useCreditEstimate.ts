@@ -7,7 +7,7 @@ interface IProps {
   queryKey: ["query", GCE.InitRequest];
 }
 
-const getCreditEstimate: QueryFunction<
+export const getCreditEstimate: QueryFunction<
   GCE.Response,
   ["query", GCE.InitRequest]
 > = async ({ queryKey }: IProps) => {
@@ -38,4 +38,14 @@ export const useCreditEstimate = (
     enabled: !!location && income > 0,
     keepPreviousData: true,
     retry: 10,
+    placeholderData: {
+      estimates: [
+        {
+          aptc: 0,
+          hardship_exemption: false,
+          is_medicaid_chip: false,
+          in_coverage_gap: false,
+        },
+      ],
+    },
   });
