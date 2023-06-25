@@ -1,10 +1,7 @@
 import { Button } from "@chakra-ui/react";
 import { RiFilter3Line, RiListCheck, RiBookmarkFill } from "react-icons/ri";
-import {
-  useHouseholdActions,
-  useDisplayMode,
-  useNumSavedPlans,
-} from "@/lib/store";
+import { useDisplayMode, useHouseholdActions } from "@/lib/householdStore";
+import { useNumSavedPlans } from "@/lib/planStore";
 
 export default function ModeSelector() {
   const displayMode = useDisplayMode();

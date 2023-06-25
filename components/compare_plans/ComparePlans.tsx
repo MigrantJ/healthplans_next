@@ -11,7 +11,8 @@ import ComparePlanDetails from "./ComparePlanDetails";
 import CollapsibleHeaders from "./CollapsibleHeaders";
 import NameHeaders from "./NameHeaders";
 import ConditionalWrapper from "../ConditionalWrapper";
-import { useCreditEstimate, useSavedPlans } from "@/lib/store";
+import { useCreditEstimate } from "@/lib/creditEstimateStore";
+import { useSavedPlans } from "@/lib/planStore";
 
 export interface Expands {
   costs: boolean;

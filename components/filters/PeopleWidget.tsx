@@ -3,7 +3,7 @@ import { Button, Divider, Text, Flex } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 
 import EditPersonModal from "./EditPersonModal";
-import { useHouseholdActions, usePeople } from "@/lib/store";
+import { useHouseholdActions, usePeople } from "@/lib/householdStore";
 
 export default memo(function PeopleWidget() {
   const { isOpen, onOpen, onClose } = useDisclosure();

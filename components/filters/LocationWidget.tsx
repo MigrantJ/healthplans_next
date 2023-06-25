@@ -12,7 +12,7 @@ import {
 import { RiMapPinLine } from "react-icons/ri";
 
 import ILocation from "@/types/Location";
-import { useHouseholdActions, useLocation } from "@/lib/store";
+import { useHouseholdActions, useLocation } from "@/lib/householdStore";
 
 const getLocationByLatLong = async (
   lat: number,

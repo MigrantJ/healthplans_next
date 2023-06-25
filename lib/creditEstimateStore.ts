@@ -1,7 +1,6 @@
 import { useQuery, QueryFunction } from "@tanstack/react-query";
 import * as GCE from "@/types/GetCreditEstimate";
-import ILocation from "@/types/Location";
-import IPerson from "@/types/Person";
+import { useIncome, useLocation, usePeople } from "./householdStore";
 
 interface IProps {
   queryKey: ["query", GCE.InitRequest];
@@ -26,12 +25,11 @@ export const getCreditEstimate: QueryFunction<
 
 const querySelect = (data: GCE.Response) => data.estimates[0];
 
-export const useCreditEstimate = (
-  location: ILocation,
-  income: number,
-  people: IPerson[]
-) =>
-  useQuery({
+export const useCreditEstimate = () => {
+  const location = useLocation();
+  const income = useIncome();
+  const people = usePeople();
+  return useQuery({
     queryKey: ["creditEstimate", { location, income, people }],
     queryFn: getCreditEstimate,
     select: querySelect,
@@ -49,3 +47,4 @@ export const useCreditEstimate = (
       ],
     },
   });
+};

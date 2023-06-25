@@ -5,7 +5,7 @@ import { Carousel } from "chakra-ui-carousel";
 import EllipsisText from "../EllipsisText";
 import IHealthPlan from "@/types/HealthPlan";
 import ConditionalWrapper from "../ConditionalWrapper";
-import { useToggleSavedPlan } from "@/lib/store";
+import { useToggleSavedPlan } from "@/lib/planStore";
 
 interface IProps {
   plans: IHealthPlan[];

@@ -14,13 +14,13 @@ import PremiumBar from "./PremiumBar";
 import DeductibleBar from "./DeductibleBar";
 import NameBar from "./NameBar";
 import BookmarkButton from "./BookmarkButton";
+import { useDisplayMode } from "@/lib/householdStore";
 import {
-  useCreditEstimate,
-  useDisplayMode,
   useFilteredPlans,
   usePlanQueryStatus,
   usePlanRanges,
-} from "@/lib/store";
+} from "@/lib/planStore";
+import { useCreditEstimate } from "@/lib/creditEstimateStore";
 
 export default function Planlist() {
   const [modalPlan, setModalPlan] = useState<IHealthPlan>(null);

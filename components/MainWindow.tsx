@@ -1,16 +1,14 @@
 import { Grid } from "@chakra-ui/react";
 
-import {
-  useCreditEstimate,
-  usePlanQueryStatus,
-  useDisplayMode,
-} from "@/lib/store";
 import MedicaidModal from "./MedicaidModal";
 import Sidebar from "./filters/Sidebar";
 import PlanSpinner from "./planlist/PlanSpinner";
 import Planlist from "./planlist/Planlist";
 import ComparePlans from "./compare_plans/ComparePlans";
 import ModeSelector from "./ModeSelector";
+import { useDisplayMode } from "@/lib/householdStore";
+import { useCreditEstimate } from "@/lib/creditEstimateStore";
+import { usePlanQueryStatus } from "@/lib/planStore";
 
 export default function MainWindow() {
   const creditEstimate = useCreditEstimate().data;

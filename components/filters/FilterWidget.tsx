@@ -5,13 +5,9 @@ import DualSlider from "./DualSlider";
 import MultiSelect from "./MultiSelect";
 import FilterGroup from "./FilterGroup";
 import currencyFormatter from "@/lib/currencyFormatter";
-import {
-  useHouseholdActions,
-  useCreditEstimate,
-  useFilter,
-  usePlanFacetGroups,
-  usePlanRanges,
-} from "@/lib/store";
+import { useFilter, useHouseholdActions } from "@/lib/householdStore";
+import { useCreditEstimate } from "@/lib/creditEstimateStore";
+import { usePlanFacetGroups, usePlanRanges } from "@/lib/planStore";
 
 export default memo(function FilterWidget() {
   const creditEstimate = useCreditEstimate().data;

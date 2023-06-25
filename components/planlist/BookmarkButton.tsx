@@ -1,8 +1,8 @@
 import { memo } from "react";
 import { Box, Icon, useToast } from "@chakra-ui/react";
 import { RiBookmarkFill, RiBookmarkLine } from "react-icons/ri";
-import { useIsPlanSaved, useToggleSavedPlan } from "@/lib/store";
 import constants from "../../styles/constants";
+import { useIsPlanSaved, useToggleSavedPlan } from "@/lib/planStore";
 
 interface IProps {
   planId: string;

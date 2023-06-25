@@ -14,7 +14,7 @@ import LocationWidget from "./LocationWidget";
 import IncomeWidget from "./IncomeWidget";
 import PeopleWidget from "./PeopleWidget";
 import FilterWidget from "./FilterWidget";
-import { useLocation, useDisplayMode } from "@/lib/store";
+import { useDisplayMode, useLocation } from "@/lib/householdStore";
 
 const SidebarContainer = chakra(Flex, {
   baseStyle: {
