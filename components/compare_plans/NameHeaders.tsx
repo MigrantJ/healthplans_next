@@ -5,14 +5,14 @@ import { Carousel } from "chakra-ui-carousel";
 import EllipsisText from "../EllipsisText";
 import IHealthPlan from "@/types/HealthPlan";
 import ConditionalWrapper from "../ConditionalWrapper";
-import { useSavedPlansActions } from "@/lib/store";
+import { useToggleSavedPlan } from "@/lib/store";
 
 interface IProps {
   plans: IHealthPlan[];
 }
 
 export default function NameHeaders({ plans }: IProps) {
-  const { toggleSavedPlan } = useSavedPlansActions();
+  const toggleSavedPlan = useToggleSavedPlan();
   const multiplePlans = plans.length > 1;
 
   return (

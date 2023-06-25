@@ -98,7 +98,7 @@ export default function Planlist() {
             cursor="pointer"
             onClick={() => openPlanModal(plan)}
           >
-            <BookmarkButton {...{ plan }} />
+            <BookmarkButton planId={plan.id} />
 
             <NameBar planName={plan.name} issuerName={plan.issuer.name} />
 

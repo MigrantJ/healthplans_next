@@ -11,6 +11,7 @@ import IFilter from "@/types/Filter";
 import { DisplayMode } from "@/types/DisplayMode";
 import IHealthPlan from "@/types/HealthPlan";
 import filterPlans from "./filterPlans";
+import constants from "../styles/constants";
 
 interface HouseholdStore {
   location: ILocation;
@@ -144,21 +145,24 @@ export const usePlanQueryStatus = () => {
 interface SavedPlansStore {
   savedPlans: Set<string>;
   actions: {
-    toggleSavedPlan: (id: string) => void;
+    addSavedPlan: (id: string) => void;
+    removeSavedPlan: (id: string) => void;
   };
 }
 
 const useSavedPlansStore = create<SavedPlansStore>((set) => ({
   savedPlans: new Set(),
   actions: {
-    toggleSavedPlan: (id) =>
+    addSavedPlan: (id: string) =>
       set((state) => {
         const newSet = new Set(state.savedPlans);
-        if (newSet.has(id)) {
-          newSet.delete(id);
-        } else {
-          newSet.add(id);
-        }
+        newSet.add(id);
+        return { savedPlans: newSet };
+      }),
+    removeSavedPlan: (id: string) =>
+      set((state) => {
+        const newSet = new Set(state.savedPlans);
+        newSet.delete(id);
         return { savedPlans: newSet };
       }),
   },
@@ -166,10 +170,23 @@ const useSavedPlansStore = create<SavedPlansStore>((set) => ({
 
 export const useNumSavedPlans = () =>
   useSavedPlansStore((state) => state.savedPlans.size);
-export const useSavedPlansActions = () =>
-  useSavedPlansStore((state) => state.actions);
 export const useIsPlanSaved = (id: string) =>
   useSavedPlansStore((state) => state.savedPlans.has(id));
+export const useToggleSavedPlan = () => {
+  const savedPlanIds = useSavedPlansStore((state) => state.savedPlans);
+  const { addSavedPlan, removeSavedPlan } = useSavedPlansStore(
+    (state) => state.actions
+  );
+  return (id: string) => {
+    if (savedPlanIds.has(id)) {
+      removeSavedPlan(id);
+    } else {
+      if (savedPlanIds.size === constants.MAX_SAVED_PLANS) return false;
+      addSavedPlan(id);
+    }
+    return true;
+  };
+};
 export const useSavedPlans = () => {
   const savedPlanIds = useSavedPlansStore((state) => state.savedPlans);
   const results = usePlans();

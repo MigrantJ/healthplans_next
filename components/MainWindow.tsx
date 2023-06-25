@@ -1,14 +1,21 @@
 import { Grid } from "@chakra-ui/react";
 
-import DataViewer from "./DataViewer";
-import { useCreditEstimate, usePlanQueryStatus } from "@/lib/store";
+import {
+  useCreditEstimate,
+  usePlanQueryStatus,
+  useDisplayMode,
+} from "@/lib/store";
 import MedicaidModal from "./MedicaidModal";
 import Sidebar from "./filters/Sidebar";
 import PlanSpinner from "./planlist/PlanSpinner";
+import Planlist from "./planlist/Planlist";
+import ComparePlans from "./compare_plans/ComparePlans";
+import ModeSelector from "./ModeSelector";
 
 export default function MainWindow() {
   const creditEstimate = useCreditEstimate().data;
   const { isInitialLoading } = usePlanQueryStatus();
+  const displayMode = useDisplayMode();
 
   return (
     <Grid
@@ -19,7 +26,16 @@ export default function MainWindow() {
 
       {creditEstimate.is_medicaid_chip && <MedicaidModal />}
 
-      {isInitialLoading ? <PlanSpinner /> : <DataViewer />}
+      {isInitialLoading ? (
+        <PlanSpinner />
+      ) : (
+        <>
+          <Planlist />
+          {displayMode === "ComparePlans" && <ComparePlans />}
+
+          <ModeSelector />
+        </>
+      )}
     </Grid>
   );
 }
