@@ -9,6 +9,8 @@ import { getCreditEstimate } from "./useCreditEstimate";
 import { getPlans } from "./getPlans";
 import IFilter from "@/types/Filter";
 import { DisplayMode } from "@/types/DisplayMode";
+import IHealthPlan from "@/types/HealthPlan";
+import filterPlans from "./filterPlans";
 
 interface State {
   location: ILocation;
@@ -76,7 +78,7 @@ export const useCreditEstimate = () => {
   });
 };
 
-export const usePlans = () => {
+const usePlans = () => {
   const location = useLocation();
   const income = useIncome();
   const people = usePeople();
@@ -87,6 +89,26 @@ export const usePlans = () => {
     keepPreviousData: true,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     retry: 10,
+    placeholderData: {
+      pages: [
+        {
+          plans: [],
+          total: 0,
+          ranges: {
+            premiums: {
+              min: 0,
+              max: 1000,
+            },
+            deductibles: {
+              min: 0,
+              max: 1000,
+            },
+          },
+          facet_groups: [],
+        },
+      ],
+      pageParams: [],
+    },
   });
 };
 
@@ -100,13 +122,20 @@ export const usePlanRanges = () => {
   return result.data?.pages[0].ranges;
 };
 
-// CUSTOM HOOKS
-// useFilteredPlans
-// useCreditEstimate
+export const useFilteredPlans = () => {
+  const results = usePlans();
+  const filter = useFilter();
+  const creditEstimate = useCreditEstimate().data;
 
-// ACTIONS
-// addPerson
-// editPerson?
-// removePerson
-// setIncome
-// setZipCode?
+  const plans =
+    results.data?.pages.reduce((acc, page) => {
+      return acc.concat(page.plans);
+    }, [] as IHealthPlan[]) || [];
+  return filterPlans(plans, filter, creditEstimate.aptc);
+};
+
+export const usePlanQueryStatus = () => {
+  const { isInitialLoading, hasNextPage, fetchNextPage, isFetching } =
+    usePlans();
+  return { isInitialLoading, hasNextPage, fetchNextPage, isFetching };
+};

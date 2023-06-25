@@ -1,21 +1,17 @@
 import React, { useCallback, useState } from "react";
-import { Text, Box, useToast } from "@chakra-ui/react";
-import { UseInfiniteQueryResult } from "@tanstack/react-query";
+import { useToast } from "@chakra-ui/react";
+// import { UseInfiniteQueryResult } from "@tanstack/react-query";
 
-import * as GetPlans from "@/types/GetPlans";
+// import * as GetPlans from "@/types/GetPlans";
 import IHealthPlan from "@/types/HealthPlan";
-import InvalidStateMessage from "./InvalidStateMessage";
+// import InvalidStateMessage from "./InvalidStateMessage";
 import Planlist from "./planlist/Planlist";
 import ComparePlans from "./compare_plans/ComparePlans";
 import ModeSelector from "./ModeSelector";
 import constants from "../styles/constants";
 import { useDisplayMode } from "@/lib/store";
 
-interface IProps {
-  results: UseInfiniteQueryResult<GetPlans.Response, Error>;
-}
-
-export default function DataViewer({ results }: IProps) {
+export default function DataViewer() {
   const [savedPlans, setSavedPlans] = useState<Map<string, IHealthPlan>>(
     new Map()
   );
@@ -44,33 +40,12 @@ export default function DataViewer({ results }: IProps) {
     [savedPlans, toast]
   );
 
-  // todo: improve error handling
-  if (results.isError) {
-    return <Text>{results.error.message}</Text>;
-  }
-
-  if (!results.data) {
-    return <></>;
-  }
-
-  const altResponse = results.data?.pages?.[0].alt_data;
-  if (altResponse) {
-    if (altResponse.type === "InvalidState") {
-      return (
-        <Box gridColumn="1 / 5">
-          <InvalidStateMessage {...altResponse} />
-        </Box>
-      );
-    }
-  }
-
   const numSavedPlans = savedPlans.size;
 
   return (
     <>
       <Planlist
         {...{
-          results,
           savePlan,
           savedPlans,
         }}
@@ -82,7 +57,7 @@ export default function DataViewer({ results }: IProps) {
         />
       )}
 
-      {results.data && <ModeSelector {...{ numSavedPlans }} />}
+      <ModeSelector {...{ numSavedPlans }} />
     </>
   );
 }

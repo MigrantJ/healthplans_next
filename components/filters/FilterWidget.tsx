@@ -64,71 +64,79 @@ export default memo(function FilterWidget() {
           }
         />
       </FilterGroup>
-      <FilterGroup
-        headingText="Plan Types"
-        infoText="Most plans are either HMO or PPO. HMOs tend to have lower monthly premiums, while PPOs offer more flexibility in what providers you can use."
-      >
-        <MultiSelect<PlanType>
-          options={facetGroupMap["types"].map((e) => [
-            e.value as PlanType,
-            e.count,
-          ])}
-          onChangeEnd={(e) => {
-            setFilter({
-              ...filter,
-              types: e,
-            });
-          }}
-        />
-      </FilterGroup>
-      <FilterGroup
-        headingText="Metal Levels"
-        infoText="These categories are based on how you and your plan split the costs of your healthcare. Bronze plans have low premiums, but high deductibles. Gold / Platinum plans have the opposite. Silver plans are more in the middle, and may offer cost-sharing reductions depending on your income."
-      >
-        <MultiSelect<MetalLevel>
-          options={facetGroupMap["metalLevels"].map((e) => [
-            e.value as MetalLevel,
-            e.count,
-          ])}
-          onChangeEnd={(e) => {
-            setFilter({
-              ...filter,
-              metal_levels: e,
-            });
-          }}
-        />
-      </FilterGroup>
-      <FilterGroup
-        headingText="Medical Management Programs"
-        infoText="Filter plans based on covered services."
-      >
-        <MultiSelect<DiseaseMgmtPrograms>
-          options={facetGroupMap["diseaseMgmtPrograms"].map((e) => [
-            e.value as DiseaseMgmtPrograms,
-            e.count,
-          ])}
-          onChangeEnd={(e) => {
-            setFilter({
-              ...filter,
-              disease_mgmt_programs: e,
-            });
-          }}
-        />
-      </FilterGroup>
-      <FilterGroup
-        headingText="Insurance Companies"
-        infoText="Filter plans based on which insurance company provides them."
-      >
-        <MultiSelect<string>
-          options={facetGroupMap["issuers"].map((e) => [e.value, e.count])}
-          onChangeEnd={(e) => {
-            setFilter({
-              ...filter,
-              issuers: e,
-            });
-          }}
-        />
-      </FilterGroup>
+      {facetGroupMap["types"] && (
+        <FilterGroup
+          headingText="Plan Types"
+          infoText="Most plans are either HMO or PPO. HMOs tend to have lower monthly premiums, while PPOs offer more flexibility in what providers you can use."
+        >
+          <MultiSelect<PlanType>
+            options={facetGroupMap["types"].map((e) => [
+              e.value as PlanType,
+              e.count,
+            ])}
+            onChangeEnd={(e) => {
+              setFilter({
+                ...filter,
+                types: e,
+              });
+            }}
+          />
+        </FilterGroup>
+      )}
+      {facetGroupMap["metalLevels"] && (
+        <FilterGroup
+          headingText="Metal Levels"
+          infoText="These categories are based on how you and your plan split the costs of your healthcare. Bronze plans have low premiums, but high deductibles. Gold / Platinum plans have the opposite. Silver plans are more in the middle, and may offer cost-sharing reductions depending on your income."
+        >
+          <MultiSelect<MetalLevel>
+            options={facetGroupMap["metalLevels"].map((e) => [
+              e.value as MetalLevel,
+              e.count,
+            ])}
+            onChangeEnd={(e) => {
+              setFilter({
+                ...filter,
+                metal_levels: e,
+              });
+            }}
+          />
+        </FilterGroup>
+      )}
+      {facetGroupMap["diseaseMgmtPrograms"] && (
+        <FilterGroup
+          headingText="Medical Management Programs"
+          infoText="Filter plans based on covered services."
+        >
+          <MultiSelect<DiseaseMgmtPrograms>
+            options={facetGroupMap["diseaseMgmtPrograms"].map((e) => [
+              e.value as DiseaseMgmtPrograms,
+              e.count,
+            ])}
+            onChangeEnd={(e) => {
+              setFilter({
+                ...filter,
+                disease_mgmt_programs: e,
+              });
+            }}
+          />
+        </FilterGroup>
+      )}
+      {facetGroupMap["issuers"] && (
+        <FilterGroup
+          headingText="Insurance Companies"
+          infoText="Filter plans based on which insurance company provides them."
+        >
+          <MultiSelect<string>
+            options={facetGroupMap["issuers"].map((e) => [e.value, e.count])}
+            onChangeEnd={(e) => {
+              setFilter({
+                ...filter,
+                issuers: e,
+              });
+            }}
+          />
+        </FilterGroup>
+      )}
     </>
   );
 });

@@ -195,9 +195,8 @@ export default function EditPersonModal({
               <Controller
                 name="options"
                 control={control}
-                render={({ field }) => (
+                render={() => (
                   <CheckboxGroup
-                    {...field}
                     value={options}
                     onChange={(e) => setOptions(e as string[])}
                   >
