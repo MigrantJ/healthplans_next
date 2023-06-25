@@ -5,13 +5,14 @@ import { Carousel } from "chakra-ui-carousel";
 import EllipsisText from "../EllipsisText";
 import IHealthPlan from "@/types/HealthPlan";
 import ConditionalWrapper from "../ConditionalWrapper";
+import { useSavedPlansActions } from "@/lib/store";
 
 interface IProps {
   plans: IHealthPlan[];
-  savePlan: (plan: IHealthPlan) => void;
 }
 
-export default function NameHeaders({ plans, savePlan }: IProps) {
+export default function NameHeaders({ plans }: IProps) {
+  const { toggleSavedPlan } = useSavedPlansActions();
   const multiplePlans = plans.length > 1;
 
   return (
@@ -35,7 +36,7 @@ export default function NameHeaders({ plans, savePlan }: IProps) {
                 as={RiCloseFill}
                 boxSize={6}
                 cursor="pointer"
-                onClick={() => savePlan(plan)}
+                onClick={() => toggleSavedPlan(plan.id)}
               />
             )}
             <EllipsisText gridColumn="1/3" fontWeight="bold">

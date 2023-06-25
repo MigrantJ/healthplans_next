@@ -22,12 +22,7 @@ import {
   usePlanRanges,
 } from "@/lib/store";
 
-interface IProps {
-  savePlan: (plan: IHealthPlan) => void;
-  savedPlans: Map<string, IHealthPlan>;
-}
-
-export default function Planlist({ savePlan, savedPlans }: IProps) {
+export default function Planlist() {
   const [modalPlan, setModalPlan] = useState<IHealthPlan>(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -103,10 +98,7 @@ export default function Planlist({ savePlan, savedPlans }: IProps) {
             cursor="pointer"
             onClick={() => openPlanModal(plan)}
           >
-            <BookmarkButton
-              saved={savedPlans.has(plan.id)}
-              {...{ plan, savePlan }}
-            />
+            <BookmarkButton {...{ plan }} />
 
             <NameBar planName={plan.name} issuerName={plan.issuer.name} />
 

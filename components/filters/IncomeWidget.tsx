@@ -8,11 +8,11 @@ import {
   InputLeftElement,
 } from "@chakra-ui/react";
 import { BsCurrencyDollar } from "react-icons/bs";
-import { useIncome, useActions, useCreditEstimate } from "@/lib/store";
+import { useIncome, useHouseholdActions, useCreditEstimate } from "@/lib/store";
 
 export default memo(function IncomeWidget() {
   const income = useIncome();
-  const { setIncome } = useActions();
+  const { setIncome } = useHouseholdActions();
   const [innerIncome, setInnerIncome] = useState(income.toString());
   const inputRef = useRef<HTMLInputElement>(null);
   const creditEstimate = useCreditEstimate().data;

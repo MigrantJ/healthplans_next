@@ -12,7 +12,7 @@ import {
 import { RiMapPinLine } from "react-icons/ri";
 
 import ILocation from "@/types/Location";
-import { useActions, useLocation } from "@/lib/store";
+import { useHouseholdActions, useLocation } from "@/lib/store";
 
 const getLocationByLatLong = async (
   lat: number,
@@ -81,7 +81,7 @@ const getPosByZipCode = async (
 
 export default memo(function LocationWidget() {
   const location = useLocation();
-  const { setLocation } = useActions();
+  const { setLocation } = useHouseholdActions();
   const [zipcode, setZipcode] = useState(location?.zipcode || "");
   const [isLoading, setIsLoading] = useState(false);
 

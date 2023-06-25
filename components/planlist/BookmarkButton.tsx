@@ -2,14 +2,15 @@ import { memo } from "react";
 import IHealthPlan from "@/types/HealthPlan";
 import { Box, Icon } from "@chakra-ui/react";
 import { RiBookmarkFill, RiBookmarkLine } from "react-icons/ri";
+import { useIsPlanSaved, useSavedPlansActions } from "@/lib/store";
 
 interface IProps {
   plan: IHealthPlan;
-  saved: boolean;
-  savePlan: (plan: IHealthPlan) => void;
 }
 
-export default memo(function BookmarkButton({ plan, saved, savePlan }: IProps) {
+export default memo(function BookmarkButton({ plan }: IProps) {
+  const saved = useIsPlanSaved(plan.id);
+  const { toggleSavedPlan } = useSavedPlansActions();
   return (
     <Box
       gridColumn={{ base: "1/2" }}
@@ -25,7 +26,7 @@ export default memo(function BookmarkButton({ plan, saved, savePlan }: IProps) {
       }}
       onClick={(e) => {
         e.stopPropagation();
-        savePlan(plan);
+        toggleSavedPlan(plan.id);
       }}
     >
       <Icon

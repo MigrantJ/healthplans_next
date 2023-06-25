@@ -6,7 +6,7 @@ import MultiSelect from "./MultiSelect";
 import FilterGroup from "./FilterGroup";
 import currencyFormatter from "@/lib/currencyFormatter";
 import {
-  useActions,
+  useHouseholdActions,
   useCreditEstimate,
   useFilter,
   usePlanFacetGroups,
@@ -16,7 +16,7 @@ import {
 export default memo(function FilterWidget() {
   const creditEstimate = useCreditEstimate().data;
   const filter = useFilter();
-  const { setFilter } = useActions();
+  const { setFilter } = useHouseholdActions();
   const facetGroups = usePlanFacetGroups();
   const ranges = usePlanRanges();
   if (!facetGroups || !ranges) return <></>;

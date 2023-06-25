@@ -12,7 +12,7 @@ import { DisplayMode } from "@/types/DisplayMode";
 import IHealthPlan from "@/types/HealthPlan";
 import filterPlans from "./filterPlans";
 
-interface State {
+interface HouseholdStore {
   location: ILocation;
   income: number;
   people: IPerson[];
@@ -27,7 +27,7 @@ interface State {
   };
 }
 
-const useHouseholdStore = create<State>((set) => ({
+const useHouseholdStore = create<HouseholdStore>((set) => ({
   location: null,
   income: 0,
   people: [],
@@ -50,7 +50,8 @@ export const useFilter = () => useHouseholdStore((state) => state.filter);
 export const useDisplayMode = () =>
   useHouseholdStore((state) => state.displayMode);
 // since functions are static, they can be exported as an object without failing equivalence check
-export const useActions = () => useHouseholdStore((state) => state.actions);
+export const useHouseholdActions = () =>
+  useHouseholdStore((state) => state.actions);
 
 const querySelect = (data: GCE.Response) => data.estimates[0];
 
@@ -138,4 +139,43 @@ export const usePlanQueryStatus = () => {
   const { isInitialLoading, hasNextPage, fetchNextPage, isFetching } =
     usePlans();
   return { isInitialLoading, hasNextPage, fetchNextPage, isFetching };
+};
+
+interface SavedPlansStore {
+  savedPlans: Set<string>;
+  actions: {
+    toggleSavedPlan: (id: string) => void;
+  };
+}
+
+const useSavedPlansStore = create<SavedPlansStore>((set) => ({
+  savedPlans: new Set(),
+  actions: {
+    toggleSavedPlan: (id) =>
+      set((state) => {
+        const newSet = new Set(state.savedPlans);
+        if (newSet.has(id)) {
+          newSet.delete(id);
+        } else {
+          newSet.add(id);
+        }
+        return { savedPlans: newSet };
+      }),
+  },
+}));
+
+export const useNumSavedPlans = () =>
+  useSavedPlansStore((state) => state.savedPlans.size);
+export const useSavedPlansActions = () =>
+  useSavedPlansStore((state) => state.actions);
+export const useIsPlanSaved = (id: string) =>
+  useSavedPlansStore((state) => state.savedPlans.has(id));
+export const useSavedPlans = () => {
+  const savedPlanIds = useSavedPlansStore((state) => state.savedPlans);
+  const results = usePlans();
+  const plans =
+    results.data?.pages.reduce((acc, page) => {
+      return acc.concat(page.plans);
+    }, [] as IHealthPlan[]) || [];
+  return plans.filter((plan) => savedPlanIds.has(plan.id));
 };

@@ -7,12 +7,11 @@ import {
   RightButton,
 } from "chakra-ui-carousel";
 
-import IHealthPlan from "@/types/HealthPlan";
 import ComparePlanDetails from "./ComparePlanDetails";
 import CollapsibleHeaders from "./CollapsibleHeaders";
 import NameHeaders from "./NameHeaders";
 import ConditionalWrapper from "../ConditionalWrapper";
-import { useCreditEstimate } from "@/lib/store";
+import { useCreditEstimate, useSavedPlans } from "@/lib/store";
 
 export interface Expands {
   costs: boolean;
@@ -23,12 +22,7 @@ export interface Expands {
   mgmt_programs: boolean;
 }
 
-interface IProps {
-  plans: IHealthPlan[];
-  savePlan: (plan: IHealthPlan) => void;
-}
-
-export default function ComparePlans({ plans, savePlan }: IProps) {
+export default function ComparePlans() {
   const [expands, setExpands] = useState<Expands>({
     costs: true,
     info: true,
@@ -38,6 +32,7 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
     mgmt_programs: true,
   });
   const creditEstimate = useCreditEstimate().data;
+  const plans = useSavedPlans();
   const taxCredit = creditEstimate.aptc;
 
   const multiplePlans = plans.length > 1;
@@ -161,7 +156,7 @@ export default function ComparePlans({ plans, savePlan }: IProps) {
           <GridItem />
         </Grid>
         <Box gridColumn="2/3" gridRow="1/2">
-          <NameHeaders {...{ plans, savePlan }} />
+          <NameHeaders {...{ plans }} />
           <ConditionalWrapper
             condition={multiplePlans}
             wrap={(children) => <Carousel gap={1}>{children}</Carousel>}
