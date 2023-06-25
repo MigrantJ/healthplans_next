@@ -1,18 +1,14 @@
 import { Button } from "@chakra-ui/react";
 import { RiFilter3Line, RiListCheck, RiBookmarkFill } from "react-icons/ri";
-import { DisplayMode } from "@/types/DisplayMode";
+import { useActions, useDisplayMode } from "@/lib/store";
 
 interface IProps {
-  displayMode: DisplayMode;
-  setDisplayMode: (d: DisplayMode) => void;
   numSavedPlans: number;
 }
 
-export default function ModeSelector({
-  displayMode,
-  setDisplayMode,
-  numSavedPlans,
-}: IProps) {
+export default function ModeSelector({ numSavedPlans }: IProps) {
+  const displayMode = useDisplayMode();
+  const { setDisplayMode } = useActions();
   return (
     <>
       {displayMode === "Filters" && (

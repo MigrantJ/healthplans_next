@@ -14,10 +14,7 @@ import LocationWidget from "./LocationWidget";
 import IncomeWidget from "./IncomeWidget";
 import PeopleWidget from "./PeopleWidget";
 import FilterWidget from "./FilterWidget";
-import IPerson from "@/types/Person";
-import IFilter from "@/types/Filter";
-import { DisplayMode } from "@/types/DisplayMode";
-import { useLocation } from "@/lib/store";
+import { useLocation, useDisplayMode } from "@/lib/store";
 
 const SidebarContainer = chakra(Flex, {
   baseStyle: {
@@ -40,22 +37,9 @@ const SidebarContainer = chakra(Flex, {
   },
 });
 
-interface IProps {
-  displayMode: DisplayMode;
-  people: IPerson[];
-  setPeople: (p: IPerson[]) => void;
-  filter: IFilter;
-  setFilter: (p: IFilter) => void;
-}
-
-export default function Sidebar({
-  displayMode,
-  people,
-  setPeople,
-  filter,
-  setFilter,
-}: IProps) {
+export default function Sidebar() {
   const location = useLocation();
+  const displayMode = useDisplayMode();
 
   return (
     <SidebarContainer
@@ -90,7 +74,7 @@ export default function Sidebar({
               headingText="People"
               infoText="Add only individuals in your household that need health coverage."
             >
-              <PeopleWidget {...{ people, setPeople }} />
+              <PeopleWidget />
             </FilterGroup>
           </AccordionPanel>
         </AccordionItem>
@@ -106,12 +90,7 @@ export default function Sidebar({
               <AccordionIcon />
             </AccordionButton>
             <AccordionPanel paddingTop={0} paddingBottom="4px">
-              <FilterWidget
-                {...{
-                  filter,
-                  setFilter,
-                }}
-              />
+              <FilterWidget />
               <Flex height="160px" />
             </AccordionPanel>
           </AccordionItem>

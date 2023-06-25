@@ -1,29 +1,25 @@
 import { memo } from "react";
-import IFilter, {
-  MetalLevel,
-  DiseaseMgmtPrograms,
-  PlanType,
-} from "@/types/Filter";
+import { MetalLevel, DiseaseMgmtPrograms, PlanType } from "@/types/Filter";
 import { Facet } from "@/types/MarketplaceSearch";
 import DualSlider from "./DualSlider";
 import MultiSelect from "./MultiSelect";
 import FilterGroup from "./FilterGroup";
 import currencyFormatter from "@/lib/currencyFormatter";
 import {
+  useActions,
   useCreditEstimate,
+  useFilter,
   usePlanFacetGroups,
   usePlanRanges,
 } from "@/lib/store";
 
-interface IProps {
-  filter: IFilter;
-  setFilter: (f: IFilter) => void;
-}
-
-export default memo(function FilterWidget({ filter, setFilter }: IProps) {
+export default memo(function FilterWidget() {
+  const creditEstimate = useCreditEstimate().data;
+  const filter = useFilter();
+  const { setFilter } = useActions();
   const facetGroups = usePlanFacetGroups();
   const ranges = usePlanRanges();
-  const creditEstimate = useCreditEstimate().data;
+  if (!facetGroups || !ranges) return <></>;
   const facetGroupMap: { [k: string]: Facet[] } =
     facetGroups?.reduce((acc, curr) => {
       acc[curr.name] = curr.facets;

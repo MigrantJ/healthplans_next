@@ -3,16 +3,13 @@ import { Button, Divider, Text, Flex } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 
 import EditPersonModal from "./EditPersonModal";
-import IPerson from "@/types/Person";
+import { useActions, usePeople } from "@/lib/store";
 
-interface IProps {
-  people: IPerson[];
-  setPeople: (h: IPerson[]) => void;
-}
-
-export default memo(function PeopleWidget({ people, setPeople }: IProps) {
+export default memo(function PeopleWidget() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [personIndex, setPersonIndex] = useState(-1);
+  const people = usePeople();
+  const { setPeople } = useActions();
 
   const openModal = (person_index = -1) => {
     setPersonIndex(person_index);

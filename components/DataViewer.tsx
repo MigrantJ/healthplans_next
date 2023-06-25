@@ -3,31 +3,23 @@ import { Text, Box, useToast } from "@chakra-ui/react";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
 
 import * as GetPlans from "@/types/GetPlans";
-import IFilter from "@/types/Filter";
 import IHealthPlan from "@/types/HealthPlan";
 import InvalidStateMessage from "./InvalidStateMessage";
-import { DisplayMode } from "@/types/DisplayMode";
 import Planlist from "./planlist/Planlist";
 import ComparePlans from "./compare_plans/ComparePlans";
 import ModeSelector from "./ModeSelector";
 import constants from "../styles/constants";
+import { useDisplayMode } from "@/lib/store";
 
 interface IProps {
-  displayMode: DisplayMode;
-  setDisplayMode: (d: DisplayMode) => void;
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
-  filter: IFilter;
 }
 
-export default function DataViewer({
-  displayMode,
-  setDisplayMode,
-  results,
-  filter,
-}: IProps) {
+export default function DataViewer({ results }: IProps) {
   const [savedPlans, setSavedPlans] = useState<Map<string, IHealthPlan>>(
     new Map()
   );
+  const displayMode = useDisplayMode();
   const toast = useToast();
 
   const savePlan = useCallback(
@@ -78,9 +70,7 @@ export default function DataViewer({
     <>
       <Planlist
         {...{
-          displayMode,
           results,
-          filter,
           savePlan,
           savedPlans,
         }}
@@ -92,9 +82,7 @@ export default function DataViewer({
         />
       )}
 
-      {results.data && (
-        <ModeSelector {...{ displayMode, setDisplayMode, numSavedPlans }} />
-      )}
+      {results.data && <ModeSelector {...{ numSavedPlans }} />}
     </>
   );
 }

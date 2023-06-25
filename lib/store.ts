@@ -7,15 +7,21 @@ import * as GCE from "@/types/GetCreditEstimate";
 import * as GetPlans from "@/types/GetPlans";
 import { getCreditEstimate } from "./useCreditEstimate";
 import { getPlans } from "./getPlans";
+import IFilter from "@/types/Filter";
+import { DisplayMode } from "@/types/DisplayMode";
 
 interface State {
   location: ILocation;
   income: number;
   people: IPerson[];
+  filter: IFilter;
+  displayMode: DisplayMode;
   actions: {
     setLocation: (newLocation: ILocation) => void;
     setIncome: (newIncome: number) => void;
     setPeople: (newPeople: IPerson[]) => void;
+    setFilter: (newFilter: IFilter) => void;
+    setDisplayMode: (newDisplayMode: DisplayMode) => void;
   };
 }
 
@@ -23,10 +29,14 @@ const useHouseholdStore = create<State>((set) => ({
   location: null,
   income: 0,
   people: [],
+  filter: null,
+  displayMode: "Planlist",
   actions: {
     setLocation: (newLocation) => set({ location: newLocation }),
     setIncome: (newIncome) => set({ income: newIncome }),
     setPeople: (newPeople) => set({ people: newPeople }),
+    setFilter: (newFilter) => set({ filter: newFilter }),
+    setDisplayMode: (newDisplayMode) => set({ displayMode: newDisplayMode }),
   },
 }));
 
@@ -34,6 +44,9 @@ const useHouseholdStore = create<State>((set) => ({
 export const useLocation = () => useHouseholdStore((state) => state.location);
 export const useIncome = () => useHouseholdStore((state) => state.income);
 export const usePeople = () => useHouseholdStore((state) => state.people);
+export const useFilter = () => useHouseholdStore((state) => state.filter);
+export const useDisplayMode = () =>
+  useHouseholdStore((state) => state.displayMode);
 // since functions are static, they can be exported as an object without failing equivalence check
 export const useActions = () => useHouseholdStore((state) => state.actions);
 
@@ -76,28 +89,15 @@ export const usePlans = () => {
     retry: 10,
   });
 };
-// const planFacetGroupSelect = (data: InfiniteData<GetPlans.Response>) => {
-//   return data.pages[0].facet_groups;
-// };
+
 export const usePlanFacetGroups = () => {
   const result = usePlans();
-  return result.data?.pages[0].facet_groups || [];
+  return result.data?.pages[0].facet_groups;
 };
 
 export const usePlanRanges = () => {
   const result = usePlans();
-  return (
-    result.data?.pages[0].ranges || {
-      premiums: {
-        min: 0,
-        max: 1000,
-      },
-      deductibles: {
-        min: 0,
-        max: 1000,
-      },
-    }
-  );
+  return result.data?.pages[0].ranges;
 };
 
 // CUSTOM HOOKS

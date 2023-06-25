@@ -6,7 +6,6 @@ import { useInView } from "react-intersection-observer";
 import { scaleLinear } from "d3";
 
 import * as GetPlans from "@/types/GetPlans";
-import IFilter from "@/types/Filter";
 import IHealthPlan from "@/types/HealthPlan";
 import filterPlans from "@/lib/filterPlans";
 import PlanlistHeader from "./PlanlistHeader";
@@ -17,25 +16,16 @@ import constants from "../../styles/constants";
 import PremiumBar from "./PremiumBar";
 import DeductibleBar from "./DeductibleBar";
 import NameBar from "./NameBar";
-import { DisplayMode } from "@/types/DisplayMode";
 import BookmarkButton from "./BookmarkButton";
-import { useCreditEstimate } from "@/lib/store";
+import { useCreditEstimate, useFilter, useDisplayMode } from "@/lib/store";
 
 interface IProps {
-  displayMode: DisplayMode;
   results: UseInfiniteQueryResult<GetPlans.Response, Error>;
-  filter: IFilter;
   savePlan: (plan: IHealthPlan) => void;
   savedPlans: Map<string, IHealthPlan>;
 }
 
-export default function Planlist({
-  displayMode,
-  results,
-  filter,
-  savePlan,
-  savedPlans,
-}: IProps) {
+export default function Planlist({ results, savePlan, savedPlans }: IProps) {
   const [modalPlan, setModalPlan] = useState<IHealthPlan>(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -48,6 +38,8 @@ export default function Planlist({
     }
   }, [inView, fetchNextPage]);
   const creditEstimate = useCreditEstimate().data;
+  const filter = useFilter();
+  const displayMode = useDisplayMode();
 
   const plans: IHealthPlan[] = results.data.pages.reduce((acc, page) => {
     return acc.concat(page.plans);
