@@ -26,7 +26,7 @@ export const getCreditEstimate: QueryFunction<
 const querySelect = (data: GCE.Response) => data.estimates[0];
 
 export const useCreditEstimate = () => {
-  const location = useLocation();
+  const location = useLocation().data;
   const income = useIncome();
   const people = usePeople();
   return useQuery({

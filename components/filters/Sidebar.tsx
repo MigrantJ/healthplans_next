@@ -61,7 +61,10 @@ export default function Sidebar() {
               headingText="Location"
               infoText="This is used to determine which health plans are available for you to purchase."
             >
-              <LocationWidget />
+              <LocationWidget
+                zipcode={location.data?.zipcode || ""}
+                isFetching={location.isFetching}
+              />
             </FilterGroup>
             <FilterGroup
               headingText="Income"
@@ -81,7 +84,7 @@ export default function Sidebar() {
 
         <Divider />
 
-        {location && (
+        {location.data?.zipcode && (
           <AccordionItem border={0}>
             <AccordionButton>
               <Heading size="md" flex={1} textAlign="left">

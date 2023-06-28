@@ -10,7 +10,7 @@ import constants from "../styles/constants";
 import { useFilter, useIncome, useLocation, usePeople } from "./householdStore";
 
 const usePlans = () => {
-  const location = useLocation();
+  const location = useLocation().data;
   const income = useIncome();
   const people = usePeople();
   return useInfiniteQuery<GetPlans.Response, Error>({

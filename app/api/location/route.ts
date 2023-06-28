@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   }
 
   let closestZipCode: string;
-  if ("zipcode" in reqBody) {
+  if ("zipcode" in reqBody && reqBody.zipcode !== "") {
     closestZipCode = reqBody.zipcode;
   } else if ("lat" in reqBody && "long" in reqBody) {
     const location = {
