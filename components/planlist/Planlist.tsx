@@ -14,15 +14,19 @@ import PremiumBar from "./PremiumBar";
 import DeductibleBar from "./DeductibleBar";
 import NameBar from "./NameBar";
 import BookmarkButton from "./BookmarkButton";
-import { useDisplayMode } from "@/lib/householdStore";
 import {
   useFilteredPlans,
   usePlanQueryStatus,
   usePlanRanges,
 } from "@/lib/planStore";
 import { useCreditEstimate } from "@/lib/creditEstimateStore";
+import { DisplayMode } from "@/types/DisplayMode";
 
-export default function Planlist() {
+interface IProps {
+  displayMode: DisplayMode;
+}
+
+export default function Planlist({ displayMode }: IProps) {
   const [modalPlan, setModalPlan] = useState<IHealthPlan>(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -36,7 +40,6 @@ export default function Planlist() {
     }
   }, [inView, fetchNextPage]);
   const creditEstimate = useCreditEstimate().data;
-  const displayMode = useDisplayMode();
 
   const filteredPlans = useFilteredPlans();
   const ranges = usePlanRanges();

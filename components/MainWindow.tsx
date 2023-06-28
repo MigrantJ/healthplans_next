@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Grid } from "@chakra-ui/react";
 
 import MedicaidModal from "./MedicaidModal";
@@ -6,21 +7,23 @@ import PlanSpinner from "./planlist/PlanSpinner";
 import Planlist from "./planlist/Planlist";
 import ComparePlans from "./compare_plans/ComparePlans";
 import ModeSelector from "./ModeSelector";
-import { useDisplayMode } from "@/lib/householdStore";
 import { useCreditEstimate } from "@/lib/creditEstimateStore";
-import { usePlanQueryStatus } from "@/lib/planStore";
+import { usePlanQueryStatus, useSavedPlans } from "@/lib/planStore";
+import { DisplayMode } from "@/types/DisplayMode";
+import React from "react";
 
 export default function MainWindow() {
+  const [displayMode, setDisplayMode] = useState<DisplayMode>("Planlist");
   const creditEstimate = useCreditEstimate().data;
   const { isInitialLoading } = usePlanQueryStatus();
-  const displayMode = useDisplayMode();
+  const plans = useSavedPlans();
 
   return (
     <Grid
       gridTemplateColumns={{ base: "1fr", lg: "300px 1fr" }}
       backgroundColor="blue.700"
     >
-      <Sidebar />
+      <Sidebar {...{ displayMode }} />
 
       {creditEstimate.is_medicaid_chip && <MedicaidModal />}
 
@@ -28,10 +31,10 @@ export default function MainWindow() {
         <PlanSpinner />
       ) : (
         <>
-          <Planlist />
-          {displayMode === "ComparePlans" && <ComparePlans />}
+          <Planlist {...{ displayMode }} />
+          {displayMode === "ComparePlans" && <ComparePlans {...{ plans }} />}
 
-          <ModeSelector />
+          <ModeSelector {...{ displayMode, setDisplayMode }} />
         </>
       )}
     </Grid>

@@ -25,7 +25,7 @@ export default function PlanModal({ isOpen, onClose, modalPlan }: IProps) {
       <ModalContent>
         <ModalCloseButton />
         <ModalBody>
-          <ComparePlans plans={[modalPlan]} savePlan={null} />
+          <ComparePlans plans={[modalPlan]} />
         </ModalBody>
         <ModalFooter></ModalFooter>
       </ModalContent>

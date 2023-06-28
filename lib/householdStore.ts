@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import IPerson from "@/types/Person";
 import IFilter from "@/types/Filter";
-import { DisplayMode } from "@/types/DisplayMode";
+
 import { Request, SuccessResponse } from "@/types/GetLocation";
 import { useQuery, useQueryClient, QueryFunction } from "@tanstack/react-query";
 
@@ -12,14 +12,12 @@ interface HouseholdStore {
   income: number;
   people: IPerson[];
   filter: IFilter;
-  displayMode: DisplayMode;
   actions: {
     setLatLong: (newLatLong: { lat: number; long: number }) => void;
     setZipcode: (newZipcode: string) => void;
     setIncome: (newIncome: number) => void;
     setPeople: (newPeople: IPerson[]) => void;
     setFilter: (newFilter: IFilter) => void;
-    setDisplayMode: (newDisplayMode: DisplayMode) => void;
   };
 }
 
@@ -36,7 +34,6 @@ const useHouseholdStore = create<HouseholdStore>((set) => ({
     setIncome: (newIncome) => set({ income: newIncome }),
     setPeople: (newPeople) => set({ people: newPeople }),
     setFilter: (newFilter) => set({ filter: newFilter }),
-    setDisplayMode: (newDisplayMode) => set({ displayMode: newDisplayMode }),
   },
 }));
 
@@ -46,8 +43,6 @@ export const useZipcode = () => useHouseholdStore((state) => state.zipcode);
 export const useIncome = () => useHouseholdStore((state) => state.income);
 export const usePeople = () => useHouseholdStore((state) => state.people);
 export const useFilter = () => useHouseholdStore((state) => state.filter);
-export const useDisplayMode = () =>
-  useHouseholdStore((state) => state.displayMode);
 // since functions are static, they can be exported as an object without failing equivalence check
 export const useHouseholdActions = () =>
   useHouseholdStore((state) => state.actions);

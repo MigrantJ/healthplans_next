@@ -12,7 +12,7 @@ import CollapsibleHeaders from "./CollapsibleHeaders";
 import NameHeaders from "./NameHeaders";
 import ConditionalWrapper from "../ConditionalWrapper";
 import { useCreditEstimate } from "@/lib/creditEstimateStore";
-import { useSavedPlans } from "@/lib/planStore";
+import IHealthPlan from "@/types/HealthPlan";
 
 export interface Expands {
   costs: boolean;
@@ -23,7 +23,11 @@ export interface Expands {
   mgmt_programs: boolean;
 }
 
-export default function ComparePlans() {
+interface IProps {
+  plans: IHealthPlan[];
+}
+
+export default function ComparePlans({ plans }: IProps) {
   const [expands, setExpands] = useState<Expands>({
     costs: true,
     info: true,
@@ -33,7 +37,6 @@ export default function ComparePlans() {
     mgmt_programs: true,
   });
   const creditEstimate = useCreditEstimate().data;
-  const plans = useSavedPlans();
   const taxCredit = creditEstimate.aptc;
 
   const multiplePlans = plans.length > 1;
