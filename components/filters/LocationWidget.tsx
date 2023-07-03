@@ -8,6 +8,7 @@ import {
   InputGroup,
   InputLeftElement,
   Spinner,
+  Text,
 } from "@chakra-ui/react";
 import { RiMapPinLine } from "react-icons/ri";
 
@@ -39,6 +40,7 @@ interface IProps {
 export default memo(function LocationWidget({ zipcode, isFetching }: IProps) {
   const { setLatLong, setZipcode } = useHouseholdActions();
   const [innerZipcode, setInnerZipcode] = useState("");
+  const [showError, setShowError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -53,12 +55,17 @@ export default memo(function LocationWidget({ zipcode, isFetching }: IProps) {
   };
 
   const onSubmit = () => {
+    if (innerZipcode.length !== 5) {
+      setShowError(true);
+      return;
+    }
+    setShowError(false);
     setLatLong({ lat: null, long: null });
     setZipcode(innerZipcode);
   };
 
   return (
-    <Flex>
+    <Flex direction="column">
       <InputGroup sx={{ "div[data-lastpass-icon-root]": { display: "none" } }}>
         <InputLeftElement>
           {isFetching ? (
@@ -68,6 +75,7 @@ export default memo(function LocationWidget({ zipcode, isFetching }: IProps) {
               <Button
                 variant="sidebar"
                 onClick={(_) => {
+                  setShowError(false);
                   setZipcode("");
                   getPosByGPS(setLatLong);
                 }}
@@ -92,6 +100,11 @@ export default memo(function LocationWidget({ zipcode, isFetching }: IProps) {
           onKeyUp={handleKeyUp}
         />
       </InputGroup>
+      {showError && (
+        <Text color="red" fontSize="sm">
+          Please enter a valid five-digit zip code.
+        </Text>
+      )}
     </Flex>
   );
 });

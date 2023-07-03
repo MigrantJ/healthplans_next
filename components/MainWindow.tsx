@@ -3,19 +3,17 @@ import { Grid } from "@chakra-ui/react";
 
 import MedicaidModal from "./MedicaidModal";
 import Sidebar from "./filters/Sidebar";
-import PlanSpinner from "./planlist/PlanSpinner";
 import Planlist from "./planlist/Planlist";
 import ComparePlans from "./compare_plans/ComparePlans";
 import ModeSelector from "./ModeSelector";
 import { useCreditEstimate } from "@/lib/creditEstimateStore";
-import { usePlanQueryStatus, useSavedPlans } from "@/lib/planStore";
+import { useSavedPlans } from "@/lib/planStore";
 import { DisplayMode } from "@/types/DisplayMode";
 import React from "react";
 
 export default function MainWindow() {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("Planlist");
   const creditEstimate = useCreditEstimate().data;
-  const { isInitialLoading } = usePlanQueryStatus();
   const plans = useSavedPlans();
 
   return (
@@ -27,16 +25,12 @@ export default function MainWindow() {
 
       {creditEstimate.is_medicaid_chip && <MedicaidModal />}
 
-      {isInitialLoading ? (
-        <PlanSpinner />
-      ) : (
-        <>
-          <Planlist {...{ displayMode }} />
-          {displayMode === "ComparePlans" && <ComparePlans {...{ plans }} />}
+      <>
+        <Planlist {...{ displayMode }} />
+        {displayMode === "ComparePlans" && <ComparePlans {...{ plans }} />}
 
-          <ModeSelector {...{ displayMode, setDisplayMode }} />
-        </>
-      )}
+        <ModeSelector {...{ displayMode, setDisplayMode }} />
+      </>
     </Grid>
   );
 }

@@ -21,6 +21,7 @@ import {
 } from "@/lib/planStore";
 import { useCreditEstimate } from "@/lib/creditEstimateStore";
 import { DisplayMode } from "@/types/DisplayMode";
+import PlanSpinner from "./PlanSpinner";
 
 interface IProps {
   displayMode: DisplayMode;
@@ -32,7 +33,8 @@ export default function Planlist({ displayMode }: IProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { ref, inView } = useInView();
   //todo: handle errors returned from the query. InvalidStateMessage
-  const { hasNextPage, fetchNextPage, isFetching } = usePlanQueryStatus();
+  const { isInitialLoading, hasNextPage, fetchNextPage, isFetching } =
+    usePlanQueryStatus();
 
   useEffect(() => {
     if (inView) {
@@ -51,6 +53,8 @@ export default function Planlist({ displayMode }: IProps) {
     },
     [onOpen]
   );
+
+  if (isInitialLoading) return <PlanSpinner />;
 
   const premiumExtent: [number, number] = [
     Math.max(ranges.premiums.min - creditEstimate.aptc, 0),
