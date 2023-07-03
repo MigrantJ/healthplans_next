@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, memo, useEffect, useRef, KeyboardEvent } from "react";
 import {
   Flex,
   Input,
@@ -8,50 +8,20 @@ import {
   InputGroup,
   InputLeftElement,
   Spinner,
+  Text,
 } from "@chakra-ui/react";
 import { RiMapPinLine } from "react-icons/ri";
 
-import ILocation from "@/types/Location";
-
-interface IProps {
-  location: ILocation;
-  setLocation: (location: ILocation) => void;
-}
-
-const getLocationByLatLong = async (
-  lat: number,
-  long: number,
-  setZipcode: (z: string) => void,
-  setLocation: (location: ILocation) => void,
-  setIsLoading: (l: boolean) => void
-) => {
-  const res = await fetch(`/api/location`, {
-    method: "post",
-    body: JSON.stringify({ lat, long }),
-    headers: { "Content-Type": "application/json" },
-  });
-  if (!res.ok) {
-    throw new Error(`Error: ${res.status}`);
-  }
-  const location = (await res.json()) as ILocation;
-  setZipcode(location.zipcode);
-  setLocation(location);
-  setIsLoading(false);
-};
+import { useHouseholdActions } from "@/lib/householdStore";
 
 const getPosByGPS = function (
-  setZipcode: (z: string) => void,
-  setLocation: (location: ILocation) => void,
-  setIsLoading: (l: boolean) => void
+  setLatLong: (newLatLong: { lat: number; long: number }) => void
 ) {
   const successCallback: PositionCallback = (position) => {
-    void getLocationByLatLong(
-      position.coords.latitude,
-      position.coords.longitude,
-      setZipcode,
-      setLocation,
-      setIsLoading
-    );
+    setLatLong({
+      lat: parseFloat(position.coords.latitude.toFixed(3)),
+      long: parseFloat(position.coords.longitude.toFixed(3)),
+    });
   };
 
   const errorCallback: PositionErrorCallback = (error) => {
@@ -59,46 +29,55 @@ const getPosByGPS = function (
     console.log(error);
   };
 
-  setIsLoading(true);
   navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
 };
 
-const getPosByZipCode = async (
-  zipcode: string,
-  setLocation: (location: ILocation) => void,
-  setIsLoading: (l: boolean) => void
-) => {
-  if (zipcode === "") return;
-  setIsLoading(true);
-  const res = await fetch(`/api/location`, {
-    method: "post",
-    body: JSON.stringify({ zipcode }),
-    headers: { "Content-Type": "application/json" },
-  });
-  if (!res.ok) {
-    throw new Error(`Error: ${res.status}`);
-  }
-  const location = (await res.json()) as ILocation;
-  setLocation(location);
-  setIsLoading(false);
-};
+interface IProps {
+  zipcode: string;
+  isFetching: boolean;
+}
 
-export default memo(function LocationWidget({ location, setLocation }: IProps) {
-  const [zipcode, setZipcode] = useState(location?.zipcode || "");
-  const [isLoading, setIsLoading] = useState(false);
+export default memo(function LocationWidget({ zipcode, isFetching }: IProps) {
+  const { setLatLong, setZipcode } = useHouseholdActions();
+  const [innerZipcode, setInnerZipcode] = useState("");
+  const [showError, setShowError] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setInnerZipcode(zipcode);
+  }, [zipcode]);
+
+  const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.code === "Enter") {
+      inputRef.current.blur();
+      onSubmit();
+    }
+  };
+
+  const onSubmit = () => {
+    if (innerZipcode.length !== 5) {
+      setShowError(true);
+      return;
+    }
+    setShowError(false);
+    setLatLong({ lat: null, long: null });
+    setZipcode(innerZipcode);
+  };
 
   return (
-    <Flex>
+    <Flex direction="column">
       <InputGroup sx={{ "div[data-lastpass-icon-root]": { display: "none" } }}>
         <InputLeftElement>
-          {isLoading ? (
+          {isFetching ? (
             <Spinner size="sm" marginLeft="5px" />
           ) : (
             <Tooltip hasArrow label="Click To Use GPS">
               <Button
                 variant="sidebar"
                 onClick={(_) => {
-                  getPosByGPS(setZipcode, setLocation, setIsLoading);
+                  setShowError(false);
+                  setZipcode("");
+                  getPosByGPS(setLatLong);
                 }}
               >
                 <Icon as={RiMapPinLine} boxSize={5} focusable={true} />
@@ -107,20 +86,25 @@ export default memo(function LocationWidget({ location, setLocation }: IProps) {
           )}
         </InputLeftElement>
         <Input
+          ref={inputRef}
           variant="sidebar"
           width="125px"
           marginLeft="7px"
           placeholder="Zip Code"
-          value={zipcode}
+          value={innerZipcode}
           inputMode="numeric"
           autoComplete="off"
           type="number"
-          onChange={(e) => setZipcode(e.target.value)}
-          onBlur={(_) =>
-            void getPosByZipCode(zipcode, setLocation, setIsLoading)
-          }
+          onChange={(e) => setInnerZipcode(e.target.value)}
+          onBlur={onSubmit}
+          onKeyUp={handleKeyUp}
         />
       </InputGroup>
+      {showError && (
+        <Text color="red" fontSize="sm">
+          Please enter a valid five-digit zip code.
+        </Text>
+      )}
     </Flex>
   );
 });

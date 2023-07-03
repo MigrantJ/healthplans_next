@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import * as GetPlans from "@/types/GetPlans";
 import * as MarketplaceSearch from "@/types/MarketplaceSearch";
 import Requester from "@/lib/requester";
-import { NextApiRequest, NextApiResponse } from "next";
 
 const INVALID_STATES: { [key: string]: [string, string] } = {
   CA: ["Covered California", "https://www.coveredca.com/"],

@@ -8,21 +8,15 @@ import {
   InputLeftElement,
 } from "@chakra-ui/react";
 import { BsCurrencyDollar } from "react-icons/bs";
-import { Estimate } from "@/types/GetCreditEstimate";
+import { useHouseholdActions, useIncome } from "@/lib/householdStore";
+import { useCreditEstimate } from "@/lib/creditEstimateStore";
 
-interface IProps {
-  income: number;
-  setIncome: (i: number) => void;
-  creditEstimates: Estimate[];
-}
-
-export default memo(function IncomeWidget({
-  income,
-  setIncome,
-  creditEstimates,
-}: IProps) {
+export default memo(function IncomeWidget() {
+  const income = useIncome();
+  const { setIncome } = useHouseholdActions();
   const [innerIncome, setInnerIncome] = useState(income.toString());
   const inputRef = useRef<HTMLInputElement>(null);
+  const creditEstimate = useCreditEstimate().data;
 
   const focusInput = () => {
     if (innerIncome === "0") {
@@ -45,9 +39,7 @@ export default memo(function IncomeWidget({
   };
 
   const taxCredit =
-    creditEstimates?.length && creditEstimates[0].aptc > 0
-      ? `$${creditEstimates[0].aptc} tax credit`
-      : "";
+    creditEstimate.aptc > 0 ? `$${creditEstimate.aptc} tax credit` : "";
 
   return (
     <Flex flexDirection="column">

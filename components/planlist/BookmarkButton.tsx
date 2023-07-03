@@ -1,15 +1,30 @@
 import { memo } from "react";
-import IHealthPlan from "@/types/HealthPlan";
-import { Box, Icon } from "@chakra-ui/react";
+import { Box, Icon, useToast } from "@chakra-ui/react";
 import { RiBookmarkFill, RiBookmarkLine } from "react-icons/ri";
+import constants from "../../styles/constants";
+import { useIsPlanSaved, useToggleSavedPlan } from "@/lib/planStore";
 
 interface IProps {
-  plan: IHealthPlan;
-  saved: boolean;
-  savePlan: (plan: IHealthPlan) => void;
+  planId: string;
 }
 
-export default memo(function BookmarkButton({ plan, saved, savePlan }: IProps) {
+export default memo(function BookmarkButton({ planId }: IProps) {
+  const saved = useIsPlanSaved(planId);
+  const toggleSavedPlan = useToggleSavedPlan();
+  const toast = useToast();
+
+  const clickHandler = () => {
+    const wasSuccess = toggleSavedPlan(planId);
+    if (!wasSuccess) {
+      toast({
+        description: `You can compare a maximum of ${constants.MAX_SAVED_PLANS} plans`,
+        status: "error",
+        duration: constants.TOAST_DURATION,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Box
       gridColumn={{ base: "1/2" }}
@@ -25,7 +40,7 @@ export default memo(function BookmarkButton({ plan, saved, savePlan }: IProps) {
       }}
       onClick={(e) => {
         e.stopPropagation();
-        savePlan(plan);
+        clickHandler();
       }}
     >
       <Icon

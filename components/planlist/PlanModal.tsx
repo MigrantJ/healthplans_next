@@ -9,21 +9,14 @@ import {
 
 import IHealthPlan from "@/types/HealthPlan";
 import ComparePlans from "../compare_plans/ComparePlans";
-import { Estimate } from "@/types/GetCreditEstimate";
 
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
   modalPlan: IHealthPlan;
-  creditEstimates: Estimate[];
 }
 
-export default function PlanModal({
-  isOpen,
-  onClose,
-  modalPlan,
-  creditEstimates,
-}: IProps) {
+export default function PlanModal({ isOpen, onClose, modalPlan }: IProps) {
   if (!modalPlan) return;
 
   return (
@@ -32,11 +25,7 @@ export default function PlanModal({
       <ModalContent>
         <ModalCloseButton />
         <ModalBody>
-          <ComparePlans
-            plans={[modalPlan]}
-            savePlan={null}
-            {...{ creditEstimates }}
-          />
+          <ComparePlans plans={[modalPlan]} />
         </ModalBody>
         <ModalFooter></ModalFooter>
       </ModalContent>

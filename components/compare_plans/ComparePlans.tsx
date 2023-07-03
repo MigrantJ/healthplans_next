@@ -7,12 +7,12 @@ import {
   RightButton,
 } from "chakra-ui-carousel";
 
-import IHealthPlan from "@/types/HealthPlan";
 import ComparePlanDetails from "./ComparePlanDetails";
-import { Estimate } from "@/types/GetCreditEstimate";
 import CollapsibleHeaders from "./CollapsibleHeaders";
 import NameHeaders from "./NameHeaders";
 import ConditionalWrapper from "../ConditionalWrapper";
+import { useCreditEstimate } from "@/lib/creditEstimateStore";
+import IHealthPlan from "@/types/HealthPlan";
 
 export interface Expands {
   costs: boolean;
@@ -25,15 +25,9 @@ export interface Expands {
 
 interface IProps {
   plans: IHealthPlan[];
-  savePlan: (plan: IHealthPlan) => void;
-  creditEstimates: Estimate[];
 }
 
-export default function ComparePlans({
-  plans,
-  savePlan,
-  creditEstimates,
-}: IProps) {
+export default function ComparePlans({ plans }: IProps) {
   const [expands, setExpands] = useState<Expands>({
     costs: true,
     info: true,
@@ -42,9 +36,10 @@ export default function ComparePlans({
     documents: true,
     mgmt_programs: true,
   });
+  const creditEstimate = useCreditEstimate().data;
+  const taxCredit = creditEstimate.aptc;
 
   const multiplePlans = plans.length > 1;
-  const taxCredit = creditEstimates?.[0].aptc || 0;
 
   let rowTemplate = "40px ";
   if (expands.costs) {
@@ -165,7 +160,7 @@ export default function ComparePlans({
           <GridItem />
         </Grid>
         <Box gridColumn="2/3" gridRow="1/2">
-          <NameHeaders {...{ plans, savePlan }} />
+          <NameHeaders {...{ plans }} />
           <ConditionalWrapper
             condition={multiplePlans}
             wrap={(children) => <Carousel gap={1}>{children}</Carousel>}
