@@ -2,14 +2,12 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { create } from "zustand";
 
 import * as GetPlans from "@/types/GetPlans";
-import { useCreditEstimate } from "./creditEstimateStore";
 import { getPlans } from "./getPlans";
 import IHealthPlan from "@/types/HealthPlan";
-import filterPlans from "./filterPlans";
 import constants from "../styles/constants";
-import { useFilter, useIncome, useLocation, usePeople } from "./householdStore";
+import { useIncome, useLocation, usePeople } from "./householdStore";
 
-const usePlans = () => {
+export const usePlans = () => {
   const location = useLocation().data;
   const income = useIncome();
   const people = usePeople();
@@ -20,26 +18,6 @@ const usePlans = () => {
     keepPreviousData: true,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     retry: 10,
-    placeholderData: {
-      pages: [
-        {
-          plans: [],
-          total: 0,
-          ranges: {
-            premiums: {
-              min: 0,
-              max: 1000,
-            },
-            deductibles: {
-              min: 0,
-              max: 1000,
-            },
-          },
-          facet_groups: [],
-        },
-      ],
-      pageParams: [],
-    },
   });
 };
 
@@ -51,24 +29,6 @@ export const usePlanFacetGroups = () => {
 export const usePlanRanges = () => {
   const result = usePlans();
   return result.data?.pages[0].ranges;
-};
-
-export const useFilteredPlans = () => {
-  const results = usePlans();
-  const filter = useFilter();
-  const creditEstimate = useCreditEstimate().data;
-
-  const plans =
-    results.data?.pages.reduce((acc, page) => {
-      return acc.concat(page.plans);
-    }, [] as IHealthPlan[]) || [];
-  return filterPlans(plans, filter, creditEstimate.aptc);
-};
-
-export const usePlanQueryStatus = () => {
-  const { isInitialLoading, hasNextPage, fetchNextPage, isFetching } =
-    usePlans();
-  return { isInitialLoading, hasNextPage, fetchNextPage, isFetching };
 };
 
 interface SavedPlansStore {

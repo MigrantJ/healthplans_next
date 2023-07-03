@@ -5,6 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { scaleLinear } from "d3";
 
 import IHealthPlan from "@/types/HealthPlan";
+import { DisplayMode } from "@/types/DisplayMode";
 import PlanlistHeader from "./PlanlistHeader";
 import PlanSkeleton from "./PlanSkeleton";
 import PlanModal from "./PlanModal";
@@ -14,14 +15,12 @@ import PremiumBar from "./PremiumBar";
 import DeductibleBar from "./DeductibleBar";
 import NameBar from "./NameBar";
 import BookmarkButton from "./BookmarkButton";
-import {
-  useFilteredPlans,
-  usePlanQueryStatus,
-  usePlanRanges,
-} from "@/lib/planStore";
-import { useCreditEstimate } from "@/lib/creditEstimateStore";
-import { DisplayMode } from "@/types/DisplayMode";
 import PlanSpinner from "./PlanSpinner";
+import InvalidStateMessage from "../InvalidStateMessage";
+import { usePlans, usePlanRanges } from "@/lib/planStore";
+import { useCreditEstimate } from "@/lib/creditEstimateStore";
+import { useFilter } from "@/lib/householdStore";
+import filterPlans from "@/lib/filterPlans";
 
 interface IProps {
   displayMode: DisplayMode;
@@ -32,19 +31,17 @@ export default function Planlist({ displayMode }: IProps) {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { ref, inView } = useInView();
-  //todo: handle errors returned from the query. InvalidStateMessage
-  const { isInitialLoading, hasNextPage, fetchNextPage, isFetching } =
-    usePlanQueryStatus();
+  const { data, fetchNextPage, isInitialLoading, hasNextPage, isFetching } =
+    usePlans();
+  const creditEstimate = useCreditEstimate().data;
+  const filter = useFilter();
+  const ranges = usePlanRanges();
 
   useEffect(() => {
     if (inView) {
       void fetchNextPage();
     }
   }, [inView, fetchNextPage]);
-  const creditEstimate = useCreditEstimate().data;
-
-  const filteredPlans = useFilteredPlans();
-  const ranges = usePlanRanges();
 
   const openPlanModal = useCallback(
     (plan: IHealthPlan) => {
@@ -54,7 +51,22 @@ export default function Planlist({ displayMode }: IProps) {
     [onOpen]
   );
 
+  if (!data) return <></>;
+
   if (isInitialLoading) return <PlanSpinner />;
+
+  const alt_data = data.pages[0].alt_data;
+  if (alt_data) {
+    if (alt_data.type === "InvalidState") {
+      return <InvalidStateMessage {...alt_data} />;
+    }
+  }
+
+  const plans =
+    data?.pages.reduce((acc, page) => {
+      return acc.concat(page.plans);
+    }, [] as IHealthPlan[]) || [];
+  const filteredPlans = filterPlans(plans, filter, creditEstimate.aptc);
 
   const premiumExtent: [number, number] = [
     Math.max(ranges.premiums.min - creditEstimate.aptc, 0),
