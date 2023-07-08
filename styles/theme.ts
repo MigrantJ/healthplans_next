@@ -1,14 +1,43 @@
-import { extendTheme, createMultiStyleConfigHelpers } from "@chakra-ui/react";
+import {
+  theme,
+  extendTheme,
+  createMultiStyleConfigHelpers,
+  ThemeConfig,
+  defineStyleConfig,
+} from "@chakra-ui/react";
 import { inputAnatomy, tagAnatomy } from "@chakra-ui/anatomy";
 
 const inputConfig = createMultiStyleConfigHelpers(inputAnatomy.keys);
 const tagConfig = createMultiStyleConfigHelpers(tagAnatomy.keys);
+
+const config: ThemeConfig = {
+  initialColorMode: "system",
+  useSystemColorMode: true,
+};
 
 // uses min-width
 const breakpoints = {
   sm: "400px",
   md: "768px",
   lg: "1060px",
+};
+
+const colors = {
+  brand_light: {
+    50: theme.colors.blue[500],
+    100: theme.colors.blue[500],
+    200: theme.colors.blue[500],
+    300: theme.colors.blue[500],
+    400: theme.colors.blue[500],
+    500: theme.colors.blue[500],
+    600: theme.colors.blue[500],
+    700: theme.colors.blue[500],
+    800: theme.colors.blue[500],
+    900: theme.colors.blue[500],
+  },
+  brand_dark: {
+    500: theme.colors.red[500],
+  },
 };
 
 const styles = {
@@ -46,10 +75,10 @@ const components = {
       closeButton: { color: "white" },
     }),
   }),
-  Button: {
+  Button: defineStyleConfig({
     variants: {
-      sidebar: {
-        backgroundColor: "blue.500",
+      sidebar: ({ colorMode }) => ({
+        backgroundColor: colorMode === "light" ? "blue.500" : "red.500",
         border: "1px solid blue.500",
         color: "white",
         _hover: {
@@ -58,7 +87,7 @@ const components = {
             backgroundColor: "gray.400",
           },
         },
-      },
+      }),
       modeselect: {
         boxShadow: "0px 0px 2px 2px black",
         backgroundColor: "blue.500",
@@ -80,7 +109,7 @@ const components = {
         },
       },
     },
-  },
+  }),
   Divider: {
     baseStyle: { borderColor: "blue.600" },
   },
@@ -89,4 +118,10 @@ const components = {
   },
 };
 
-export const theme = extendTheme({ breakpoints, styles, components });
+export const newTheme = extendTheme({
+  config,
+  breakpoints,
+  colors,
+  styles,
+  components,
+});
