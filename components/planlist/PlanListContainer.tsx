@@ -1,20 +1,17 @@
-import { Grid, chakra } from "@chakra-ui/react";
+import {
+  Grid,
+  HTMLChakraProps,
+  ThemingProps,
+  useStyleConfig,
+} from "@chakra-ui/react";
 
-const PlanListContainer = chakra(Grid, {
-  baseStyle: {
-    gridTemplateColumns: {
-      base: "40px 250px",
-      sm: "40px 110px 250px",
-      md: "40px minmax(300px, 800px) 150px 250px",
-    },
-    margin: "0 auto",
-    flexShrink: 4,
-    minHeight: "100vh",
-    alignContent: "start",
-    paddingTop: "10px",
-    backgroundColor: "white",
-    boxShadow: "6px 0 4px -4px black, -6px 0 4px -4px black",
-  },
-});
+interface IProps
+  extends HTMLChakraProps<"div">,
+    ThemingProps<"PlanListContainer"> {}
 
-export default PlanListContainer;
+export default function PlanListContainer(props: IProps) {
+  const { variant, ...rest } = props;
+  const styles = useStyleConfig("PlanListContainer", { variant });
+
+  return <Grid __css={styles} {...rest} />;
+}

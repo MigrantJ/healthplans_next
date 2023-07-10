@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Grid } from "@chakra-ui/react";
+import { Grid, useColorModeValue } from "@chakra-ui/react";
 
 import MedicaidModal from "./MedicaidModal";
 import Sidebar from "./filters/Sidebar";
@@ -15,11 +15,12 @@ export default function MainWindow() {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("Planlist");
   const creditEstimate = useCreditEstimate().data;
   const plans = useSavedPlans();
+  const colorPrefix = useColorModeValue("bg_light", "bg_dark");
 
   return (
     <Grid
       gridTemplateColumns={{ base: "1fr", lg: "300px 1fr" }}
-      backgroundColor="blue.700"
+      backgroundColor={colorPrefix + ".700"}
     >
       <Sidebar {...{ displayMode }} />
 

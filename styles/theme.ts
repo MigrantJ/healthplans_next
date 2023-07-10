@@ -23,21 +23,40 @@ const breakpoints = {
 };
 
 const colors = {
-  brand_light: {
-    50: theme.colors.blue[500],
-    100: theme.colors.blue[500],
-    200: theme.colors.blue[500],
-    300: theme.colors.blue[500],
-    400: theme.colors.blue[500],
+  bg_light: {
     500: theme.colors.blue[500],
-    600: theme.colors.blue[500],
-    700: theme.colors.blue[500],
-    800: theme.colors.blue[500],
-    900: theme.colors.blue[500],
+    700: theme.colors.blue[700],
   },
-  brand_dark: {
-    500: theme.colors.red[500],
+  bg_dark: {
+    500: theme.colors.blue[800],
+    700: theme.colors.blue[900],
   },
+  rows_light: {
+    50: theme.colors.gray[50],
+    100: theme.colors.gray[100],
+    200: theme.colors.gray[200],
+    300: theme.colors.gray[300],
+    400: theme.colors.gray[400],
+    500: theme.colors.gray[500],
+    600: theme.colors.gray[600],
+    700: theme.colors.gray[700],
+    800: theme.colors.gray[800],
+    900: theme.colors.gray[900],
+  },
+  rows_light_hover: theme.colors.blue[100],
+  rows_dark: {
+    50: theme.colors.black,
+    100: theme.colors.gray[900],
+    200: theme.colors.gray[800],
+    300: theme.colors.gray[700],
+    400: theme.colors.gray[600],
+    500: theme.colors.gray[500],
+    600: theme.colors.gray[400],
+    700: theme.colors.gray[300],
+    800: theme.colors.gray[200],
+    900: theme.colors.gray[100],
+  },
+  rows_dark_hover: theme.colors.blue[600],
 };
 
 const styles = {
@@ -116,6 +135,34 @@ const components = {
   FormLabel: {
     baseStyle: { margin: 0 },
   },
+  PlanListContainer: defineStyleConfig({
+    baseStyle: ({ colorMode }) => ({
+      gridTemplateColumns: {
+        base: "40px 250px",
+        sm: "40px 110px 250px",
+        md: "40px minmax(300px, 800px) 150px 250px",
+      },
+      margin: "0 auto",
+      flexShrink: 4,
+      minHeight: "100vh",
+      alignContent: "start",
+      paddingTop: "10px",
+      backgroundColor: colorMode === "light" ? "white" : "black",
+      boxShadow: "6px 0 4px -4px black, -6px 0 4px -4px black",
+    }),
+  }),
+  ErrorMessageContainer: defineStyleConfig({
+    baseStyle: ({ colorMode }) => ({
+      display: "flex",
+      flexDirection: "column",
+      backgroundColor: colorMode === "light" ? "white" : "black",
+      alignItems: "center",
+      padding: "10px",
+      margin: "0 auto",
+      width: "75%",
+      minHeight: "100vh",
+    }),
+  }),
 };
 
 export const newTheme = extendTheme({

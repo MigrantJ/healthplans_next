@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, GridItem, Box } from "@chakra-ui/react";
+import { Grid, GridItem, Box, useColorModeValue } from "@chakra-ui/react";
 import {
   Provider,
   Carousel,
@@ -37,6 +37,7 @@ export default function ComparePlans({ plans }: IProps) {
     mgmt_programs: true,
   });
   const creditEstimate = useCreditEstimate().data;
+  const bgColor = useColorModeValue("white", "black");
   const taxCredit = creditEstimate.aptc;
 
   const multiplePlans = plans.length > 1;
@@ -94,7 +95,7 @@ export default function ComparePlans({ plans }: IProps) {
         )}
 
         <Grid
-          backgroundColor="white"
+          backgroundColor={bgColor}
           gridColumn="2/3"
           gridRow="1/2"
           gridTemplateRows={nameRowHeight + rowTemplate + " 50px"}

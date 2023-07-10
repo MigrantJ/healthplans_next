@@ -52,7 +52,6 @@ const getLocation: QueryFunction<
   ["location", Request]
 > = async ({ queryKey }) => {
   const body: Request = { ...queryKey[1] };
-  console.log(body);
   const res = await fetch(`/api/location`, {
     method: "post",
     body: JSON.stringify(body),

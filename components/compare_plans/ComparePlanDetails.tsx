@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, useColorModeValue } from "@chakra-ui/react";
 import {
   RiCheckFill,
   RiFileTextLine,
@@ -32,6 +32,7 @@ export default function ComparePlanDetails({
   setExpands,
   taxCredit,
 }: IProps) {
+  const borderColor = useColorModeValue("gray.300", "gray.300");
   const copayMap: { [k: string]: Benefit } =
     plan.benefits.reduce((acc, curr) => {
       acc[curr.name] = curr;
@@ -45,7 +46,7 @@ export default function ComparePlanDetails({
   const moop = currencyFormatter.format(plan.moops[0].amount);
 
   return (
-    <DetailsContainer gridTemplateRows={rowTemplate}>
+    <DetailsContainer gridTemplateRows={rowTemplate} {...{ borderColor }}>
       <CollapsibleContent
         expanded={expands.costs}
         expandFunc={() => setExpands({ ...expands, costs: !expands.costs })}

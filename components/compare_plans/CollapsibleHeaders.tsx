@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, Flex, Heading, Icon, GridItem } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Heading,
+  Icon,
+  GridItem,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import { BsChevronExpand, BsChevronContract } from "react-icons/bs";
 
 interface IProps {
@@ -13,9 +20,11 @@ export default function CollapsibleHeaders({
   mainHeader,
   subHeaders,
 }: IProps) {
+  const colorPrefix = useColorModeValue("rows_light", "rows_dark");
+
   return (
     <>
-      <Flex backgroundColor="gray.300" height="100%" padding="5px">
+      <Flex backgroundColor={colorPrefix + ".300"} height="100%" padding="5px">
         <Icon
           as={expanded ? BsChevronContract : BsChevronExpand}
           boxSize={5}
@@ -28,10 +37,13 @@ export default function CollapsibleHeaders({
           subHeaders.map((s, i) => {
             return (
               <React.Fragment key={i}>
-                <GridItem backgroundColor="gray.200" padding="5px 10px">
+                <GridItem
+                  backgroundColor={colorPrefix + ".200"}
+                  padding="5px 10px"
+                >
                   <Heading size="sm">{s}</Heading>
                 </GridItem>
-                <GridItem backgroundColor="white" />
+                <GridItem backgroundColor={colorPrefix + ".50"} />
               </React.Fragment>
             );
           })
