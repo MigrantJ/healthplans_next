@@ -45,12 +45,7 @@ export default memo(function IncomeWidget() {
     <Flex flexDirection="column">
       <InputGroup>
         <InputLeftElement>
-          <Icon
-            as={BsCurrencyDollar}
-            boxSize={5}
-            marginX="10px"
-            color="gray.600"
-          />
+          <Icon as={BsCurrencyDollar} boxSize={5} marginX="10px" />
         </InputLeftElement>
         <Input
           ref={inputRef}

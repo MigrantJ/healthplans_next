@@ -15,12 +15,12 @@ export default function MainWindow() {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("Planlist");
   const creditEstimate = useCreditEstimate().data;
   const plans = useSavedPlans();
-  const colorPrefix = useColorModeValue("bg_light", "bg_dark");
+  const bgColor = useColorModeValue("main.700", "main.900");
 
   return (
     <Grid
       gridTemplateColumns={{ base: "1fr", lg: "300px 1fr" }}
-      backgroundColor={colorPrefix + ".700"}
+      backgroundColor={bgColor}
     >
       <Sidebar {...{ displayMode }} />
 

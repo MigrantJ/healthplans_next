@@ -25,7 +25,7 @@ export default React.memo(function NameBar({ planName, issuerName }: IProps) {
         },
       }}
     >
-      <EllipsisText fontWeight="bold">{issuerName}</EllipsisText>
+      <EllipsisText fontSize="sm">{issuerName}</EllipsisText>
       <EllipsisText>{planName}</EllipsisText>
     </Box>
   );

@@ -7,6 +7,7 @@ import {
   Flex,
   Box,
   Spacer,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 interface IProps {
@@ -22,6 +23,7 @@ export default function DualSlider({
 }: IProps) {
   const [oldExtents, setOldExtents] = useState(rangeExtents);
   const [range, setRange] = useState([rangeExtents.min, rangeExtents.max]);
+  const bgColor = useColorModeValue("main.700", "main.900");
   // if a household change makes the extents different, reset the slider to the new min and max
   if (
     rangeExtents.min !== oldExtents.min ||
@@ -48,7 +50,7 @@ export default function DualSlider({
           onChangeEnd(range);
         }}
       >
-        <RangeSliderTrack bg="blue.700">
+        <RangeSliderTrack bg={bgColor}>
           <RangeSliderFilledTrack />
         </RangeSliderTrack>
         <RangeSliderThumb index={0} />

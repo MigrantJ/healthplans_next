@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid, Icon } from "@chakra-ui/react";
+import { Box, Grid, Icon, useColorModeValue } from "@chakra-ui/react";
 import { RiCloseFill } from "react-icons/ri";
 import { Carousel } from "chakra-ui-carousel";
 import EllipsisText from "../EllipsisText";
@@ -13,10 +13,16 @@ interface IProps {
 
 export default function NameHeaders({ plans }: IProps) {
   const toggleSavedPlan = useToggleSavedPlan();
+  const colorPrefix = useColorModeValue("rows_light", "rows_dark");
   const multiplePlans = plans.length > 1;
 
   return (
-    <Box position="sticky" top={0} backgroundColor="white" zIndex={1}>
+    <Box
+      position="sticky"
+      top={0}
+      backgroundColor={colorPrefix + ".50"}
+      zIndex={1}
+    >
       <ConditionalWrapper
         condition={multiplePlans}
         wrap={(children) => <Carousel gap={1}>{children}</Carousel>}

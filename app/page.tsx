@@ -17,7 +17,7 @@ import AboutModal from "@/components/AboutModal";
 export default function IndexPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { toggleColorMode, colorMode } = useColorMode();
-  const colorPrefix = useColorModeValue("bg_light", "bg_dark");
+  const bgColor = useColorModeValue("main.400", "main.700");
 
   return (
     <Box minHeight="100vh">
@@ -25,7 +25,7 @@ export default function IndexPage() {
       <Flex
         padding="10px"
         borderBottom="2px solid black"
-        backgroundColor={colorPrefix + ".500"}
+        backgroundColor={bgColor}
         alignItems="center"
         gap="10px"
       >

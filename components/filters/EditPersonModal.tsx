@@ -115,7 +115,7 @@ export default function EditPersonModal({
         <ModalCloseButton />
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalBody>
-            <FormControl id="Age" isInvalid={!!errors.age}>
+            <FormControl id="Age" isInvalid={!!errors.age} lineHeight="30px">
               <InputGroup size="sm">
                 <FormLabel>Age</FormLabel>
                 <Input
@@ -131,14 +131,15 @@ export default function EditPersonModal({
                       message: "Please round to the nearest year.",
                     },
                   })}
-                  marginLeft="5px"
+                  width="100px"
+                  marginLeft="10px"
                 />
               </InputGroup>
               <FormErrorMessage>
                 {errors.age?.message.toString()}
               </FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={!!errors.gender}>
+            <FormControl isInvalid={!!errors.gender} paddingTop="10px">
               <InputGroup size="sm">
                 <FormLabel htmlFor="Sex">Sex</FormLabel>
                 <Controller
@@ -148,7 +149,9 @@ export default function EditPersonModal({
                   render={({ field }) => (
                     <RadioGroup {...field} paddingLeft="10px">
                       <Radio value="Male">Male</Radio>
-                      <Radio value="Female">Female</Radio>
+                      <Radio value="Female" marginLeft="10px">
+                        Female
+                      </Radio>
                     </RadioGroup>
                   )}
                   rules={{
@@ -190,7 +193,7 @@ export default function EditPersonModal({
                 </FormErrorMessage>
               </FormControl>
             )}
-            <Text>Select any that apply:</Text>
+            <Text paddingTop="10px">Select any that apply:</Text>
             <FormControl>
               <Controller
                 name="options"
@@ -224,7 +227,7 @@ export default function EditPersonModal({
             )}
             <Spacer />
             <Button onClick={onClose}>Cancel</Button>
-            <Button colorScheme="blue" type="submit">
+            <Button marginLeft="10px" colorScheme="blue" type="submit">
               Save
             </Button>
           </ModalFooter>
