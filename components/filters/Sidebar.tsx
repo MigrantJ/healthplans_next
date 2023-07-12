@@ -7,7 +7,9 @@ import {
   Divider,
   Flex,
   Heading,
-  chakra,
+  HTMLChakraProps,
+  ThemingProps,
+  useStyleConfig,
 } from "@chakra-ui/react";
 import FilterGroup from "./FilterGroup";
 import LocationWidget from "./LocationWidget";
@@ -17,26 +19,14 @@ import FilterWidget from "./FilterWidget";
 import { useLocation } from "@/lib/householdStore";
 import { DisplayMode } from "@/types/DisplayMode";
 
-const SidebarContainer = chakra(Flex, {
-  baseStyle: {
-    flexDir: "column",
-    paddingX: "5px",
-    paddingTop: "4px",
-    position: { base: "static", lg: "sticky" },
-    top: 0,
-    flexShrink: 1,
-    alignSelf: "flex-start",
-    overflowY: "auto",
-    minHeight: "100vh",
-    maxHeight: { lg: "100vh" },
-    maxWidth: "800px",
-    minWidth: { base: "100%", sm: "400px", lg: "100%" },
-    margin: { base: "0 auto", lg: 0 },
-    boxShadow: "6px 0 4px -4px black, -6px 0 4px -4px black",
-    backgroundColor: "white",
-    zIndex: 1,
-  },
-});
+interface IContainerProps
+  extends HTMLChakraProps<"div">,
+    ThemingProps<"SidebarContainer"> {}
+
+const SidebarContainer = function ({ variant, ...rest }: IContainerProps) {
+  const styles = useStyleConfig("SidebarContainer", { variant });
+  return <Flex __css={styles} {...rest} />;
+};
 
 interface IProps {
   displayMode: DisplayMode;

@@ -1,5 +1,7 @@
 import NextLink from "next/link";
-import { Flex, Heading, Text, Link } from "@chakra-ui/react";
+import { Heading, Text, Link } from "@chakra-ui/react";
+
+import ErrorMessageContainer from "./ErrorMessageContainer";
 
 interface IProps {
   state: string;
@@ -12,15 +14,7 @@ export default function InvalidStateMessage({
   exchange_url,
 }: IProps) {
   return (
-    <Flex
-      direction="column"
-      backgroundColor="white"
-      alignItems="center"
-      padding="10px"
-      margin="0 auto"
-      width="75%"
-      minHeight="100vh"
-    >
+    <ErrorMessageContainer>
       <Heading>Sorry!</Heading>
       <Text paddingY="20px">
         It looks like your state does not use the federally-run healthcare
@@ -30,6 +24,6 @@ export default function InvalidStateMessage({
       <Link as={NextLink} href={exchange_url}>
         {exchange_name}
       </Link>
-    </Flex>
+    </ErrorMessageContainer>
   );
 }

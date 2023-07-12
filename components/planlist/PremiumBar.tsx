@@ -1,7 +1,7 @@
 import React from "react";
 import currencyFormatter from "@/lib/currencyFormatter";
 import constants from "../../styles/constants";
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, useColorModeValue } from "@chakra-ui/react";
 
 interface IProps {
   premium: number;
@@ -12,17 +12,19 @@ export default React.memo(function PremiumBar({
   premium,
   premiumWidth,
 }: IProps) {
+  const colorPrefix = useColorModeValue("rows_light", "rows_dark");
+
   return (
     <Box
       gridColumn={{ base: "1/3", sm: "1/3", md: "auto" }}
       padding={{ base: "0 5px", md: "10px 5px" }}
-      backgroundColor="gray.100"
+      backgroundColor={colorPrefix + ".100"}
       sx={{
         ".group:nth-child(odd) &": {
-          backgroundColor: "gray.300",
+          backgroundColor: colorPrefix + ".300",
         },
         ".group:hover &": {
-          backgroundColor: "blue.100",
+          backgroundColor: colorPrefix + "_hover",
           textDecor: "underline",
         },
       }}

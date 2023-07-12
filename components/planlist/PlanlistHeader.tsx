@@ -1,6 +1,22 @@
-import { Heading, Text, Flex, Spacer } from "@chakra-ui/react";
+import {
+  Heading,
+  Text,
+  Flex,
+  Spacer,
+  HTMLChakraProps,
+  ThemingProps,
+  useStyleConfig,
+} from "@chakra-ui/react";
 import { Axis, Orient } from "d3-axis-for-react";
-import ColumnHeader from "./ColumnHeader";
+
+interface IContainerProps
+  extends HTMLChakraProps<"div">,
+    ThemingProps<"PlanlistColumnHeader"> {}
+
+const PlanlistColumnHeader = function ({ variant, ...rest }: IContainerProps) {
+  const styles = useStyleConfig("PlanlistColumnHeader", { variant });
+  return <Flex __css={styles} {...rest} />;
+};
 
 interface IProps {
   premiumExtent: [number, number];
@@ -31,12 +47,12 @@ export default function PlanlistHeader({
           Note: Estimates Only. Premiums include tax credit if applicable.
         </Text>
       </Flex>
-      <ColumnHeader />
-      <ColumnHeader>
+      <PlanlistColumnHeader />
+      <PlanlistColumnHeader>
         <Text as="b">Issuer</Text>
         <Text>Plan Name</Text>
-      </ColumnHeader>
-      <ColumnHeader>
+      </PlanlistColumnHeader>
+      <PlanlistColumnHeader>
         <Text as="b">Premium</Text>
         <svg height={20} width={xScalePremium(premiumExtent[1]) + 20}>
           <g transform="translate(2, 18)">
@@ -56,8 +72,8 @@ export default function PlanlistHeader({
             />
           </g>
         </svg>
-      </ColumnHeader>
-      <ColumnHeader>
+      </PlanlistColumnHeader>
+      <PlanlistColumnHeader>
         <Text as="b">Deductible</Text>
         <svg height={20} width={xScaleDeductible(deductibleExtent[1]) + 20}>
           <g transform="translate(2, 18)">
@@ -79,7 +95,7 @@ export default function PlanlistHeader({
             />
           </g>
         </svg>
-      </ColumnHeader>
+      </PlanlistColumnHeader>
     </>
   );
 }

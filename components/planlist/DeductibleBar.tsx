@@ -1,7 +1,7 @@
 import React from "react";
 import currencyFormatter from "@/lib/currencyFormatter";
 import constants from "../../styles/constants";
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, useColorModeValue } from "@chakra-ui/react";
 
 interface IProps {
   deductible: number;
@@ -16,6 +16,8 @@ export default React.memo(function DeductibleBar({
   moop,
   moopWidth,
 }: IProps) {
+  const colorPrefix = useColorModeValue("rows_light", "rows_dark");
+
   return (
     <Box
       gridColumn={{ base: "1/3", sm: "3/4", md: "auto" }}
@@ -23,13 +25,13 @@ export default React.memo(function DeductibleBar({
         base: "0px 5px 10px 5px",
         md: "10px 5px",
       }}
-      backgroundColor="gray.100"
+      backgroundColor={colorPrefix + ".100"}
       sx={{
         ".group:nth-child(odd) &": {
-          backgroundColor: "gray.300",
+          backgroundColor: colorPrefix + ".300",
         },
         ".group:hover &": {
-          backgroundColor: "blue.100",
+          backgroundColor: colorPrefix + "_hover",
           textDecor: "underline",
         },
       }}

@@ -6,9 +6,21 @@ import {
   FormLabel,
   Spacer,
   Text,
+  HTMLChakraProps,
+  ThemingProps,
+  useStyleConfig,
 } from "@chakra-ui/react";
 import InfoIcon from "../InfoIcon";
 import ConditionalWrapper from "../ConditionalWrapper";
+
+interface IContainerProps
+  extends HTMLChakraProps<"div">,
+    ThemingProps<"FilterGroupContainer"> {}
+
+const FilterGroupContainer = function ({ variant, ...rest }: IContainerProps) {
+  const styles = useStyleConfig("FilterGroupContainer", { variant });
+  return <Flex __css={styles} {...rest} />;
+};
 
 interface IProps {
   isFormLabel?: boolean;
@@ -24,14 +36,7 @@ export default function FilterGroup({
   children,
 }: IProps) {
   return (
-    <Box
-      backgroundColor="blue.100"
-      padding="10px"
-      borderRadius="10px"
-      marginY="5px"
-      border="1px solid"
-      borderColor="blue.300"
-    >
+    <FilterGroupContainer>
       <ConditionalWrapper
         condition={isFormLabel}
         wrap={(outerChildren) => (
@@ -42,9 +47,7 @@ export default function FilterGroup({
           {isFormLabel ? (
             <FormLabel>{headingText}</FormLabel>
           ) : (
-            <Text fontSize="16px" fontWeight={500}>
-              {headingText}
-            </Text>
+            <Text fontWeight={500}>{headingText}</Text>
           )}
 
           <Spacer />
@@ -52,6 +55,6 @@ export default function FilterGroup({
         </Flex>
         {children}
       </ConditionalWrapper>
-    </Box>
+    </FilterGroupContainer>
   );
 }
