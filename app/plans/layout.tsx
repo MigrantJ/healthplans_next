@@ -11,10 +11,13 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { RiSunLine, RiMoonLine } from "react-icons/ri";
-import MainWindow from "@/components/MainWindow";
 import AboutModal from "@/components/AboutModal";
 
-export default function IndexPage() {
+export default function PlansLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { toggleColorMode, colorMode } = useColorMode();
   const bgColor = useColorModeValue("main.400", "main.700");
@@ -42,7 +45,7 @@ export default function IndexPage() {
         </Button>
         <Button onClick={onOpen}>About</Button>
       </Flex>
-      <MainWindow />
+      {children}
     </Box>
   );
 }

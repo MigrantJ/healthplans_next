@@ -5,6 +5,7 @@ const nextConfig = {
     },
     redirects: () => {
         return [
+            { source: "/", destination: "/plans", permanent: true },
             process.env.MAINTENANCE_MODE === "1"
             ? { source: "/((?!maintenance).*)", destination: "/maintenance", permanent: false }
             : null,
