@@ -2,6 +2,10 @@ import React from "react";
 import currencyFormatter from "@/lib/currencyFormatter";
 import constants from "../../styles/constants";
 import { Box, Text, useColorModeValue } from "@chakra-ui/react";
+import {
+  deductibleBarLightColors,
+  deductibleBarDarkColors,
+} from "@/styles/theme";
 
 interface IProps {
   deductible: number;
@@ -17,6 +21,10 @@ export default React.memo(function DeductibleBar({
   moopWidth,
 }: IProps) {
   const colorPrefix = useColorModeValue("rows_light", "rows_dark");
+  const barColors = useColorModeValue(
+    deductibleBarLightColors,
+    deductibleBarDarkColors
+  );
 
   return (
     <Box
@@ -40,19 +48,23 @@ export default React.memo(function DeductibleBar({
         Deductible / Max Out-Of-Pocket
       </Text>
       <svg height={30} width={constants.DEDUCTIBLE_BAR_W} overflow={"visible"}>
-        <rect width={constants.DEDUCTIBLE_BAR_W} height={15} fill="#38B2AC" />
-        <rect width={deductibleWidth} height={15} fill="#81E6D9" />
-        <text x={5} y={12}>
+        <rect
+          width={constants.DEDUCTIBLE_BAR_W}
+          height={15}
+          fill={barColors.bg}
+        />
+        <rect width={deductibleWidth} height={15} fill={barColors.fill} />
+        <text x={5} y={12} fill="white">
           {currencyFormatter.format(deductible)}
         </text>
         <rect
           y={17}
           width={constants.DEDUCTIBLE_BAR_W}
           height={15}
-          fill="#38B2AC"
+          fill={barColors.bg}
         />
-        <rect y={17} width={moopWidth} height={15} fill="#81E6D9" />
-        <text x={5} y={29}>
+        <rect y={17} width={moopWidth} height={15} fill={barColors.fill} />
+        <text x={5} y={29} fill="white">
           {currencyFormatter.format(moop)}
         </text>
       </svg>

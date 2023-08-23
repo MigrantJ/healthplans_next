@@ -11,6 +11,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { RiSunLine, RiMoonLine } from "react-icons/ri";
+import { FaFileMedical } from "react-icons/fa";
 import AboutModal from "@/components/AboutModal";
 
 export default function PlansLayout({
@@ -32,6 +33,7 @@ export default function PlansLayout({
         alignItems="center"
         gap="10px"
       >
+        <FaFileMedical color="white" size="32px" />
         <Heading size="lg" color="white">
           HealthPlansNext
         </Heading>

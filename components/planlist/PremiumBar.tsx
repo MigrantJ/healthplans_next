@@ -2,6 +2,7 @@ import React from "react";
 import currencyFormatter from "@/lib/currencyFormatter";
 import constants from "../../styles/constants";
 import { Box, Text, useColorModeValue } from "@chakra-ui/react";
+import { premiumBarLightColors, premiumBarDarkColors } from "@/styles/theme";
 
 interface IProps {
   premium: number;
@@ -13,6 +14,10 @@ export default React.memo(function PremiumBar({
   premiumWidth,
 }: IProps) {
   const colorPrefix = useColorModeValue("rows_light", "rows_dark");
+  const barColors = useColorModeValue(
+    premiumBarLightColors,
+    premiumBarDarkColors
+  );
 
   return (
     <Box
@@ -31,8 +36,8 @@ export default React.memo(function PremiumBar({
     >
       <Text display={{ base: "block", md: "none" }}>Premium</Text>
       <svg height={30} width={constants.PREMIUM_BAR_W} overflow={"visible"}>
-        <rect width={constants.PREMIUM_BAR_W} height={30} fill="#22543D" />
-        <rect width={premiumWidth} height={30} fill="#2F855A" />
+        <rect width={constants.PREMIUM_BAR_W} height={30} fill={barColors.bg} />
+        <rect width={premiumWidth} height={30} fill={barColors.fill} />
         <text x={5} y={20} fill="white">
           {currencyFormatter.format(premium)}
         </text>

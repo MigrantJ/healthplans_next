@@ -63,6 +63,26 @@ const colors = {
   rows_dark_hover: theme.colors.blue[700],
 };
 
+export const premiumBarLightColors = {
+  bg: "#22543D",
+  fill: "#2F855A",
+};
+
+export const premiumBarDarkColors = {
+  bg: "#22543D",
+  fill: "#2F855A",
+};
+
+export const deductibleBarLightColors = {
+  bg: "#22543D",
+  fill: "#2F855A",
+};
+
+export const deductibleBarDarkColors = {
+  bg: "#22543D",
+  fill: "#2F855A",
+};
+
 const styles = {
   global: ({ colorMode }) => ({
     "&::-webkit-scrollbar": {
@@ -202,6 +222,7 @@ const components = {
       marginY: "5px",
       border: "1px solid",
       borderColor: colorMode === "light" ? "main.300" : "main.600",
+      alignItems: "center",
     }),
   }),
   PlanlistColumnHeader: defineStyleConfig({

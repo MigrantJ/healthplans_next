@@ -65,7 +65,7 @@ export default memo(function LocationWidget({ zipcode, isFetching }: IProps) {
   };
 
   return (
-    <Flex direction="column">
+    <Flex>
       <InputGroup sx={{ "div[data-lastpass-icon-root]": { display: "none" } }}>
         <InputLeftElement>
           {isFetching ? (
