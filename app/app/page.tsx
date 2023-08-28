@@ -30,6 +30,42 @@ export default function IndexPage() {
       alignItems="center"
     >
       <Heading size="xl">Find the Right Plan for You</Heading>
+      <Flex
+        padding="10px"
+        borderRadius="10px"
+        marginY="5px"
+        border="1px solid"
+        borderColor={colorMode === "light" ? "main.300" : "main.600"}
+        gap="10px"
+        alignItems="center"
+      >
+        <Flex direction="column" flex={2}>
+          <Heading size="md" textAlign="left">
+            Start Here
+          </Heading>
+          <Text>
+            Enter your zip code, or press the <Icon as={RiMapPinLine} />
+            GPS button to find your zip code automatically.
+          </Text>
+        </Flex>
+        <Flex flex={1}>
+          <LocationWidget
+            zipcode={location.data?.zipcode || ""}
+            isFetching={location.isFetching}
+          />
+        </Flex>
+        <Link as={NextLink} href="/app/plans" flex={1} textAlign="right">
+          <Button
+            variant="sidebar"
+            isDisabled={!location.data?.zipcode}
+            size="lg"
+          >
+            See Plans
+          </Button>
+        </Link>
+      </Flex>
+
+      <Heading size="xl">Find the Right Plan for You</Heading>
       <Flex alignItems="center" gap="10px">
         <Flex direction="column">
           <Flex gap="20px" alignItems="center">
