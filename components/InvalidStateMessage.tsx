@@ -22,7 +22,7 @@ export default function InvalidStateMessage({
         To visit your state&apos;s exchange, click the link below:
       </Text>
       <Link as={NextLink} href={exchange_url}>
-        {exchange_name}
+        <Heading size="md">{exchange_name}</Heading>
       </Link>
     </ErrorMessageContainer>
   );

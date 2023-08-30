@@ -24,7 +24,7 @@ export default function PlansLayout({
   const bgColor = useColorModeValue("main.400", "main.700");
 
   return (
-    <Box minHeight="100vh">
+    <Box minHeight="100vh" backgroundColor="main.700">
       <AboutModal {...{ isOpen, onClose }} />
       <Flex
         padding="10px"
