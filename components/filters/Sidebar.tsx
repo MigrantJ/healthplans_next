@@ -10,6 +10,15 @@ import {
   HTMLChakraProps,
   ThemingProps,
   useStyleConfig,
+  Popover,
+  PopoverTrigger,
+  Portal,
+  PopoverContent,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverBody,
+  Box,
+  Text,
 } from "@chakra-ui/react";
 import FilterGroup from "./FilterGroup";
 import LocationWidget from "./LocationWidget";
@@ -66,6 +75,30 @@ export default function Sidebar({ displayMode }: IProps) {
             >
               <IncomeWidget />
             </FilterGroup>
+            <Popover
+              placement="right"
+              defaultIsOpen
+              offset={[0, 32]}
+              closeOnBlur={false}
+              arrowSize={12}
+            >
+              <PopoverTrigger>
+                <Box></Box>
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                    <Text>
+                      For more accurate premium estimates, you can enter your
+                      household members and expected income for the year you
+                      want coverage.
+                    </Text>
+                  </PopoverBody>
+                </PopoverContent>
+              </Portal>
+            </Popover>
             <FilterGroup
               isFormLabel={false}
               headingText="People"

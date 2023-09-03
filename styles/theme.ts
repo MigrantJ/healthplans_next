@@ -5,10 +5,11 @@ import {
   ThemeConfig,
   defineStyleConfig,
 } from "@chakra-ui/react";
-import { inputAnatomy, tagAnatomy } from "@chakra-ui/anatomy";
+import { inputAnatomy, tagAnatomy, popoverAnatomy } from "@chakra-ui/anatomy";
 
 const inputConfig = createMultiStyleConfigHelpers(inputAnatomy.keys);
 const tagConfig = createMultiStyleConfigHelpers(tagAnatomy.keys);
+const popoverConfig = createMultiStyleConfigHelpers(popoverAnatomy.keys);
 
 const config: ThemeConfig = {
   initialColorMode: "system",
@@ -241,6 +242,16 @@ const components = {
         colorMode === "light" ? "rows_light.100" : "rows_dark.100",
       borderBottom: "2px solid darkgray",
     }),
+  }),
+  Popover: popoverConfig.defineMultiStyleConfig({
+    baseStyle: ({ colorMode }) =>
+      popoverConfig.definePartsStyle({
+        content: {
+          backgroundColor: colorMode === "light" ? "white" : "gray.700",
+          border: "2px solid",
+          borderColor: "main.500",
+        },
+      }),
   }),
 };
 

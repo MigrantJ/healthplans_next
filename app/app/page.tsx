@@ -19,7 +19,7 @@ import InvalidStateMessage from "@/components/InvalidStateMessage";
 export default function IndexPage() {
   const location = useLocation();
   const { colorMode } = useColorMode();
-  const { data } = usePlans();
+  const { data, isFetched } = usePlans();
 
   const alt_data = data?.pages[0].alt_data;
 
@@ -69,7 +69,11 @@ export default function IndexPage() {
           />
           <Spacer />
           <Link as={NextLink} href="/app/plans">
-            <Button variant="sidebar" isDisabled={!!alt_data} size="lg">
+            <Button
+              variant="sidebar"
+              isDisabled={!isFetched || !!alt_data}
+              size="lg"
+            >
               See Plans
             </Button>
           </Link>
