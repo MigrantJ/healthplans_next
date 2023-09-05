@@ -247,11 +247,20 @@ const components = {
     baseStyle: ({ colorMode }) =>
       popoverConfig.definePartsStyle({
         content: {
+          display: { base: "none", lg: "block" },
           backgroundColor: colorMode === "light" ? "white" : "gray.700",
           border: "2px solid",
           borderColor: "main.500",
         },
       }),
+    variants: {
+      mobile: ({ colorMode }) =>
+        popoverConfig.definePartsStyle({
+          content: {
+            display: { base: "block", lg: "none" },
+          },
+        }),
+    },
   }),
 };
 
