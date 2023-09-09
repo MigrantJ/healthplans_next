@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import {
   Accordion,
   AccordionButton,
@@ -11,16 +10,7 @@ import {
   HTMLChakraProps,
   ThemingProps,
   useStyleConfig,
-  Popover,
-  PopoverTrigger,
-  Portal,
-  PopoverContent,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverBody,
   Box,
-  Text,
-  useDisclosure,
 } from "@chakra-ui/react";
 import FilterGroup from "./FilterGroup";
 import LocationWidget from "./LocationWidget";
@@ -29,6 +19,7 @@ import PeopleWidget from "./PeopleWidget";
 import FilterWidget from "./FilterWidget";
 import { useLocation } from "@/lib/householdStore";
 import { DisplayMode } from "@/types/DisplayMode";
+import HelpPopover from "../HelpPopover";
 
 interface IContainerProps
   extends HTMLChakraProps<"div">,
@@ -45,15 +36,6 @@ interface IProps {
 
 export default function Sidebar({ displayMode }: IProps) {
   const location = useLocation();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  useEffect(() => {
-    const closedHouseholdNote = JSON.parse(
-      localStorage.getItem("closedHouseholdNote")
-    ) as boolean;
-    if (!closedHouseholdNote) {
-      setTimeout(onOpen, 4000);
-    }
-  }, []);
 
   return (
     <SidebarContainer
@@ -86,34 +68,9 @@ export default function Sidebar({ displayMode }: IProps) {
             >
               <IncomeWidget />
             </FilterGroup>
-            <Popover
-              placement="right"
-              offset={[0, 32]}
-              closeOnBlur={false}
-              arrowSize={12}
-              isOpen={isOpen}
-              onClose={() => {
-                localStorage.setItem("closedHouseholdNote", "true");
-                onClose();
-              }}
-            >
-              <PopoverTrigger>
-                <Box></Box>
-              </PopoverTrigger>
-              <Portal>
-                <PopoverContent>
-                  <PopoverArrow />
-                  <PopoverCloseButton />
-                  <PopoverBody>
-                    <Text>
-                      For more accurate premium estimates, you can enter your
-                      household members and expected income for the year you
-                      want coverage.
-                    </Text>
-                  </PopoverBody>
-                </PopoverContent>
-              </Portal>
-            </Popover>
+            <HelpPopover placement="right" offset={[0, 32]}>
+              <Box />
+            </HelpPopover>
             <FilterGroup
               isFormLabel={false}
               headingText="People"

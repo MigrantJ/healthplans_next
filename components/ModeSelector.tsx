@@ -1,17 +1,8 @@
-import {
-  Button,
-  Popover,
-  PopoverTrigger,
-  Portal,
-  PopoverContent,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverBody,
-  Text,
-} from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { RiFilter3Line, RiListCheck, RiBookmarkFill } from "react-icons/ri";
 import { useNumSavedPlans } from "@/lib/planStore";
 import { DisplayMode } from "@/types/DisplayMode";
+import HelpPopover from "./HelpPopover";
 
 interface IProps {
   displayMode: DisplayMode;
@@ -35,39 +26,17 @@ export default function ModeSelector({ displayMode, setDisplayMode }: IProps) {
 
       {displayMode === "Planlist" && (
         <>
-          <Popover
-            variant="mobile"
-            placement="top-end"
-            defaultIsOpen
-            offset={[0, 8]}
-            closeOnBlur={false}
-            arrowSize={12}
-          >
-            <PopoverTrigger>
-              <Button
-                variant="modeselect"
-                display={{ lg: "none" }}
-                rightIcon={<RiFilter3Line />}
-                left="10px"
-                onClick={() => setDisplayMode("Filters")}
-              >
-                Filters
-              </Button>
-            </PopoverTrigger>
-            <Portal>
-              <PopoverContent>
-                <PopoverArrow />
-                <PopoverCloseButton />
-                <PopoverBody>
-                  <Text>
-                    For more accurate premium estimates, you can enter your
-                    household members and expected income for the year you want
-                    coverage.
-                  </Text>
-                </PopoverBody>
-              </PopoverContent>
-            </Portal>
-          </Popover>
+          <HelpPopover variant="mobile" placement="top-end" offset={[0, 8]}>
+            <Button
+              variant="modeselect"
+              display={{ lg: "none" }}
+              rightIcon={<RiFilter3Line />}
+              left="10px"
+              onClick={() => setDisplayMode("Filters")}
+            >
+              Filters
+            </Button>
+          </HelpPopover>
 
           <Button
             variant="modeselect"
