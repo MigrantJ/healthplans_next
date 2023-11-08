@@ -40,10 +40,14 @@ interface Facet {
   standardized_plans?: number;
 }
 
-type AltData = AltDataNone | AltDataInvalidState;
+type AltData = AltDataNone | AltDataAuthError | AltDataInvalidState;
 
 interface AltDataNone {
   type: "None";
+}
+
+interface AltDataAuthError {
+  type: "AuthorizationError"
 }
 
 interface AltDataInvalidState {

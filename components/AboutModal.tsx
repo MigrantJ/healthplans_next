@@ -51,6 +51,7 @@ export default function AboutModal({ isOpen, onClose }: IProps) {
             <ListItem>Deployment Platform: Vercel</ListItem>
             <ListItem>UI Components: Chakra UI</ListItem>
             <ListItem>Data Fetch / Caching: Tanstack Query</ListItem>
+            <ListItem>State Management: Zustand</ListItem>
             <ListItem>Data Visualization: D3.js</ListItem>
             <ListItem>Icons: Remix Icon via React Icons</ListItem>
           </UnorderedList>

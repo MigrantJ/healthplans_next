@@ -29,7 +29,10 @@ const getPosByGPS = function (
     console.log(error);
   };
 
-  navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+  navigator.geolocation.getCurrentPosition(successCallback, errorCallback, {
+    maximumAge: 600000,
+    enableHighAccuracy: false
+  });
 };
 
 interface IProps {
