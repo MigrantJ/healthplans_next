@@ -6,6 +6,7 @@ import {
   Text,
   InputGroup,
   InputLeftElement,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { BsCurrencyDollar } from "react-icons/bs";
 import { useHouseholdActions, useIncome } from "@/lib/householdStore";
@@ -17,6 +18,7 @@ export default memo(function IncomeWidget() {
   const [innerIncome, setInnerIncome] = useState(income.toString());
   const inputRef = useRef<HTMLInputElement>(null);
   const creditEstimate = useCreditEstimate().data;
+  const bgColor = useColorModeValue("green", "white");
 
   const focusInput = () => {
     if (innerIncome === "0") {
@@ -61,7 +63,7 @@ export default memo(function IncomeWidget() {
           onKeyUp={handleKeyUp}
         />
       </InputGroup>
-      <Text as="span" color="green" fontWeight="bold" paddingLeft="10px">
+      <Text as="span" color={bgColor} fontWeight="bold" paddingLeft="10px">
         {taxCredit}
       </Text>
     </Flex>

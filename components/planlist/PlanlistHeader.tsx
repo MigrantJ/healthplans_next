@@ -74,7 +74,7 @@ export default function PlanlistHeader({
         </svg>
       </PlanlistColumnHeader>
       <PlanlistColumnHeader>
-        <Text as="b">Deductible</Text>
+        <Text as="b">Deductible / Max Out-Of-Pocket</Text>
         <svg height={20} width={xScaleDeductible(deductibleExtent[1]) + 20}>
           <g transform="translate(2, 18)">
             <Axis

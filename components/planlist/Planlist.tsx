@@ -21,6 +21,7 @@ import { usePlans, usePlanRanges } from "@/lib/planStore";
 import { useCreditEstimate } from "@/lib/creditEstimateStore";
 import { useFilter } from "@/lib/householdStore";
 import filterPlans from "@/lib/filterPlans";
+import AccessErrorMessage from "../AccessErrorMessage";
 
 interface IProps {
   displayMode: DisplayMode;
@@ -57,7 +58,10 @@ export default function Planlist({ displayMode }: IProps) {
 
   const alt_data = data.pages[0].alt_data;
   if (alt_data) {
-    if (alt_data.type === "InvalidState") {
+    if (alt_data.type === "AuthorizationError") {
+      return <AccessErrorMessage />
+    }
+    else if (alt_data.type === "InvalidState") {
       return <InvalidStateMessage {...alt_data} />;
     }
   }
@@ -79,8 +83,9 @@ export default function Planlist({ displayMode }: IProps) {
     ranges.deductibles.min,
     ranges.deductibles.max,
   ];
+
   const xScaleDeductible = scaleLinear()
-    .domain([0, deductibleExtent[1]])
+    .domain([0, deductibleExtent[1] + (deductibleExtent[1] * constants.MOOP_BAR_OVERFLOW_PERCENT)])
     .range([0, constants.DEDUCTIBLE_BAR_W]);
 
   if (!hasNextPage && !filteredPlans.length) {

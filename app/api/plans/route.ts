@@ -45,7 +45,18 @@ export async function POST(req: NextRequest) {
 
   const [plansRes, plansResStatus] = await Requester.searchPlans(body);
   if (!plansRes?.ok) {
-    if (plansResStatus === 429) {
+    if (plansResStatus === 401 || plansResStatus === 403) {
+      const authErrorBody: GetPlans.Response = {
+        plans: [],
+        total: 0,
+        alt_data: {
+          type: "AuthorizationError"
+        },
+      };
+
+      return NextResponse.json(authErrorBody);
+    }
+    else if (plansResStatus === 429) {
       return NextResponse.json({}, { status: 429 });
     }
     const resJson = (await plansRes.json()) as MarketplaceSearch.ErrorResponse;
