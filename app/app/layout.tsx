@@ -11,16 +11,20 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { RiSunLine, RiMoonLine } from "react-icons/ri";
-import MainWindow from "@/components/MainWindow";
+import { FaFileMedical } from "react-icons/fa";
 import AboutModal from "@/components/AboutModal";
 
-export default function IndexPage() {
+export default function PlansLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { toggleColorMode, colorMode } = useColorMode();
   const bgColor = useColorModeValue("main.400", "main.700");
 
   return (
-    <Box minHeight="100vh">
+    <Box minHeight="100vh" backgroundColor="main.700">
       <AboutModal {...{ isOpen, onClose }} />
       <Flex
         padding="10px"
@@ -29,6 +33,7 @@ export default function IndexPage() {
         alignItems="center"
         gap="10px"
       >
+        <FaFileMedical color="white" size="32px" />
         <Heading size="lg" color="white">
           HealthPlansNext
         </Heading>
@@ -42,7 +47,7 @@ export default function IndexPage() {
         </Button>
         <Button onClick={onOpen}>About</Button>
       </Flex>
-      <MainWindow />
+      {children}
     </Box>
   );
 }

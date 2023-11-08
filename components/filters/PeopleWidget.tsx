@@ -17,7 +17,7 @@ export default memo(function PeopleWidget() {
   };
 
   return (
-    <>
+    <Flex flexDir="column">
       {isOpen && (
         <EditPersonModal
           {...{
@@ -43,7 +43,7 @@ export default memo(function PeopleWidget() {
           </Button>
         ))}
       </Flex>
-      <Divider marginY="10px" />
+      {!!people.length && <Divider marginY="10px" />}
       <Button
         variant="sidebar"
         size="sm"
@@ -58,6 +58,6 @@ export default memo(function PeopleWidget() {
           <Text>+ Add Yourself</Text>
         )}
       </Button>
-    </>
+    </Flex>
   );
 });

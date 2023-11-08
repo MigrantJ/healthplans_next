@@ -10,6 +10,7 @@ import {
   HTMLChakraProps,
   ThemingProps,
   useStyleConfig,
+  Box,
 } from "@chakra-ui/react";
 import FilterGroup from "./FilterGroup";
 import LocationWidget from "./LocationWidget";
@@ -18,6 +19,7 @@ import PeopleWidget from "./PeopleWidget";
 import FilterWidget from "./FilterWidget";
 import { useLocation } from "@/lib/householdStore";
 import { DisplayMode } from "@/types/DisplayMode";
+import HelpPopover from "../HelpPopover";
 
 interface IContainerProps
   extends HTMLChakraProps<"div">,
@@ -66,6 +68,9 @@ export default function Sidebar({ displayMode }: IProps) {
             >
               <IncomeWidget />
             </FilterGroup>
+            <HelpPopover placement="right" offset={[0, 32]}>
+              <Box />
+            </HelpPopover>
             <FilterGroup
               isFormLabel={false}
               headingText="People"

@@ -5,10 +5,11 @@ import {
   ThemeConfig,
   defineStyleConfig,
 } from "@chakra-ui/react";
-import { inputAnatomy, tagAnatomy } from "@chakra-ui/anatomy";
+import { inputAnatomy, tagAnatomy, popoverAnatomy } from "@chakra-ui/anatomy";
 
 const inputConfig = createMultiStyleConfigHelpers(inputAnatomy.keys);
 const tagConfig = createMultiStyleConfigHelpers(tagAnatomy.keys);
+const popoverConfig = createMultiStyleConfigHelpers(popoverAnatomy.keys);
 
 const config: ThemeConfig = {
   initialColorMode: "system",
@@ -61,6 +62,26 @@ const colors = {
     900: theme.colors.gray[100],
   },
   rows_dark_hover: theme.colors.blue[700],
+};
+
+export const premiumBarLightColors = {
+  bg: "#22543D",
+  fill: "#2F855A",
+};
+
+export const premiumBarDarkColors = {
+  bg: "#22543D",
+  fill: "#2F855A",
+};
+
+export const deductibleBarLightColors = {
+  bg: "#22543D",
+  fill: "#2F855A",
+};
+
+export const deductibleBarDarkColors = {
+  bg: "#22543D",
+  fill: "#2F855A",
 };
 
 const styles = {
@@ -202,6 +223,7 @@ const components = {
       marginY: "5px",
       border: "1px solid",
       borderColor: colorMode === "light" ? "main.300" : "main.600",
+      alignItems: "center",
     }),
   }),
   PlanlistColumnHeader: defineStyleConfig({
@@ -220,6 +242,25 @@ const components = {
         colorMode === "light" ? "rows_light.100" : "rows_dark.100",
       borderBottom: "2px solid darkgray",
     }),
+  }),
+  Popover: popoverConfig.defineMultiStyleConfig({
+    baseStyle: ({ colorMode }) =>
+      popoverConfig.definePartsStyle({
+        content: {
+          display: { base: "none", lg: "block" },
+          backgroundColor: colorMode === "light" ? "white" : "gray.700",
+          border: "2px solid",
+          borderColor: "main.500",
+        },
+      }),
+    variants: {
+      mobile: ({ colorMode }) =>
+        popoverConfig.definePartsStyle({
+          content: {
+            display: { base: "block", lg: "none" },
+          },
+        }),
+    },
   }),
 };
 
