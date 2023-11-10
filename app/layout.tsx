@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Providers } from "./providers";
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata = {
   title: "HealthPlansNext",
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
