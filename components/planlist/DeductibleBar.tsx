@@ -45,7 +45,7 @@ export default React.memo(function DeductibleBar({
       }}
     >
       <Text display={{ base: "block", md: "none" }}>
-        Deductible / Max Out-Of-Pocket
+        Deductible / Max Out Of Pocket
       </Text>
       <svg height={30} width={constants.DEDUCTIBLE_BAR_W} overflow={"visible"}>
         <rect

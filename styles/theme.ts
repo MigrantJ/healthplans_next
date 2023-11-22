@@ -208,7 +208,7 @@ const components = {
       minHeight: "100vh",
       maxHeight: { lg: "100vh" },
       maxWidth: "800px",
-      minWidth: { base: "100%", sm: "400px", lg: "100%" },
+      minWidth: { base: "100%", sm: "400px", lg: "300px" },
       margin: { base: "0 auto", lg: 0 },
       boxShadow: "6px 0 4px -4px black, -6px 0 4px -4px black",
       backgroundColor: colorMode === "light" ? "white" : "main.800",
