@@ -16,7 +16,7 @@ export default React.memo(function NameBar({ planName, issuerName }: IProps) {
       padding={{ base: "0 5px" }}
       backgroundColor={colorPrefix + ".100"}
       sx={{
-        ".group:nth-child(odd) &": {
+        ".group:nth-of-type(odd) &": {
           backgroundColor: colorPrefix + ".300",
         },
         ".group:hover &": {
