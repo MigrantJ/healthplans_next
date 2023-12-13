@@ -31,7 +31,7 @@ const getPosByGPS = function (
 
   navigator.geolocation.getCurrentPosition(successCallback, errorCallback, {
     maximumAge: 600000,
-    enableHighAccuracy: false
+    enableHighAccuracy: false,
   });
 };
 
@@ -77,6 +77,7 @@ export default memo(function LocationWidget({ zipcode, isFetching }: IProps) {
             <Tooltip hasArrow label="Click To Use GPS">
               <Button
                 variant="sidebar"
+                aria-label="gps"
                 onClick={(_) => {
                   setShowError(false);
                   setZipcode("");

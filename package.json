@@ -4,7 +4,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint \"**/*.{jsx,ts,tsx}\" --ignore-pattern \"node_modules/\"",
-    "test": "vitest"
+    "test": "vitest",
+    "e2e": "start-server-and-test dev http://localhost:3000 \"cypress open --e2e\""
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.19",
@@ -42,11 +43,13 @@
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
     "@vitejs/plugin-react": "^4.0.0",
+    "cypress": "^13.6.1",
     "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-typescript": "^3.5.1",
     "happy-dom": "^7.6.0",
     "prettier": "^2.8.8",
+    "start-server-and-test": "^2.0.3",
     "vitest": "^0.31.0"
   }
 }
