@@ -1,4 +1,4 @@
-import { ImageResponse } from "next/server";
+import { ImageResponse } from "next/og";
 import { FaFileMedical } from "react-icons/fa";
 
 // Route segment config
