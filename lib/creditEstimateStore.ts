@@ -1,14 +1,14 @@
-import { useQuery, QueryFunction } from "@tanstack/react-query";
+import { useQuery, QueryFunction, keepPreviousData } from "@tanstack/react-query";
 import * as GCE from "@/types/GetCreditEstimate";
 import { useIncome, useLocation, usePeople } from "./householdStore";
 
 interface IProps {
-  queryKey: ["query", GCE.InitRequest];
+  queryKey: ["creditEstimate", GCE.InitRequest];
 }
 
 export const getCreditEstimate: QueryFunction<
   GCE.Response,
-  ["query", GCE.InitRequest]
+  ["creditEstimate", GCE.InitRequest]
 > = async ({ queryKey }: IProps) => {
   const body: GCE.InitRequest = { ...queryKey[1] };
   const res = await fetch(`/api/credit`, {
@@ -34,7 +34,6 @@ export const useCreditEstimate = () => {
     queryFn: getCreditEstimate,
     select: querySelect,
     enabled: !!location && income > 0,
-    keepPreviousData: true,
     retry: 10,
     placeholderData: {
       estimates: [

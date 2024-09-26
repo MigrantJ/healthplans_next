@@ -8,7 +8,8 @@ interface IProps {
 
 export const getPlans: QueryFunction<
   GetPlans.Response,
-  ["query", GetPlans.Request]
+  ["query", GetPlans.Request],
+  number
 > = async ({ queryKey, pageParam = 0 }: IProps) => {
   const body: GetPlans.Request = { ...queryKey[1], pageParam };
   const res = await fetch(`/api/plans`, {

@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, keepPreviousData } from "@tanstack/react-query";
 import { create } from "zustand";
 
 import * as GetPlans from "@/types/GetPlans";
@@ -15,7 +15,8 @@ export const usePlans = () => {
     queryKey: ["plans", { location, income, people }],
     queryFn: getPlans,
     enabled: !!location,
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
+    initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     retry: 10,
   });

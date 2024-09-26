@@ -4,7 +4,7 @@ import IPerson from "@/types/Person";
 import IFilter from "@/types/Filter";
 
 import { Request, SuccessResponse } from "@/types/GetLocation";
-import { useQuery, useQueryClient, QueryFunction } from "@tanstack/react-query";
+import { useQuery, useQueryClient, QueryFunction, keepPreviousData } from "@tanstack/react-query";
 
 interface HouseholdStore {
   latlong: { lat: number; long: number };
@@ -73,7 +73,7 @@ export const useLocation = () => {
     queryKey: ["location", { lat, long, zipcode }],
     queryFn: getLocation,
     enabled: !!zipcode || (lat !== null && long !== null),
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
     retry: 10,
   });
   const location = results.data;

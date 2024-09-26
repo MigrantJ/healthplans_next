@@ -32,7 +32,7 @@ export default function Planlist({ displayMode }: IProps) {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { ref, inView } = useInView();
-  const { data, fetchNextPage, isInitialLoading, hasNextPage, isFetching } =
+  const { data, fetchNextPage, isLoading, hasNextPage, isFetching } =
     usePlans();
   const creditEstimate = useCreditEstimate().data;
   const filter = useFilter();
@@ -54,7 +54,7 @@ export default function Planlist({ displayMode }: IProps) {
 
   if (!data) return <></>;
 
-  if (isInitialLoading) return <PlanSpinner />;
+  if (isLoading) return <PlanSpinner />;
 
   const alt_data = data.pages[0].alt_data;
   if (alt_data) {
