@@ -54,7 +54,7 @@ export default React.memo(function DeductibleBar({
           fill={barColors.bg}
         />
         <rect width={deductibleWidth} height={15} fill={barColors.fill} />
-        <text x={5} y={12} fill="white">
+        <text x={5} y={12} fill="white" fontSize={14}>
           {currencyFormatter.format(deductible)}
         </text>
         <rect
@@ -64,7 +64,7 @@ export default React.memo(function DeductibleBar({
           fill={barColors.bg}
         />
         <rect y={17} width={moopWidth} height={15} fill={barColors.fill} />
-        <text x={5} y={29} fill="white">
+        <text x={5} y={29} fill="white" fontSize={14}>
           {currencyFormatter.format(moop)}
         </text>
       </svg>

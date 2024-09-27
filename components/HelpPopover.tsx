@@ -11,6 +11,7 @@ import {
   useDisclosure,
   PlacementWithLogical,
 } from "@chakra-ui/react";
+import { useIncome, usePeople } from "@/lib/householdStore";
 
 interface IProps {
   variant?: string;
@@ -34,6 +35,11 @@ export default function HelpPopover({
       setTimeout(onOpen, 4000);
     }
   }, []);
+  const income = useIncome();
+  const people = usePeople();
+  if (isOpen && (income || people.length)) {
+    onClose();
+  }
 
   return (
     <Popover

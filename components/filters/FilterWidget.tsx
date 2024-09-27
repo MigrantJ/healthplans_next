@@ -114,6 +114,7 @@ export default memo(function FilterWidget() {
                 disease_mgmt_programs: e,
               });
             }}
+            dropUp={true}
           />
         </FilterGroup>
       )}
@@ -130,6 +131,7 @@ export default memo(function FilterWidget() {
                 issuers: e,
               });
             }}
+            dropUp={true}
           />
         </FilterGroup>
       )}
