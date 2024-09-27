@@ -30,10 +30,19 @@ describe("Plans Page", () => {
   });
 
   it("should show the help popover on first visit", () => {
-    expect(localStorage.getItem("closedHouseholdNote")).to.eq(null);
-    cy.contains("For more accurate premium estimates").should("exist");
+    cy.getAllLocalStorage().then((result) => {
+      expect(result["http://localhost:3000"]["closedHouseholdNote"]).to.eq(undefined);
+    });
+    cy.contains("For more accurate premium estimates").then(($ele: HTMLElement) => {
+      if ($ele) {
+        cy.log($ele.textContent);
+      }
+    })
     cy.findByRole("dialog").find("button").click();
-    expect(localStorage.getItem("closedHouseholdNote")).to.eq(true);
+    cy.getAllLocalStorage().then((result: Cypress.StorageByOrigin) => {
+      cy.log(JSON.stringify(result));
+      expect(result["http://localhost:3000"]["closedHouseholdNote"]).to.eq("true");
+    });
   });
 
   it("should not allow navigation to Compare page without selected plans", () => {
