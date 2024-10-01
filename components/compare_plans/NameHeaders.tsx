@@ -37,12 +37,14 @@ export default function NameHeaders({ plans }: IProps) {
             paddingX="4px"
           >
             <EllipsisText>{plan.issuer.name}</EllipsisText>
-            <Icon
-              as={RiCloseFill}
-              boxSize={6}
-              cursor="pointer"
-              onClick={() => toggleSavedPlan(plan.id)}
-            />
+            {plans.length > 1 && (
+              <Icon
+                as={RiCloseFill}
+                boxSize={6}
+                cursor="pointer"
+                onClick={() => toggleSavedPlan(plan.id)}
+              />
+            )}
             <EllipsisText gridColumn="1/3" fontWeight="bold">
               {plan.name}
             </EllipsisText>

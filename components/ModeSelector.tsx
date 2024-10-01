@@ -41,7 +41,7 @@ export default function ModeSelector({ displayMode, setDisplayMode }: IProps) {
           <Button
             variant="modeselect"
             leftIcon={<RiBookmarkFill />}
-            isDisabled={numSavedPlans === 0}
+            isDisabled={numSavedPlans < 2}
             right="10px"
             onClick={() => setDisplayMode("ComparePlans")}
           >
