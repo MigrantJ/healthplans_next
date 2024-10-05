@@ -16,12 +16,12 @@ import DeductibleBar from "./DeductibleBar";
 import NameBar from "./NameBar";
 import BookmarkButton from "./BookmarkButton";
 import PlanSpinner from "./PlanSpinner";
-import InvalidStateMessage from "../InvalidStateMessage";
 import { usePlans, usePlanRanges } from "@/lib/planStore";
 import { useCreditEstimate } from "@/lib/creditEstimateStore";
 import { useFilter } from "@/lib/householdStore";
 import filterPlans from "@/lib/filterPlans";
 import AccessErrorMessage from "../AccessErrorMessage";
+import InvalidStateModal from "../InvalidStateModal";
 
 interface IProps {
   displayMode: DisplayMode;
@@ -62,7 +62,8 @@ export default function Planlist({ displayMode }: IProps) {
       return <AccessErrorMessage />
     }
     else if (alt_data.type === "InvalidState") {
-      return <InvalidStateMessage {...alt_data} />;
+      // todo: popup doesn't come back if you close it and put in an invalid state again
+      return <InvalidStateModal {...alt_data} />
     }
   }
 

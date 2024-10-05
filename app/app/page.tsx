@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image"
 import NextLink from "next/link";
 import {
   Flex,
@@ -14,7 +15,7 @@ import LocationWidget from "@/components/filters/LocationWidget";
 import { useLocation } from "@/lib/householdStore";
 import { usePlans } from "@/lib/planStore";
 import { RiMapPinLine } from "react-icons/ri";
-import InvalidStateMessage from "@/components/InvalidStateMessage";
+import InvalidStateModal from "@/components/InvalidStateModal";
 
 export default function IndexPage() {
   const location = useLocation();
@@ -85,18 +86,19 @@ export default function IndexPage() {
           </Flex>
         </Flex>
         {alt_data && alt_data.type === "InvalidState" && (
-          <InvalidStateMessage {...alt_data} />
+          <InvalidStateModal {...alt_data} />
         )}
       </Flex>
       <Flex
         margin="0 auto"
         backgroundColor={colorMode === "light" ? "white" : "black"}
         width="50%"
-        borderRadius="10px"
-        border="1px solid"
-        borderColor={colorMode === "light" ? "main.300" : "main.600"}
         marginX="32px"
+        justifyContent="center"
       >
+        <Flex height="fit-content">
+          <Image src="/doctor.svg" alt="doctor" width="600" height="600"/>
+        </Flex>
       </Flex>
     </Flex>
   );

@@ -12,3 +12,8 @@ interface ZipCodeRequest {
 }
 
 export type SuccessResponse = ILocation;
+
+export interface ErrorResponse {
+  status: number;
+  message: string;
+}
