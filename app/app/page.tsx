@@ -72,6 +72,7 @@ export default function IndexPage() {
             <LocationWidget
               zipcode={location.data?.zipcode || ""}
               isFetching={location.isFetching}
+              isError={location.isError}
             />
             <Spacer />
             <Link as={NextLink} href="/app/plans">
@@ -97,7 +98,7 @@ export default function IndexPage() {
         justifyContent="center"
       >
         <Flex height="fit-content">
-          <Image src="/doctor.svg" alt="doctor" width="600" height="600"/>
+          <Image src="/doctor.svg" alt="doctor" width="600" height="600" priority={true}/>
         </Flex>
       </Flex>
     </Flex>

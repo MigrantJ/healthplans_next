@@ -38,9 +38,10 @@ const getPosByGPS = function (
 interface IProps {
   zipcode: string;
   isFetching: boolean;
+  isError: boolean;
 }
 
-export default memo(function LocationWidget({ zipcode, isFetching }: IProps) {
+export default memo(function LocationWidget({ zipcode, isFetching, isError }: IProps) {
   const { setLatLong, setZipcode } = useHouseholdActions();
   const [innerZipcode, setInnerZipcode] = useState("");
   const [showError, setShowError] = useState(false);
@@ -48,7 +49,8 @@ export default memo(function LocationWidget({ zipcode, isFetching }: IProps) {
 
   useEffect(() => {
     setInnerZipcode(zipcode);
-  }, [zipcode]);
+    setShowError(isError);
+  }, [zipcode, isError]);
 
   const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.code === "Enter") {

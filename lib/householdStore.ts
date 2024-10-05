@@ -58,7 +58,8 @@ const getLocation: QueryFunction<
     headers: { "Content-Type": "application/json" },
   });
   if (!res.ok) {
-    throw new Error(`Error: ${res.status}`);
+    const { message } = await res.json();
+    throw new Error(message);
   }
   const location = (await res.json()) as SuccessResponse;
   return location;
@@ -74,7 +75,12 @@ export const useLocation = () => {
     queryFn: getLocation,
     enabled: !!zipcode || (lat !== null && long !== null),
     placeholderData: keepPreviousData,
-    retry: 10,
+    retry: (failureCount, error) => {
+      if (error.message === "invalid zip code") {
+        return false;
+      }
+      return failureCount < 10;
+    },
   });
   const location = results.data;
   // since queryresult uniqueness is based on zip code, fill the cache with other combinations of the same zip code

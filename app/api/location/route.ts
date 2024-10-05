@@ -50,8 +50,8 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  if (!("closestZipCode" in zipToCountyAndState)) {
-    return NextResponse.json({message: "Please enter a valid US zip code."}, {"status": 400});
+  if (!(closestZipCode in zipToCountyAndState)) {
+    return NextResponse.json({message: "invalid zip code"}, {"status": 400});
   }
 
   const [county, state] = zipToCountyAndState[closestZipCode];
