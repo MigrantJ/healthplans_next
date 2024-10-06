@@ -27,15 +27,16 @@ export default function IndexPage() {
   return (
     <Flex
       flexDir={"row"}
-      paddingX={"192px"}
-      paddingY={"96px"}
+      paddingTop={"96px"}
       backgroundColor={colorMode === "light" ? "white" : "black"}
-      minHeight={"100vh"}
+      height={"100vh"}
+      overflow={"hidden"}
     >
+      <Flex width="5%"/>
       <Flex
         flexDir="column"
         marginX="32px"
-        width="50%"
+        width="45%"
         backgroundColor={colorMode === "light" ? "white" : "black"}
         alignItems="left"
       >
@@ -92,15 +93,20 @@ export default function IndexPage() {
       </Flex>
       <Flex
         margin="0 auto"
-        backgroundColor={colorMode === "light" ? "white" : "black"}
-        width="50%"
+        width="45%"
         marginX="32px"
-        justifyContent="center"
+        minHeight={"100vh"}
       >
-        <Flex height="fit-content">
-          <Image src="/doctor.svg" alt="doctor" width="600" height="600" priority={true}/>
-        </Flex>
+        <Image
+          src="/doctor.svg"
+          alt="doctor"
+          width={0}
+          height={0}
+          priority={true}
+          style={{ width: 'auto', height: '100%' }}
+        />
       </Flex>
+      <Flex width="5%"/>
     </Flex>
   );
 }
