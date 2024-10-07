@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image"
 import NextLink from "next/link";
 import {
   Flex,
@@ -10,6 +9,7 @@ import {
   Heading,
   Text,
   Icon,
+  Image,
 } from "@chakra-ui/react";
 import LocationWidget from "@/components/filters/LocationWidget";
 import { useLocation } from "@/lib/householdStore";
@@ -26,17 +26,18 @@ export default function IndexPage() {
 
   return (
     <Flex
-      flexDir={"row"}
+      flexDir={{base: "column-reverse", md: "row"}}
       paddingTop={"96px"}
       backgroundColor={colorMode === "light" ? "white" : "black"}
       height={"100vh"}
       overflow={"hidden"}
+      alignItems={{base: "center", md: "normal"}}
     >
       <Flex width="5%"/>
       <Flex
         flexDir="column"
         marginX="32px"
-        width="45%"
+        width={{base: "auto", md: "45%"}}
         backgroundColor={colorMode === "light" ? "white" : "black"}
         alignItems="left"
       >
@@ -60,7 +61,6 @@ export default function IndexPage() {
           gap="10px"
           direction="column"
           marginTop="32px"
-          marginRight="48px"
         >
           <Heading size="xl" textAlign="left">
             Start Here
@@ -69,7 +69,12 @@ export default function IndexPage() {
             Enter your zip code, or press the <Icon as={RiMapPinLine} />
             Geolocation button to find your zip code automatically.
           </Text>
-          <Flex width="100%">
+          <Flex 
+            width="100%"
+            alignItems={"center"}
+            flexDirection={{base: "column", sm: "row"}}
+            gap="5px"
+          >
             <LocationWidget
               zipcode={location.data?.zipcode || ""}
               isFetching={location.isFetching}
@@ -92,21 +97,18 @@ export default function IndexPage() {
         )}
       </Flex>
       <Flex
-        margin="0 auto"
-        width="45%"
-        marginX="32px"
-        minHeight={"100vh"}
+        width={{base: "auto", md: "50%"}}
       >
         <Image
           src="/doctor.svg"
           alt="doctor"
-          width={0}
-          height={0}
-          priority={true}
-          style={{ width: 'auto', height: '100%' }}
+          position={{base: "inherit", md: "fixed"}}
+          right={{base: "auto", md: 4}}
+          bottom={{base: "auto", md: 0}}
+          width={{base: "100%", md: "50%"}}
+          height={{base: "auto", md: "80%"}}
         />
       </Flex>
-      <Flex width="5%"/>
     </Flex>
   );
 }
