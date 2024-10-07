@@ -3,15 +3,12 @@ import NextLink from "next/link";
 import {
   Heading,
   Button,
-  Flex,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalOverlay,
-  Spacer,
   Text,
-  Link,
   useDisclosure,
 } from "@chakra-ui/react";
 
@@ -24,7 +21,7 @@ interface IProps {
 export default function InvalidStateModal({
   exchange_name,
   exchange_url,
-}) {
+}: IProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   useEffect(() => {
     if (!isOpen) onOpen();

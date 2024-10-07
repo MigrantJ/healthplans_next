@@ -60,6 +60,7 @@ export default function Sidebar({ displayMode }: IProps) {
               <LocationWidget
                 zipcode={location.data?.zipcode || ""}
                 isFetching={location.isFetching}
+                isError={location.isError}
               />
             </FilterGroup>
             <FilterGroup

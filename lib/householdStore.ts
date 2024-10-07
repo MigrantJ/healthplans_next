@@ -3,7 +3,7 @@ import { create } from "zustand";
 import IPerson from "@/types/Person";
 import IFilter from "@/types/Filter";
 
-import { Request, SuccessResponse } from "@/types/GetLocation";
+import { Request, SuccessResponse, ErrorResponse } from "@/types/GetLocation";
 import { useQuery, useQueryClient, QueryFunction, keepPreviousData } from "@tanstack/react-query";
 
 interface HouseholdStore {
@@ -58,7 +58,7 @@ const getLocation: QueryFunction<
     headers: { "Content-Type": "application/json" },
   });
   if (!res.ok) {
-    const { message } = await res.json();
+    const { message } = (await res.json()) as ErrorResponse;
     throw new Error(message);
   }
   const location = (await res.json()) as SuccessResponse;

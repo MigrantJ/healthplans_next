@@ -1,4 +1,4 @@
-import { useQuery, QueryFunction, keepPreviousData } from "@tanstack/react-query";
+import { useQuery, QueryFunction } from "@tanstack/react-query";
 import * as GCE from "@/types/GetCreditEstimate";
 import { useIncome, useLocation, usePeople } from "./householdStore";
 

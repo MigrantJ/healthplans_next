@@ -26,17 +26,17 @@ export default function IndexPage() {
 
   return (
     <Flex
-      flexDir={{base: "column-reverse", md: "row"}}
-      paddingTop={"96px"}
+      flexDir={{base: "column", md: "row"}}
       backgroundColor={colorMode === "light" ? "white" : "black"}
       height={"100vh"}
-      overflow={"hidden"}
+      overflow={{base: "auto", md: "hidden"}}
       alignItems={{base: "center", md: "normal"}}
     >
       <Flex width="5%"/>
       <Flex
         flexDir="column"
         marginX="32px"
+        marginY="32px"
         width={{base: "auto", md: "45%"}}
         backgroundColor={colorMode === "light" ? "white" : "black"}
         alignItems="left"
@@ -98,6 +98,8 @@ export default function IndexPage() {
       </Flex>
       <Flex
         width={{base: "auto", md: "50%"}}
+        marginY={"32px"}
+        marginX={{base: "16px", md: "auto"}}
       >
         <Image
           src="/doctor.svg"
