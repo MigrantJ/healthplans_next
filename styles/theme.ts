@@ -4,6 +4,7 @@ import {
   createMultiStyleConfigHelpers,
   ThemeConfig,
   defineStyleConfig,
+  keyframes,
 } from "@chakra-ui/react";
 import { inputAnatomy, tagAnatomy, popoverAnatomy } from "@chakra-ui/anatomy";
 
@@ -97,6 +98,18 @@ const styles = {
   }),
 };
 
+const spin = keyframes`  
+  0% {
+    border-color: white;
+  }
+  50% {
+    border-color: #3173b4;
+  }
+  100% {
+    border-color: white;
+  }
+`;
+
 const components = {
   Input: inputConfig.defineMultiStyleConfig({
     baseStyle: ({ colorMode }) =>
@@ -130,8 +143,23 @@ const components = {
     variants: {
       sidebar: ({ colorMode }) => ({
         backgroundColor: "main.500",
-        border: "1px solid blue.500",
         color: "white",
+        _hover: {
+          backgroundColor: colorMode === "light" ? "main.300" : "main.400",
+          _disabled: {
+            backgroundColor: "gray.400",
+          },
+        },
+      }),
+      seeplans: ({ colorMode }) => ({
+        backgroundColor: "main.500",
+        color: "white",
+        border: "3px solid",
+        animation: `${spin} 1s infinite`,
+        _disabled: {
+          animation: "auto",
+          border: "none"
+        },
         _hover: {
           backgroundColor: colorMode === "light" ? "main.300" : "main.400",
           _disabled: {

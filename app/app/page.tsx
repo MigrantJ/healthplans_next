@@ -83,7 +83,7 @@ export default function IndexPage() {
             <Spacer />
             <Link as={NextLink} href="/app/plans">
               <Button
-                variant="sidebar"
+                variant="seeplans"
                 isDisabled={!isFetched || !!alt_data}
                 size="lg"
               >
