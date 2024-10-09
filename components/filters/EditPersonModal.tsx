@@ -24,6 +24,7 @@ import {
   FormErrorMessage,
 } from "@chakra-ui/react";
 import { useForm, Controller } from "react-hook-form";
+import InfoIcon from "../InfoIcon";
 
 const checkbox_options = [
   "has_mec",
@@ -142,6 +143,7 @@ export default function EditPersonModal({
             <FormControl isInvalid={!!errors.gender} paddingTop="10px">
               <InputGroup size="sm">
                 <FormLabel htmlFor="Sex">Sex</FormLabel>
+                <InfoIcon text={"Please enter the person's sex that they were assigned at birth."} />
                 <Controller
                   name="gender"
                   control={control}
