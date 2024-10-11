@@ -169,7 +169,7 @@ export default function EditPersonModal({
               </FormErrorMessage>
             </FormControl>
             {isSelf(personIndex, people) && (
-              <FormControl isInvalid={!!errors.relationship}>
+              <FormControl isInvalid={!!errors.relationship} paddingTop="10px" lineHeight={"30px"}>
                 <InputGroup size="sm">
                   <FormLabel>Relationship</FormLabel>
                   <Select
@@ -178,6 +178,7 @@ export default function EditPersonModal({
                     {...register("relationship", {
                       required: "This field is required.",
                     })}
+                    marginLeft="10px"
                   >
                     {relationshipOptions.map((r: Relationship, i) => {
                       // we don't want Self appearing in the dropdown, it will be the assumed default
@@ -196,7 +197,7 @@ export default function EditPersonModal({
               </FormControl>
             )}
             <Text paddingTop="10px">Select any that apply:</Text>
-            <FormControl>
+            <FormControl paddingTop="10px">
               <Controller
                 name="options"
                 control={control}

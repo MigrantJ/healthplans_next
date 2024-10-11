@@ -7,6 +7,8 @@ import {
   InputGroup,
   InputLeftElement,
   useColorModeValue,
+  Spinner,
+  Collapse,
 } from "@chakra-ui/react";
 import { BsCurrencyDollar } from "react-icons/bs";
 import { useHouseholdActions, useIncome } from "@/lib/householdStore";
@@ -17,7 +19,7 @@ export default memo(function IncomeWidget() {
   const { setIncome } = useHouseholdActions();
   const [innerIncome, setInnerIncome] = useState(income.toString());
   const inputRef = useRef<HTMLInputElement>(null);
-  const creditEstimate = useCreditEstimate().data;
+  const { data, isFetching } = useCreditEstimate();
   const bgColor = useColorModeValue("green", "white");
 
   const focusInput = () => {
@@ -41,7 +43,7 @@ export default memo(function IncomeWidget() {
   };
 
   const taxCredit =
-    creditEstimate.aptc > 0 ? `$${creditEstimate.aptc} tax credit` : "";
+    data.aptc > 0 ? `$${data.aptc} tax credit` : "";
 
   return (
     <Flex flexDirection="column">
@@ -63,9 +65,15 @@ export default memo(function IncomeWidget() {
           onKeyUp={handleKeyUp}
         />
       </InputGroup>
-      <Text as="span" color={bgColor} fontWeight="bold" paddingLeft="10px">
-        {taxCredit}
-      </Text>
+      <Collapse in={isFetching || !!taxCredit}>
+      {isFetching ? (
+        <Spinner size="sm" marginLeft="5px" />
+        ) : (
+        <Text as="span" color={bgColor} fontWeight="bold">
+          {taxCredit}
+        </Text>
+      )}
+      </Collapse>
     </Flex>
   );
 });

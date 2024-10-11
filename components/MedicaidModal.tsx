@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import NextLink from "next/link";
 import {
   Button,
-  Flex,
   Modal,
   ModalBody,
   ModalContent,
@@ -36,17 +35,15 @@ export default function MedicaidModal() {
           </Text>
         </ModalBody>
         <ModalFooter>
-          <Flex>
-            <Button onClick={onClose}>See Full-Price Plans</Button>
-            <Spacer />
-            <Link
-              as={NextLink}
-              href="https://www.healthcare.gov/medicaid-chip/#howtoapply"
-              isExternal
-            >
-              <Button>Learn More About Applying</Button>
-            </Link>
-          </Flex>
+          <Button onClick={onClose}>Back</Button>
+          <Spacer />
+          <Link
+            as={NextLink}
+            href="https://www.healthcare.gov/medicaid-chip/#howtoapply"
+            isExternal
+          >
+            <Button>Learn More</Button>
+          </Link>
         </ModalFooter>
       </ModalContent>
     </Modal>

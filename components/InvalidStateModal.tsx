@@ -3,6 +3,7 @@ import NextLink from "next/link";
 import {
   Heading,
   Button,
+  Link,
   Modal,
   ModalBody,
   ModalContent,
@@ -40,9 +41,13 @@ export default function InvalidStateModal({
           </Text>
         </ModalBody>
         <ModalFooter alignSelf={"center"}>
-          <Button as={NextLink} href={exchange_url}>
-            <Heading size="md">{exchange_name}</Heading>
-          </Button>
+          <Link
+              as={NextLink}
+              href={exchange_url}
+              isExternal
+            >
+            <Button>{exchange_name}</Button>
+          </Link>
         </ModalFooter>
       </ModalContent>
     </Modal>
